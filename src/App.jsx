@@ -28,7 +28,7 @@ const css=`
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#FAF8F8;color:#1a1a1a;min-height:100vh}
 .top-bar{background:#4A1018;color:rgba(255,255,255,.85);text-align:center;padding:7px 1rem;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
-.nav{background:#6B1B2A;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(74,16,24,.35)}
+.nav{background:#6B1B2A;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(74,16,24,.35)}
 .nav-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;font-family:'Playfair Display',serif;color:#fff;cursor:pointer;flex-shrink:0}
 .nav-logo img{width:38px;height:38px;border-radius:8px;object-fit:cover}
 .nav-links{display:flex;gap:2px;align-items:center}
@@ -76,7 +76,7 @@ body{font-family:'Inter',sans-serif;background:#FAF8F8;color:#1a1a1a;min-height:
 .feature-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
 .feature-img:hover img{transform:scale(1.04)}
 .feature-img-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(74,16,24,.3),transparent)}
-.feature-body{background:#fff;padding:48px 40px;display:flex;flex-direction:column;justify-content:center}
+.feature-body{background:#fff;padding:56px 60px;display:flex;flex-direction:column;justify-content:center}
 .feature-tag{display:inline-block;background:#FAF0F2;color:#6B1B2A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 10px;border-radius:20px;margin-bottom:12px}
 .feature-body h2{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;color:#1a1a1a;margin-bottom:12px;line-height:1.3}
 .feature-body p{font-size:14px;color:#555;line-height:1.8;margin-bottom:16px}
@@ -89,13 +89,12 @@ body{font-family:'Inter',sans-serif;background:#FAF8F8;color:#1a1a1a;min-height:
 .spirit-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(74,16,24,.9),rgba(74,16,24,.5),rgba(74,16,24,.9));display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
 .spirit-text{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,2.4rem);font-weight:800;color:white;text-align:center}
 .spirit-sub{color:rgba(255,255,255,.8);font-size:13px;text-align:center}
-.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
-.photo-grid img{width:100%;height:180px;object-fit:cover;display:block}
-@media(max-width:600px){.photo-grid{grid-template-columns:1fr 1fr}.photo-grid img{height:130px}}
-.section{padding:56px 1.5rem;max-width:1100px;margin:0 auto}
+.full-img-banner{width:100%;height:320px;object-fit:cover;display:block}
+@media(max-width:600px){.full-img-banner{height:200px}}
+.section{padding:56px 3rem;max-width:1400px;margin:0 auto}
 .section-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#6B1B2A;margin-bottom:10px}
 .section-sub{color:#8A7070;font-size:14px;margin-bottom:36px;max-width:560px}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
 .card{background:#fff;border:1px solid #E0D8D8;border-radius:14px;padding:22px;transition:all .2s}
 .card:hover{box-shadow:0 6px 24px rgba(107,27,42,.1);transform:translateY(-3px)}
 .card-icon{width:44px;height:44px;border-radius:11px;background:#FAF0F2;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
@@ -172,9 +171,9 @@ tr:hover td{background:#FAF8F8}
 .badge-student,.badge-officer,.badge-both{background:#F3E8FF;color:#7C3AED}
 .badge-volunteer_only{background:#ECFDF5;color:#065F46}
 .badge-guest{background:#F9FAFB;color:#6B7280}
-.dash-layout{display:flex;min-height:calc(100vh - 90px)}
+.dash-layout{display:flex;min-height:calc(100vh - 90px);width:100%}
 .dash-sidebar{background:#fff;border-right:1px solid #E0D8D8;width:220px;flex-shrink:0;padding:20px 12px;overflow-y:auto;transition:transform .28s ease}
-.dash-main{flex:1;padding:28px;min-width:0}
+.dash-main{flex:1;padding:36px 48px;min-width:0}
 .dash-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:149}
 .dash-toggle{display:none;position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:#6B1B2A;color:white;border:none;font-size:22px;cursor:pointer;z-index:151;box-shadow:0 4px 16px rgba(74,16,24,.4);align-items:center;justify-content:center}
 @media(max-width:768px){
@@ -442,11 +441,7 @@ function HomePage({setPage,user,onLogin}){
           ))}
         </div>
       </div>
-      <div className="photo-grid">
-        <img src={IMG_SCIENCE} alt="AAMU Building"/>
-        <img src={IMG_STUDY} alt="AAMU Student"/>
-        <img src={IMG_AERIAL2} alt="AAMU Aerial"/>
-      </div>
+      <img src={IMG_AERIAL1} className="full-img-banner" alt="Alabama A&M University Campus"/>
       <div className="cta-banner">
         <h2>Ready to get your organization on board?</h2>
         <p>Join AAMU student organizations using RSO Tracker to document their members involvement and impact.</p>
