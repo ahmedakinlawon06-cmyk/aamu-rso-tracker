@@ -366,7 +366,7 @@ function HomePage({setPage,user,onLogin}){
         </div>
       </div>
       <div className="feature-section">
-        <div className="feature-img"><img src={IMG_S2} alt="AAMU Students" /><div className="feature-img-overlay" /></div>
+        <div className="feature-img"><img src={IMG_STUDENTS1} alt="AAMU Students" /><div className="feature-img-overlay" /></div>
         <div className="feature-body">
           <div className="feature-tag">Attendance Tracking</div>
           <h2>Attendance Tracking Made Simple</h2>
@@ -380,7 +380,7 @@ function HomePage({setPage,user,onLogin}){
         </div>
       </div>
       <div className="feature-section rev">
-        <div className="feature-img"><img src={IMG_S1} alt="AAMU Community" /><div className="feature-img-overlay" /></div>
+        <div className="feature-img"><img src={IMG_STUDENTS2} alt="AAMU Community" /><div className="feature-img-overlay" /></div>
         <div className="feature-body">
           <div className="feature-tag">Volunteer Hours + Org Tracking</div>
           <h2>Track Both — Or Just One</h2>
@@ -408,7 +408,7 @@ function HomePage({setPage,user,onLogin}){
         </div>
       </div>
       <div className="spirit-strip">
-        <img src={IMG_S2} alt="AAMU Spirit" />
+        <img src={IMG_STUDENTS1} alt="AAMU Spirit" />
         <div className="spirit-overlay">
           <div className="spirit-text">Bulldogs. Builders. Believers.</div>
           <div className="spirit-sub">Alabama Agricultural and Mechanical University · Huntsville, Alabama · Est. 1875</div>
@@ -433,9 +433,9 @@ function HomePage({setPage,user,onLogin}){
         </div>
       </div>
       <div className="photo-grid">
-        <img src={IMG_S1} alt="AAMU Students" />
+        <img src={IMG_STUDENTS2} alt="AAMU Students" />
         <img src={IMG_HERO} alt="AAMU Campus" />
-        <img src={IMG_S2} alt="AAMU Bulldogs" />
+        <img src={IMG_STUDENTS1} alt="AAMU Bulldogs" />
       </div>
       <div className="cta-banner">
         <h2>Ready to get your organization on board?</h2>
