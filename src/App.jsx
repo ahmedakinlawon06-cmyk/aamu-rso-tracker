@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-const MAROON="#6B1B2A",MAROON_DARK="#4A1018",MAROON_LIGHT="#8B2535";
+const MAROON="#6B1B2A",MAROON_DARK="#4A1018";
 const WHITE="#FFFFFF",OFF_WHITE="#FAF8F8",LIGHT_GRAY="#F3F0F0",BORDER="#E0D8D8",TEXT_MUTED="#8A7070";
 
 const IMG_LOGO="data:image/webp;base64,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";
@@ -18,48 +18,42 @@ const IMG_SHIELD="data:image/webp;base64,UklGRqweAABXRUJQVlA4IKAeAAAwdQCdASr0ALQ
 const AAMU_ORGS=["AAMU Bulldog Veterans", "AAMU Environmental Science Club", "AAMU Collegiate Midnight Golf Program", "AAMU Food Science Club", "AAMU Forestry Club", "AAMU Honors Program", "AAMU Southern Belles", "AAMU Sports Management Club", "AAMU University Choir", "Alima Dance Company", "Alpha Kappa Alpha Sorority, Inc.", "Alpha Phi Alpha Fraternity, Inc.", "Alpha Phi Omega National Service Fraternity", "American Advertising Federation - AAMU Chapter", "American Society of Civil Engineers - AAMU Chapter", "Bionic Bulldogs", "Bulldog Elite Stomp & Shake Team", "Bulldog Players Productions", "ChiSocial (The Windy City Impact)", "Collegiate 100 - Quiet Storm Chapter", "Colorstack at AAMU", "Common Grounds", "Compass Campus Fellowship", "Creative Arts Club", "Delta Sigma Theta Sorority, Inc.", "Eta Kappa Tau Engineering & Technology Fraternity Inc.", "Girl, Get Up University", "Girls Who Code", "Global Logistics & Supply Chain Club", "Gospel Choir", "Graduate Student Council", "Hill HuSTLas: 314 Edition", "House Arrest Two Championship Dance Team", "International Student Association (ISA)", "Inter-Residential Hall Council", "Iota Phi Theta Fraternity, Inc.", "M.A.N.U.P", "Michigan Club", "Minority Association of Pre-Medical Students (MAPS)", "Mu Epsilon Delta", "Muslim Student Association (MSA)", "National Association for the Advancement of Colored People (NAACP)", "National Association of Black Accountants (NABA)", "National Association of Home Builders", "National Society of Black Engineers (NSBE)", "National Society of Leadership & Success", "National Society of Pershing Angels", "National Society of Pershing Rifles", "National Student Speech Language Hearing Association (NSSLHA)", "NMDP (formerly Be the Match)", "Omega Psi Phi Fraternity, Inc.", "Pentacostal Student Union", "Pep Squad", "Pre-Alumni Association", "Reformed University Fellowship", "Sistas Inspiring Sisters (S.I.S)", "Sigma Alpha Iota", "Sigma Gamma Rho Sorority, Inc.", "Sigma Tau Epsilon Professional Fraternity", "Social Work Association", "Society of Women Engineers", "Student Alabama Education Association (SAEA)", "Tau Sigma National Honor Society", "The AAMU Psychology Club", "The Bulldog Book", "The National Society of Black Women in Medicine (NSBWM)", "The Society of Lyrically Advanced Poets (SLAP - Poetry Club)", "Transfer Student Association", "Trendsetters Fashion Club", "University Echoes", "VAW Global Health Alliance", "Voluptuous Bulldog Beauties (VBB)", "Ward Modeling Troop", "Women in Pre-Med", "Women of Worth", "Zeta Phi Beta Sorority, Inc.", "Other (not listed)"];
 
 const INIT={
-  users:[{id:"u1",name:"Ayoola Akinlawon",email:"ahmedakinlawon06@gmail.com",role:"superadmin",orgId:null,password:"admin123",major:"Senior Accounting",userType:"superadmin",bio:"Platform creator and Senior Accounting major at AAMU.",photo:null,instagram:"",linkedin:""}],
+  users:[{id:"u1",name:"Ayoola Akinlawon",email:"ahmedakinlawon06@gmail.com",role:"superadmin",orgId:null,password:"admin123",major:"Senior Accounting",userType:"superadmin",bio:"Platform creator.",photo:null,instagram:"",linkedin:""}],
   orgs:[],events:[],logs:[]
 };
 function loadData(){try{const r=localStorage.getItem("aamu_v6");if(r)return JSON.parse(r);}catch{}return INIT;}
 function saveData(d){try{localStorage.setItem("aamu_v6",JSON.stringify(d));}catch{}}
-
 const css=`
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#FAF8F8;color:#1a1a1a;min-height:100vh}
 .top-bar{background:#4A1018;color:rgba(255,255,255,.85);text-align:center;padding:7px 1rem;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
-.nav{background:#6B1B2A;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(74,16,24,.35)}
-.nav-logo{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;font-family:'Playfair Display',serif;color:#fff;cursor:pointer;flex-shrink:0}
-.nav-logo img{width:42px;height:42px;border-radius:8px;object-fit:cover}
+.nav{background:#6B1B2A;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(74,16,24,.35)}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;font-family:'Playfair Display',serif;color:#fff;cursor:pointer;flex-shrink:0}
+.nav-logo img{width:38px;height:38px;border-radius:8px;object-fit:cover}
 .nav-links{display:flex;gap:2px;align-items:center}
-.nav-link{color:rgba(255,255,255,.82);background:none;border:none;cursor:pointer;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;transition:all .18s;white-space:nowrap}
+.nav-link{color:rgba(255,255,255,.82);background:none;border:none;cursor:pointer;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:500;transition:all .18s;white-space:nowrap}
 .nav-link:hover,.nav-link.active{color:#fff;background:rgba(255,255,255,.15)}
-.nav-btn{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .18s}
+.nav-btn{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:all .18s}
 .nav-btn.solid{background:#fff;color:#6B1B2A}
 .nav-right{display:flex;align-items:center;gap:8px}
-.hamburger{display:none;background:none;border:none;color:white;font-size:26px;cursor:pointer}
-@media(max-width:768px){
-  .nav-links{display:none;position:absolute;top:68px;left:0;right:0;background:#4A1018;flex-direction:column;padding:10px;gap:2px;z-index:99}
-  .nav-links.open{display:flex}
-  .hamburger{display:block}
-  .nav-link{width:100%;text-align:left;padding:10px 14px}
-}
+.hamburger{display:none;background:none;border:none;color:white;font-size:26px;cursor:pointer;padding:4px}
+@media(max-width:768px){.nav-links{display:none}.hamburger{display:block}.nav-logo{font-size:14px}}
 .hero{position:relative;min-height:88vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(74,16,24,.93),rgba(107,27,42,.87),rgba(139,37,53,.80))}
 .hero-content{position:relative;z-index:2;text-align:center;color:#fff;padding:40px 1.5rem;max-width:760px;margin:0 auto}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:24px;padding:6px 18px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:24px}
-.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,3.8rem);font-weight:800;line-height:1.15;margin-bottom:22px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:24px;padding:6px 16px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:22px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,6vw,3.8rem);font-weight:800;line-height:1.15;margin-bottom:20px}
 .hero h1 span{color:#FFD0D8}
-.hero p{font-size:clamp(15px,2.5vw,17px);line-height:1.75;color:rgba(255,255,255,.85);max-width:580px;margin:0 auto 38px}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.hero-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.5);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:2;pointer-events:none}
+.hero p{font-size:clamp(14px,2.5vw,17px);line-height:1.75;color:rgba(255,255,255,.85);max-width:580px;margin:0 auto 36px}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-.bounce{animation:bounce 1.6s infinite;display:block;font-size:20px}
-.btn-primary{background:#fff;color:#6B1B2A;border:none;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.bounce{animation:bounce 1.6s infinite;display:block;font-size:18px}
+.hero-scroll{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.5);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:2;pointer-events:none}
+.btn-primary{background:#fff;color:#6B1B2A;border:none;padding:13px 26px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
-.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6);padding:14px 28px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6);padding:13px 26px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
 .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.12)}
 .btn-full{width:100%;background:#6B1B2A;color:#fff;border:none;padding:13px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .18s;margin-top:8px}
 .btn-full:hover{background:#4A1018}
@@ -68,105 +62,109 @@ body{font-family:'Inter',sans-serif;background:#FAF8F8;color:#1a1a1a;min-height:
 .btn-ghost{background:#F3F0F0;color:#444}.btn-ghost:hover{background:#E0D8D8}
 .btn-danger{background:#FEF2F2;color:#991B1B}.btn-danger:hover{background:#FECACA}
 .btn-green{background:#F0FDF4;color:#166534;border:1px solid #BBF7D0}.btn-green:hover{background:#DCFCE7}
-.steps-wrap{background:#6B1B2A;color:#fff;padding:72px 1.5rem}
+.steps-wrap{background:#6B1B2A;color:#fff;padding:64px 1.5rem}
 .steps-inner{max-width:1000px;margin:0 auto}
-.steps-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;text-align:center;margin-bottom:10px}
-.steps-sub{text-align:center;color:rgba(255,255,255,.75);font-size:15px;margin-bottom:48px}
-.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px}
-.step-num{width:54px;height:54px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:white;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-.step-title{font-weight:700;font-size:15px;margin-bottom:8px;text-align:center}
-.step-desc{font-size:13px;color:rgba(255,255,255,.72);line-height:1.65;text-align:center}
-.feature-section{display:grid;grid-template-columns:1fr 1fr;min-height:400px}
+.steps-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;text-align:center;margin-bottom:10px}
+.steps-sub{text-align:center;color:rgba(255,255,255,.75);font-size:14px;margin-bottom:44px}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:28px}
+.step-num{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:white;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.step-title{font-weight:700;font-size:14px;margin-bottom:7px;text-align:center}
+.step-desc{font-size:12px;color:rgba(255,255,255,.72);line-height:1.6;text-align:center}
+.feature-section{display:grid;grid-template-columns:1fr 1fr;min-height:380px}
 .feature-section.rev{direction:rtl}.feature-section.rev>*{direction:ltr}
-.feature-img{position:relative;overflow:hidden;min-height:300px}
+.feature-img{position:relative;overflow:hidden;min-height:280px}
 .feature-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
 .feature-img:hover img{transform:scale(1.04)}
 .feature-img-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(74,16,24,.3),transparent)}
-.feature-body{background:#fff;padding:52px 44px;display:flex;flex-direction:column;justify-content:center}
-.feature-tag{display:inline-block;background:#FAF0F2;color:#6B1B2A;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:4px 12px;border-radius:20px;margin-bottom:14px}
-.feature-body h2{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:700;color:#1a1a1a;margin-bottom:14px;line-height:1.3}
-.feature-body p{font-size:15px;color:#555;line-height:1.8;margin-bottom:18px}
-.feature-checks{list-style:none;display:flex;flex-direction:column;gap:8px}
-.feature-checks li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#444}
+.feature-body{background:#fff;padding:48px 40px;display:flex;flex-direction:column;justify-content:center}
+.feature-tag{display:inline-block;background:#FAF0F2;color:#6B1B2A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.feature-body h2{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;color:#1a1a1a;margin-bottom:12px;line-height:1.3}
+.feature-body p{font-size:14px;color:#555;line-height:1.8;margin-bottom:16px}
+.feature-checks{list-style:none;display:flex;flex-direction:column;gap:7px}
+.feature-checks li{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#444}
 .feature-checks li::before{content:'✓';color:#6B1B2A;font-weight:700;flex-shrink:0;margin-top:1px}
-@media(max-width:768px){.feature-section{grid-template-columns:1fr}.feature-section.rev{direction:ltr}.feature-body{padding:28px 20px}.feature-img{min-height:220px}}
-.spirit-strip{position:relative;overflow:hidden;height:260px}
+@media(max-width:768px){.feature-section{grid-template-columns:1fr}.feature-section.rev{direction:ltr}.feature-body{padding:24px 18px}.feature-img{min-height:220px}}
+.spirit-strip{position:relative;overflow:hidden;height:240px}
 .spirit-strip img{width:100%;height:100%;object-fit:cover;display:block}
-.spirit-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(74,16,24,.9),rgba(74,16,24,.5),rgba(74,16,24,.9));display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
-.spirit-text{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2.6rem);font-weight:800;color:white;text-align:center}
-.spirit-sub{color:rgba(255,255,255,.8);font-size:15px;text-align:center}
-.section{padding:64px 1.5rem;max-width:1100px;margin:0 auto}
-.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2rem);font-weight:700;color:#6B1B2A;margin-bottom:10px}
-.section-sub{color:#8A7070;font-size:15px;margin-bottom:40px;max-width:560px}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
-.card{background:#fff;border:1px solid #E0D8D8;border-radius:14px;padding:24px;transition:all .2s}
-.card:hover{box-shadow:0 6px 24px rgba(107,27,42,.1);transform:translateY(-3px)}
-.card-icon{width:48px;height:48px;border-radius:12px;background:#FAF0F2;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px}
-.card h3{font-size:16px;font-weight:700;margin-bottom:8px;color:#1a1a1a}
-.card p{font-size:14px;color:#8A7070;line-height:1.65}
+.spirit-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(74,16,24,.9),rgba(74,16,24,.5),rgba(74,16,24,.9));display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.spirit-text{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,2.4rem);font-weight:800;color:white;text-align:center}
+.spirit-sub{color:rgba(255,255,255,.8);font-size:13px;text-align:center}
 .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
-.photo-grid img{width:100%;height:200px;object-fit:cover;display:block;transition:transform .3s}
-.photo-grid img:hover{transform:scale(1.03)}
-@media(max-width:600px){.photo-grid{grid-template-columns:1fr 1fr}}
-.cta-banner{background:linear-gradient(135deg,#4A1018,#8B2535);color:white;padding:72px 1.5rem;text-align:center}
-.cta-banner h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:700;margin-bottom:14px}
-.cta-banner p{color:rgba(255,255,255,.8);font-size:16px;line-height:1.7;max-width:560px;margin:0 auto 32px}
-.page-hero{background:linear-gradient(135deg,#4A1018,#6B1B2A);color:#fff;padding:60px 1.5rem 52px;text-align:center;position:relative;overflow:hidden}
+.photo-grid img{width:100%;height:180px;object-fit:cover;display:block}
+@media(max-width:600px){.photo-grid{grid-template-columns:1fr 1fr}.photo-grid img{height:130px}}
+.section{padding:56px 1.5rem;max-width:1100px;margin:0 auto}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2rem);font-weight:700;color:#6B1B2A;margin-bottom:10px}
+.section-sub{color:#8A7070;font-size:14px;margin-bottom:36px;max-width:560px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.card{background:#fff;border:1px solid #E0D8D8;border-radius:14px;padding:22px;transition:all .2s}
+.card:hover{box-shadow:0 6px 24px rgba(107,27,42,.1);transform:translateY(-3px)}
+.card-icon{width:44px;height:44px;border-radius:11px;background:#FAF0F2;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
+.card h3{font-size:15px;font-weight:700;margin-bottom:7px;color:#1a1a1a}
+.card p{font-size:13px;color:#8A7070;line-height:1.6}
+.cta-banner{background:linear-gradient(135deg,#4A1018,#8B2535);color:white;padding:64px 1.5rem;text-align:center}
+.cta-banner h2{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:700;margin-bottom:12px}
+.cta-banner p{color:rgba(255,255,255,.8);font-size:15px;line-height:1.7;max-width:540px;margin:0 auto 28px}
+.page-hero{background:linear-gradient(135deg,#4A1018,#6B1B2A);color:#fff;padding:56px 1.5rem 48px;text-align:center;position:relative;overflow:hidden}
 .page-hero-content{position:relative;max-width:640px;margin:0 auto}
-.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;margin-bottom:14px}
-.page-hero p{color:rgba(255,255,255,.82);font-size:16px;line-height:1.7}
-.service-item{border:1px solid #E0D8D8;border-radius:14px;overflow:hidden;margin-bottom:12px;background:#fff;transition:box-shadow .2s}
-.service-item:hover{box-shadow:0 4px 16px rgba(107,27,42,.08)}
-.service-header{display:flex;align-items:center;gap:16px;padding:20px 24px;cursor:pointer;user-select:none}
-.service-icon-wrap{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;margin-bottom:12px}
+.page-hero p{color:rgba(255,255,255,.82);font-size:15px;line-height:1.7}
+.service-item{border:1px solid #E0D8D8;border-radius:14px;overflow:hidden;margin-bottom:12px;background:#fff}
+.service-header{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;user-select:none}
+.service-icon-wrap{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .service-header-text{flex:1}
-.service-header-title{font-weight:700;font-size:16px;color:#1a1a1a;margin-bottom:2px}
-.service-header-for{font-size:12px;font-weight:600;color:#8A7070}
-.service-chevron{font-size:16px;color:#8A7070;transition:transform .25s;flex-shrink:0}
+.service-header-title{font-weight:700;font-size:15px;color:#1a1a1a;margin-bottom:2px}
+.service-header-for{font-size:11px;font-weight:600;color:#8A7070}
+.service-chevron{font-size:15px;color:#8A7070;transition:transform .25s;flex-shrink:0}
 .service-chevron.open{transform:rotate(180deg)}
-.service-body{padding:0 24px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s}
-.service-body.open{max-height:400px;padding:0 24px 24px}
-.service-points{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 24px}
-.service-point{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:#444;line-height:1.6}
+.service-body{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s}
+.service-body.open{max-height:400px;padding:0 22px 22px}
+.service-points{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:7px 20px}
+.service-point{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:#444;line-height:1.6}
 .service-point::before{content:'✓';color:#6B1B2A;font-weight:700;flex-shrink:0;margin-top:2px}
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:40px}
-.stat-card{background:#fff;border:1px solid #E0D8D8;border-radius:12px;padding:18px 16px;text-align:center}
-.stat-num{font-size:1.8rem;font-weight:700;color:#6B1B2A}
-.stat-label{font-size:12px;color:#8A7070;margin-top:4px}
-.form-wrap{background:#fff;border:1px solid #E0D8D8;border-radius:16px;padding:32px;max-width:520px;margin:0 auto}
-.form-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#6B1B2A;margin-bottom:6px}
-.form-sub{font-size:14px;color:#8A7070;margin-bottom:24px}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:#333;margin-bottom:7px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1.5px solid #E0D8D8;border-radius:9px;font-size:14px;font-family:'Inter',sans-serif;outline:none;background:#fff!important;color:#1a1a1a!important;-webkit-text-fill-color:#1a1a1a!important;transition:border .18s}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-bottom:36px}
+.stat-card{background:#fff;border:1px solid #E0D8D8;border-radius:12px;padding:16px;text-align:center}
+.stat-num{font-size:1.7rem;font-weight:700;color:#6B1B2A}
+.stat-label{font-size:11px;color:#8A7070;margin-top:4px}
+.form-wrap{background:#fff;border:1px solid #E0D8D8;border-radius:16px;padding:28px;max-width:520px;margin:0 auto}
+.form-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:#6B1B2A;margin-bottom:5px}
+.form-sub{font-size:13px;color:#8A7070;margin-bottom:20px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:#333;margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 13px;border:1.5px solid #E0D8D8;border-radius:9px;font-size:14px;font-family:'Inter',sans-serif;outline:none;background:#fff!important;color:#1a1a1a!important;-webkit-text-fill-color:#1a1a1a!important;transition:border .18s}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#6B1B2A}
 .form-group input::placeholder,.form-group textarea::placeholder{color:#aaa!important;-webkit-text-fill-color:#aaa!important}
-.form-group input:-webkit-autofill,.form-group input:-webkit-autofill:focus{-webkit-text-fill-color:#1a1a1a!important;-webkit-box-shadow:0 0 0px 1000px #fff inset!important}
-.form-group textarea{resize:vertical;min-height:90px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group input:-webkit-autofill{-webkit-text-fill-color:#1a1a1a!important;-webkit-box-shadow:0 0 0px 1000px #fff inset!important}
+.form-group textarea{resize:vertical;min-height:85px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 @media(max-width:600px){.form-row{grid-template-columns:1fr}}
-.form-switch{text-align:center;margin-top:16px;font-size:14px;color:#8A7070}
+.form-switch{text-align:center;margin-top:14px;font-size:13px;color:#8A7070}
 .form-switch a{color:#6B1B2A;cursor:pointer;font-weight:600}
-.error-msg{background:#FEF2F2;border:1px solid #FECACA;color:#991B1B;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px}
-.success-msg{background:#F0FDF4;border:1px solid #BBF7D0;color:#166534;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px}
+.error-msg{background:#FEF2F2;border:1px solid #FECACA;color:#991B1B;padding:9px 13px;border-radius:8px;font-size:13px;margin-bottom:14px}
+.success-msg{background:#F0FDF4;border:1px solid #BBF7D0;color:#166534;padding:9px 13px;border-radius:8px;font-size:13px;margin-bottom:14px}
 .pw-wrap{position:relative}
-.pw-wrap input{padding-right:44px!important}
-.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#8A7070;padding:4px;line-height:1}
-.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
-.role-card{border:2px solid #E0D8D8;border-radius:12px;padding:14px 10px;cursor:pointer;text-align:center;transition:all .18s;background:#fff}
+.pw-wrap input{padding-right:42px!important}
+.pw-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:17px;color:#8A7070;padding:3px;line-height:1}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px}
+.role-card{border:2px solid #E0D8D8;border-radius:11px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .18s;background:#fff}
 .role-card:hover{border-color:#8B2535;background:#FAF0F2}
 .role-card.selected{border-color:#6B1B2A;background:#FAF0F2}
-.role-card-icon{font-size:24px;margin-bottom:6px}
-.role-card-title{font-weight:700;font-size:12px;color:#1a1a1a;margin-bottom:3px}
-.role-card-desc{font-size:10px;color:#8A7070;line-height:1.4}
+.role-card-icon{font-size:22px;margin-bottom:5px}
+.role-card-title{font-weight:700;font-size:11px;color:#1a1a1a;margin-bottom:2px}
+.role-card-desc{font-size:10px;color:#8A7070;line-height:1.3}
+.org-search-wrap{position:relative}
+.org-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #6B1B2A;border-top:none;border-radius:0 0 9px 9px;max-height:200px;overflow-y:auto;z-index:50;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.org-option{padding:9px 13px;font-size:13px;cursor:pointer;color:#1a1a1a;transition:background .15s}
+.org-option:hover{background:#FAF0F2;color:#6B1B2A}
+.resource-card{background:#fff;border:1px solid #E0D8D8;border-radius:12px;padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:12px;transition:all .2s;text-decoration:none;color:inherit}
+.resource-card:hover{box-shadow:0 4px 16px rgba(107,27,42,.1);transform:translateY(-2px);border-color:#8B2535}
 .table-wrap{background:#fff;border:1px solid #E0D8D8;border-radius:14px;overflow:hidden;overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:480px}
+table{width:100%;border-collapse:collapse;min-width:440px}
 thead{background:#FAF0F2}
-th{text-align:left;padding:12px 16px;font-size:11px;font-weight:700;color:#6B1B2A;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #E0D8D8}
-td{padding:12px 16px;font-size:14px;border-bottom:1px solid #F3F0F0;vertical-align:middle;color:#1a1a1a}
+th{text-align:left;padding:11px 15px;font-size:10px;font-weight:700;color:#6B1B2A;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #E0D8D8}
+td{padding:11px 15px;font-size:13px;border-bottom:1px solid #F3F0F0;vertical-align:middle;color:#1a1a1a}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#FAF8F8}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
 .badge-event{background:#EFF6FF;color:#1D4ED8}
 .badge-volunteer{background:#F0FDF4;color:#15803D}
 .badge-superadmin{background:#FAF0F2;color:#6B1B2A}
@@ -174,60 +172,60 @@ tr:hover td{background:#FAF8F8}
 .badge-student,.badge-officer,.badge-both{background:#F3E8FF;color:#7C3AED}
 .badge-volunteer_only{background:#ECFDF5;color:#065F46}
 .badge-guest{background:#F9FAFB;color:#6B7280}
-.dash-layout{display:flex;min-height:calc(100vh - 96px)}
-.dash-nav{background:#fff;border-right:1px solid #E0D8D8;width:220px;flex-shrink:0;padding:20px 12px;overflow-y:auto}
-.dash-main{flex:1;padding:32px;min-width:0}
+.dash-layout{display:flex;min-height:calc(100vh - 90px)}
+.dash-sidebar{background:#fff;border-right:1px solid #E0D8D8;width:220px;flex-shrink:0;padding:20px 12px;overflow-y:auto;transition:transform .28s ease}
+.dash-main{flex:1;padding:28px;min-width:0}
+.dash-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:149}
+.dash-toggle{display:none;position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:#6B1B2A;color:white;border:none;font-size:22px;cursor:pointer;z-index:151;box-shadow:0 4px 16px rgba(74,16,24,.4);align-items:center;justify-content:center}
 @media(max-width:768px){
-  .dash-layout{flex-direction:column}
-  .dash-nav{width:100%;border-right:none;border-bottom:1px solid #E0D8D8;padding:10px;display:flex;flex-wrap:wrap;gap:4px;overflow-x:auto}
-  .dash-main{padding:20px 16px}
-  .dash-nav-section{display:none}
-  .dash-nav-item{width:auto;padding:8px 12px;font-size:12px}
+  .dash-sidebar{position:fixed;top:0;left:0;bottom:0;z-index:150;transform:translateX(-100%);width:260px;padding-top:80px}
+  .dash-sidebar.open{transform:translateX(0)}
+  .dash-overlay.open{display:block}
+  .dash-toggle{display:flex}
+  .dash-main{padding:16px}
 }
 .dash-nav-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:500;color:#555;transition:all .18s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
 .dash-nav-item:hover{background:#FAF0F2;color:#6B1B2A}
 .dash-nav-item.active{background:#FAF0F2;color:#6B1B2A;font-weight:700}
 .dash-nav-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8A7070;padding:10px 12px 4px}
-.page-title{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:#6B1B2A;margin-bottom:6px}
-.page-sub{font-size:14px;color:#8A7070;margin-bottom:28px}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto}
-.checkin-card{background:#fff;border:1px solid #E0D8D8;border-radius:12px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px;flex-wrap:wrap}
-.checkin-card:hover{border-color:#8B2535;box-shadow:0 2px 10px rgba(107,27,42,.08)}
-.upload-area{border:2px dashed #E0D8D8;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .18s}
+.page-title{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700;color:#6B1B2A;margin-bottom:6px}
+.page-sub{font-size:13px;color:#8A7070;margin-bottom:24px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:14px}
+.modal{background:#fff;border-radius:16px;padding:26px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto}
+.checkin-card{background:#fff;border:1px solid #E0D8D8;border-radius:12px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px;flex-wrap:wrap}
+.upload-area{border:2px dashed #E0D8D8;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .18s}
 .upload-area:hover{border-color:#6B1B2A;background:#FAF0F2}
-.upload-area p{font-size:14px;color:#8A7070;margin-top:8px}
-.contact-info{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #F3F0F0}
+.upload-area p{font-size:13px;color:#8A7070;margin-top:7px}
+.contact-info{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #F3F0F0}
 .contact-info:last-child{border-bottom:none}
-.contact-icon{width:36px;height:36px;border-radius:10px;background:#FAF0F2;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.footer{background:#4A1018;color:rgba(255,255,255,.7);padding:40px 1.5rem;text-align:center;font-size:13px}
+.contact-icon{width:34px;height:34px;border-radius:9px;background:#FAF0F2;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.footer{background:#4A1018;color:rgba(255,255,255,.7);padding:36px 1.5rem;text-align:center;font-size:12px}
 .footer strong{color:white}
-.export-btn{display:inline-flex;align-items:center;gap:8px;background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
-.export-btn:hover{background:#DCFCE7}
-.info-banner{border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:14px}
-.avatar-circle{border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;background:#FAF0F2;color:#6B1B2A}
-.profile-header-bg{background:linear-gradient(135deg,#4A1018,#6B1B2A);padding:32px;display:flex;align-items:flex-end;gap:20px;border-radius:16px 16px 0 0}
-.tabs-row{display:flex;gap:4px;background:#F3F0F0;padding:4px;border-radius:10px;margin-bottom:24px}
-.tab-btn{flex:1;padding:8px 14px;border:none;border-radius:7px;background:none;cursor:pointer;font-size:13px;font-weight:500;color:#8A7070;transition:all .18s;text-align:center}
+.export-btn{display:inline-flex;align-items:center;gap:7px;background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.info-banner{border-radius:12px;padding:13px 16px;margin-bottom:18px;font-size:13px}
+.avatar-circle{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;background:#FAF0F2;color:#6B1B2A}
+.profile-header-bg{background:linear-gradient(135deg,#4A1018,#6B1B2A);padding:28px;display:flex;align-items:flex-end;gap:18px;border-radius:16px 16px 0 0;flex-wrap:wrap}
+.tabs-row{display:flex;gap:4px;background:#F3F0F0;padding:4px;border-radius:10px;margin-bottom:22px}
+.tab-btn{flex:1;padding:8px 12px;border:none;border-radius:7px;background:none;cursor:pointer;font-size:12px;font-weight:500;color:#8A7070;transition:all .18s;text-align:center}
 .tab-btn.active{background:#fff;color:#6B1B2A;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 `;
 
 const SERVICES=[
-  {icon:"📋",title:"Event Attendance Tracking",for:"Members & Officers",color:"#EFF6FF",tc:"#1D4ED8",pts:["Students self check-in instantly","Officers can check in or edit records","See who attended vs who was absent","Export attendance records as CSV"]},
-  {icon:"🤝",title:"Volunteer Hour Logging",for:"All Users",color:"#F0FDF4",tc:"#15803D",pts:["Log hours for any volunteer activity","Upload photo proof of participation","Works without joining an org","Track both org events and volunteer hours"]},
-  {icon:"👥",title:"Organization Management",for:"Org Admins",color:"#FEF9C3",tc:"#92400E",pts:["Manage your full member roster","Create and schedule events","View and export all participation logs","Assign officer and member roles"]},
-  {icon:"📊",title:"Attendance Records",for:"Officers & Admins",color:"#F3E8FF",tc:"#7C3AED",pts:["Pull attendance for any event","Add or remove attendees fairly","Edit notes on any attendance record","Export records as CSV"]},
-  {icon:"👤",title:"Student Profiles",for:"All Students",color:"#FFF0F3",tc:"#9F1239",pts:["Upload a profile photo","Add a bio and social links","View your full participation history","Edit your info anytime"]},
-  {icon:"🛡️",title:"Super Admin Panel",for:"Platform Admin",color:"#FAF0F2",tc:"#6B1B2A",pts:["Manage all organizations","Add or remove org admins","Full visibility across every org","Platform-wide user management"]},
+  {icon:"📋",title:"Event Attendance Tracking",for:"Members & Officers",color:"#EFF6FF",pts:["Self check-in instantly","Officers can edit records","See attended vs absent","Export as CSV"]},
+  {icon:"🤝",title:"Volunteer Hour Logging",for:"All Users",color:"#F0FDF4",pts:["Log hours for any activity","Upload photo proof","Works without an org","Track both org and volunteer"]},
+  {icon:"👥",title:"Organization Management",for:"Org Admins",color:"#FEF9C3",pts:["Manage member roster","Create events","View all logs","Assign officer roles"]},
+  {icon:"📊",title:"Attendance Records",for:"Officers & Admins",color:"#F3E8FF",pts:["Pull attendance for any event","Add or remove attendees","Edit notes on any record","Export as CSV"]},
+  {icon:"👤",title:"Student Profiles",for:"All Students",color:"#FFF0F3",pts:["Upload a profile photo","Add bio and social links","View participation history","Edit anytime"]},
+  {icon:"🛡️",title:"Super Admin Panel",for:"Platform Admin",color:"#FAF0F2",pts:["Manage all organizations","Add or remove admins","Full platform visibility","Platform-wide user management"]},
 ];
 
 function Modal({title,onClose,children}){
   return(
     <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="modal">
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
-          <div style={{fontFamily:"'Playfair Display',serif",fontSize:"1.2rem",fontWeight:700,color:MAROON}}>{title}</div>
-          <button onClick={onClose} className="btn-sm btn-ghost" style={{fontSize:18,padding:"4px 10px"}}>✕</button>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18}}>
+          <div style={{fontFamily:"'Playfair Display',serif",fontSize:"1.15rem",fontWeight:700,color:MAROON}}>{title}</div>
+          <button onClick={onClose} className="btn-sm btn-ghost" style={{fontSize:17,padding:"3px 9px"}}>✕</button>
         </div>
         {children}
       </div>
@@ -239,7 +237,7 @@ function PwInput({value,onChange}){
   const [show,setShow]=useState(false);
   return(
     <div className="pw-wrap">
-      <input type={show?"text":"password"} placeholder="••••••••" value={value} onChange={onChange} />
+      <input type={show?"text":"password"} placeholder="••••••••" value={value} onChange={onChange}/>
       <button type="button" className="pw-toggle" onClick={()=>setShow(s=>!s)}>{show?"🙈":"👁️"}</button>
     </div>
   );
@@ -247,18 +245,28 @@ function PwInput({value,onChange}){
 
 function AvatarUI({user,size=40}){
   const style={width:size,height:size,fontSize:size*0.36,borderRadius:"50%"};
-  if(user?.photo) return <img src={user.photo} alt={user?.name||""} style={{...style,objectFit:"cover"}} />;
-  const initials=(user?.name||"?").split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
-  return <div className="avatar-circle" style={style}>{initials}</div>;
+  if(user?.photo) return <img src={user.photo} alt={user?.name||""} style={{...style,objectFit:"cover"}}/>;
+  const i=(user?.name||"?").split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+  return <div className="avatar-circle" style={style}>{i}</div>;
 }
 
 const ROLES=[
   {key:"student",icon:"🎓",title:"Org Member",desc:"Track org attendance"},
-  {key:"both",icon:"🌟",title:"Org + Volunteer",desc:"Track both org attendance AND volunteer hours"},
-  {key:"volunteer_only",icon:"🤝",title:"Volunteer Only",desc:"Log volunteer hours without an org"},
-  {key:"officer",icon:"📋",title:"Org Officer",desc:"E-board — edit attendance records"},
+  {key:"both",icon:"🌟",title:"Org + Volunteer",desc:"Track both org AND volunteer hours"},
+  {key:"volunteer_only",icon:"🤝",title:"Volunteer Only",desc:"Log volunteer hours only"},
+  {key:"officer",icon:"📋",title:"Org Officer",desc:"E-board — edit attendance"},
   {key:"guest",icon:"👤",title:"Guest",desc:"Just exploring"},
 ];
+
+function getRoleLabel(u){
+  if(u.role==="superadmin") return "Super Admin";
+  if(u.role==="orgadmin") return "Org Admin";
+  if(u.userType==="officer") return "Officer";
+  if(u.userType==="both") return "Org + Volunteer";
+  if(u.userType==="volunteer_only") return "Volunteer Only";
+  if(u.userType==="guest") return "Guest";
+  return "Member";
+}
 
 function RolePicker({value,onChange}){
   return(
@@ -274,51 +282,51 @@ function RolePicker({value,onChange}){
   );
 }
 
-function getRoleLabel(user){
-  if(user.role==="superadmin") return "Super Admin";
-  if(user.role==="orgadmin") return "Org Admin";
-  if(user.userType==="officer") return "Officer";
-  if(user.userType==="both") return "Org + Volunteer";
-  if(user.userType==="volunteer_only") return "Volunteer Only";
-  if(user.userType==="guest") return "Guest";
-  return "Member";
+function OrgSearchInput({value,onChange}){
+  const [q,setQ]=useState(value||"");
+  const [open,setOpen]=useState(false);
+  const filtered=AAMU_ORGS.filter(o=>o.toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  function pick(o){setQ(o);onChange(o);setOpen(false);}
+  return(
+    <div className="org-search-wrap">
+      <input placeholder="Search or type your org name..." value={q}
+        onChange={e=>{setQ(e.target.value);onChange(e.target.value);setOpen(true);}}
+        onFocus={()=>setOpen(true)} onBlur={()=>setTimeout(()=>setOpen(false),150)}/>
+      {open&&q.length>0&&filtered.length>0&&(
+        <div className="org-dropdown">
+          {filtered.map(o=><div key={o} className="org-option" onMouseDown={()=>pick(o)}>{o}</div>)}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function Navbar({page,setPage,user,onLogout,onLogin}){
-  const [open,setOpen]=useState(false);
+  const [mob,setMob]=useState(false);
+  const pages=["home","about","services","resources","contact"];
   return(
     <>
-      <div className="top-bar">Registered Student Organization (RSO) Tracker · Alabama Agricultural and Mechanical University</div>
+      <div className="top-bar">RSO Tracker · Alabama Agricultural and Mechanical University</div>
       <nav className="nav">
-        <div className="nav-logo" onClick={()=>{setPage("home");setOpen(false);}}>
-          <img src={IMG_LOGO} alt="AAMU" />
-          RSO Tracker
+        <div className="nav-logo" onClick={()=>setPage("home")}>
+          <img src={IMG_LOGO} alt="AAMU"/>RSO Tracker
         </div>
-        <button className="hamburger" onClick={()=>setOpen(o=>!o)}>☰</button>
-        <div className={"nav-links"+(open?" open":"")}>
-          {["home","about","services","contact"].map(p=>(
-            <button key={p} className={"nav-link"+(page===p?" active":"")} onClick={()=>{setPage(p);setOpen(false);}}>
-              {p.charAt(0).toUpperCase()+p.slice(1)}
-            </button>
-          ))}
-          {user&&<button className={"nav-link"+(page==="dashboard"?" active":"")} onClick={()=>{setPage("dashboard");setOpen(false);}}>Dashboard</button>}
+        <div className="nav-links">
+          {pages.map(p=><button key={p} className={"nav-link"+(page===p?" active":"")} onClick={()=>setPage(p)}>{p.charAt(0).toUpperCase()+p.slice(1)}</button>)}
+          {user&&<button className={"nav-link"+(page==="dashboard"?" active":"")} onClick={()=>setPage("dashboard")}>Dashboard</button>}
         </div>
         <div className="nav-right">
-          {user?(
-            <>
-              <div style={{cursor:"pointer"}} onClick={()=>{setPage("dashboard");setOpen(false);}}>
-                <AvatarUI user={user} size={36} />
-              </div>
-              <button className="nav-btn" onClick={onLogout}>Sign out</button>
-            </>
-          ):(
-            <>
-              <button className="nav-btn" onClick={()=>onLogin("login")}>Sign in</button>
-              <button className="nav-btn solid" onClick={()=>onLogin("signup")}>Join</button>
-            </>
-          )}
+          {user?(<><div style={{cursor:"pointer"}} onClick={()=>setPage("dashboard")}><AvatarUI user={user} size={34}/></div><button className="nav-btn" onClick={onLogout}>Sign out</button></>)
+          :(<><button className="nav-btn" onClick={()=>onLogin("login")}>Sign in</button><button className="nav-btn solid" onClick={()=>onLogin("signup")}>Join</button></>)}
+          <button className="hamburger" onClick={()=>setMob(o=>!o)}>☰</button>
         </div>
       </nav>
+      {mob&&(
+        <div style={{background:"#4A1018",padding:"10px",position:"sticky",top:64,zIndex:99,boxShadow:"0 4px 12px rgba(0,0,0,.2)"}}>
+          {pages.map(p=><button key={p} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 14px",color:"rgba(255,255,255,.85)",background:"none",border:"none",cursor:"pointer",fontSize:"14px"}} onClick={()=>{setPage(p);setMob(false);}}>{p.charAt(0).toUpperCase()+p.slice(1)}</button>)}
+          {user&&<button style={{display:"block",width:"100%",textAlign:"left",padding:"10px 14px",color:"rgba(255,255,255,.85)",background:"none",border:"none",cursor:"pointer",fontSize:"14px"}} onClick={()=>{setPage("dashboard");setMob(false);}}>Dashboard</button>}
+        </div>
+      )}
     </>
   );
 }
@@ -327,20 +335,15 @@ function HomePage({setPage,user,onLogin}){
   return(
     <div>
       <div className="hero">
-        <div className="hero-bg" style={{backgroundImage:`url(${IMG_HERO})`}} />
-        <div className="hero-overlay" />
+        <div className="hero-bg" style={{backgroundImage:`url(${IMG_HERO})`}}/>
+        <div className="hero-overlay"/>
         <div className="hero-content">
-          <div className="hero-badge">
-            <img src={IMG_LOGO} alt="" style={{width:20,height:20,borderRadius:4}} />
-            Alabama Agricultural and Mechanical University
-          </div>
-          <h1>Track Every Meeting.<br /><span>Log Every Hour.</span></h1>
-          <p>The official attendance and volunteer experience platform for AAMU Registered Student Organizations — built to help students prove their involvement.</p>
+          <div className="hero-badge"><img src={IMG_LOGO} alt="" style={{width:18,height:18,borderRadius:4}}/>Alabama Agricultural and Mechanical University</div>
+          <h1>Track Every Meeting.<br/><span>Log Every Hour.</span></h1>
+          <p>The official attendance and volunteer experience platform for AAMU Registered Student Organizations.</p>
           <div className="hero-btns">
-            {user
-              ?<button className="btn-primary" onClick={()=>setPage("dashboard")}>Go to Dashboard →</button>
-              :<><button className="btn-primary" onClick={()=>onLogin("signup")}>Get Started Free</button><button className="btn-outline" onClick={()=>setPage("about")}>Learn More</button></>
-            }
+            {user?<button className="btn-primary" onClick={()=>setPage("dashboard")}>Go to Dashboard →</button>
+            :<><button className="btn-primary" onClick={()=>onLogin("signup")}>Get Started Free</button><button className="btn-outline" onClick={()=>setPage("about")}>Learn More</button></>}
           </div>
         </div>
         <div className="hero-scroll">Scroll down<span className="bounce">↓</span></div>
@@ -350,65 +353,73 @@ function HomePage({setPage,user,onLogin}){
           <div className="steps-title">How It Works</div>
           <div className="steps-sub">Simple steps to start tracking your involvement.</div>
           <div className="steps-grid">
-            {[
-              {n:"1",t:"Create Account",d:"Pick your role, set up your profile with a photo and bio."},
-              {n:"2",t:"Join Your Org",d:"Your org admin adds you, or track volunteer hours on your own."},
-              {n:"3",t:"Check In",d:"Scan a QR code or open the site to log attendance or hours."},
-              {n:"4",t:"Build Your Record",d:"Download your full participation history anytime."},
-            ].map(s=>(
-              <div key={s.n}>
-                <div className="step-num">{s.n}</div>
-                <div className="step-title">{s.t}</div>
-                <div className="step-desc">{s.d}</div>
-              </div>
+            {[{n:"1",t:"Create Account",d:"Pick your role and set up your profile with photo and bio."},
+              {n:"2",t:"Join Your Org",d:"Select from 75+ AAMU orgs or your admin adds you directly."},
+              {n:"3",t:"Check In",d:"Log attendance or volunteer hours from any device."},
+              {n:"4",t:"Build Your Record",d:"Download your full participation history anytime."}].map(s=>(
+              <div key={s.n}><div className="step-num">{s.n}</div><div className="step-title">{s.t}</div><div className="step-desc">{s.d}</div></div>
             ))}
           </div>
         </div>
       </div>
       <div className="feature-section">
-        <div className="feature-img"><img src={IMG_STUDENTS1} alt="AAMU Students" /><div className="feature-img-overlay" /></div>
+        <div className="feature-img"><img src={IMG_STUDENTS1} alt="AAMU Students"/><div className="feature-img-overlay"/></div>
         <div className="feature-body">
           <div className="feature-tag">Attendance Tracking</div>
           <h2>Attendance Tracking Made Simple</h2>
-          <p>Students check in from their phone in seconds. Officers and admins get a real-time log they can edit, pull, and export anytime — keeping records fair and accurate.</p>
+          <p>Students check in from their phone in seconds. Officers get a real-time editable log they can pull, correct, and export anytime.</p>
           <ul className="feature-checks">
-            <li>Students self check-in instantly from any device</li>
-            <li>Officers can add, remove, or edit attendance records</li>
-            <li>Real-time view of who attended each event</li>
-            <li>Export attendance records as CSV</li>
+            <li>Self check-in instantly from any device</li>
+            <li>Officers can add, remove, or edit records</li>
+            <li>Real-time view of who attended</li>
+            <li>Export attendance as CSV</li>
           </ul>
         </div>
       </div>
       <div className="feature-section rev">
-        <div className="feature-img"><img src={IMG_STUDENTS2} alt="AAMU Community" /><div className="feature-img-overlay" /></div>
+        <div className="feature-img"><img src={IMG_SPIRIT} alt="AAMU Spirit"/><div className="feature-img-overlay"/></div>
         <div className="feature-body">
-          <div className="feature-tag">Volunteer Hours + Org Tracking</div>
+          <div className="feature-tag">Org + Volunteer Tracking</div>
           <h2>Track Both — Or Just One</h2>
-          <p>Students can track org attendance, volunteer hours, or both at once. Choose your role at signup and your dashboard adapts to show exactly what you need.</p>
+          <p>Students can track org attendance, volunteer hours, or both simultaneously. Choose your role at signup and your dashboard adapts.</p>
           <ul className="feature-checks">
-            <li>Log volunteer hours for any service activity</li>
+            <li>Log hours for any volunteer activity</li>
             <li>Attach photo proof to every entry</li>
-            <li>Org + Volunteer role tracks both simultaneously</li>
+            <li>Org + Volunteer role tracks both at once</li>
             <li>Works even without joining an org</li>
           </ul>
         </div>
       </div>
       <div className="feature-section">
-        <div className="feature-img"><img src={IMG_HERO} alt="AAMU Campus" /><div className="feature-img-overlay" /></div>
+        <div className="feature-img"><img src={IMG_AERIAL1} alt="AAMU Campus"/><div className="feature-img-overlay"/></div>
+        <div className="feature-body">
+          <div className="feature-tag">Built for Every AAMU Org</div>
+          <h2>One Platform for 75+ AAMU Organizations</h2>
+          <p>RSO Tracker comes preloaded with every AAMU registered student organization. Students pick from a searchable dropdown at signup.</p>
+          <ul className="feature-checks">
+            <li>75+ AAMU orgs in a searchable list</li>
+            <li>Each org gets its own admin and officer access</li>
+            <li>Super admin oversees all orgs platform-wide</li>
+            <li>Scales to the entire campus</li>
+          </ul>
+        </div>
+      </div>
+      <div className="feature-section rev">
+        <div className="feature-img"><img src={IMG_GRAD} alt="AAMU Graduation"/><div className="feature-img-overlay"/></div>
         <div className="feature-body">
           <div className="feature-tag">Student Profiles</div>
           <h2>Every Student Gets a Profile</h2>
-          <p>When you sign up, you get a personal profile page. Add your photo, bio, major, and social links. Your full participation record lives there too.</p>
+          <p>Sign up and get a personal profile page. Add your photo, bio, major, and social links. Your full participation record lives there too.</p>
           <ul className="feature-checks">
-            <li>Upload a profile photo from your phone or computer</li>
+            <li>Upload a profile photo from phone or computer</li>
             <li>Add a bio and social media links</li>
-            <li>View your complete attendance and volunteer history</li>
-            <li>Edit your profile anytime from the dashboard</li>
+            <li>View your complete participation history</li>
+            <li>Edit your profile anytime</li>
           </ul>
         </div>
       </div>
       <div className="spirit-strip">
-        <img src={IMG_STUDENTS1} alt="AAMU Spirit" />
+        <img src={IMG_STUDENTS2} alt="AAMU Bulldogs"/>
         <div className="spirit-overlay">
           <div className="spirit-text">Bulldogs. Builders. Believers.</div>
           <div className="spirit-sub">Alabama Agricultural and Mechanical University · Huntsville, Alabama · Est. 1875</div>
@@ -417,25 +428,24 @@ function HomePage({setPage,user,onLogin}){
       <div className="section">
         <div style={{textAlign:"center"}}>
           <div className="section-title" style={{textAlign:"center"}}>Everything Your Org Needs</div>
-          <p className="section-sub" style={{textAlign:"center",margin:"0 auto 44px"}}>Powerful tools for every member, officer, and admin.</p>
+          <p className="section-sub" style={{textAlign:"center",margin:"0 auto 40px"}}>Powerful tools for every member, officer, and admin.</p>
         </div>
         <div className="card-grid">
-          {[
-            {icon:"📋",title:"Event Attendance",desc:"Self check-in or officer check-in with real-time editable logs."},
+          {[{icon:"📋",title:"Event Attendance",desc:"Self check-in or officer check-in with real-time editable logs."},
             {icon:"🤝",title:"Volunteer Logging",desc:"Track hours, add descriptions, upload photo proof."},
             {icon:"✏️",title:"Editable Records",desc:"Officers can fairly add, remove, or edit any attendance record."},
             {icon:"🌟",title:"Org + Volunteer Mode",desc:"Track both org attendance and volunteer hours simultaneously."},
             {icon:"👤",title:"Student Profiles",desc:"Photo, bio, social links, and your full participation record."},
-            {icon:"📱",title:"QR Code Ready",desc:"Mobile-optimized so members can check in by scanning a QR code."},
+            {icon:"📱",title:"Mobile Friendly",desc:"Works great on phone — dashboard has a slide-in menu on mobile."},
           ].map((f,i)=>(
             <div className="card" key={i}><div className="card-icon">{f.icon}</div><h3>{f.title}</h3><p>{f.desc}</p></div>
           ))}
         </div>
       </div>
       <div className="photo-grid">
-        <img src={IMG_STUDENTS2} alt="AAMU Students" />
-        <img src={IMG_HERO} alt="AAMU Campus" />
-        <img src={IMG_STUDENTS1} alt="AAMU Bulldogs" />
+        <img src={IMG_SCIENCE} alt="AAMU Building"/>
+        <img src={IMG_STUDY} alt="AAMU Student"/>
+        <img src={IMG_AERIAL2} alt="AAMU Aerial"/>
       </div>
       <div className="cta-banner">
         <h2>Ready to get your organization on board?</h2>
@@ -443,7 +453,8 @@ function HomePage({setPage,user,onLogin}){
         {!user&&<button className="btn-primary" onClick={()=>onLogin("signup")}>Create Your Account Free</button>}
       </div>
       <div className="footer">
-        <strong>AAMU RSO Tracker</strong> · Alabama Agricultural and Mechanical University<br />
+        <img src={IMG_LOGO} alt="AAMU" style={{width:40,height:40,borderRadius:8,objectFit:"cover",display:"block",margin:"0 auto 12px"}}/>
+        <strong>AAMU RSO Tracker</strong> · Alabama Agricultural and Mechanical University<br/>
         <span style={{marginTop:6,display:"block"}}>Created by Ayoola Akinlawon · <a href="mailto:ahmedakinlawon06@gmail.com" style={{color:"#FFB3BE"}}>ahmedakinlawon06@gmail.com</a></span>
       </div>
     </div>
@@ -453,40 +464,22 @@ function HomePage({setPage,user,onLogin}){
 function AboutPage(){
   return(
     <div>
-      <div className="page-hero"><div className="page-hero-content"><h1>About RSO Tracker</h1><p>Built for Alabama A&M student organizations by a student who understands the need.</p></div></div>
+      <div className="page-hero">
+        <div style={{position:"absolute",inset:0,backgroundImage:`url(${IMG_SHIELD})`,backgroundSize:"cover",backgroundPosition:"center",opacity:.08}}/>
+        <div className="page-hero-content"><h1>About RSO Tracker</h1><p>Built for Alabama A&M student organizations by a student who understands the need.</p></div>
+      </div>
       <div className="section" style={{maxWidth:860}}>
-        <div style={{display:"grid",gap:20}}>
-          {[
-            {icon:"💡",title:"The Problem",body:"Student organizations at AAMU have no easy way to track who attended events, log volunteer hours, or produce verifiable proof of participation. RSO Tracker fixes that with a free platform built for our campus."},
-            {icon:"🎯",title:"Our Vision",body:"RSO Tracker is built to scale to every registered student organization on AAMU campus — giving every student org a professional platform to manage participation and help members prove their dedication."},
-            {icon:"👤",title:"Who Built This",body:"RSO Tracker was created by Ayoola Akinlawon, a Senior Accounting major at Alabama A&M University, with the goal of making student involvement tracking accessible to every organization on campus."},
+        <div style={{display:"grid",gap:18}}>
+          {[{icon:"💡",title:"The Problem",body:"Student organizations at AAMU have no easy way to track who attended events, log volunteer hours, or produce verifiable proof of participation. RSO Tracker fixes that with a free platform built for our campus."},
+            {icon:"🎯",title:"Our Vision",body:"RSO Tracker is built to scale to every registered student organization on AAMU campus — giving every org a professional platform to manage participation and help members prove their dedication."},
+            {icon:"👤",title:"Who Built This",body:"RSO Tracker was created by Ayoola Akinlawon, a Senior Accounting major at Alabama A&M University, with the goal of making student involvement tracking accessible to every organization on campus."}
           ].map(c=>(
-            <div className="card" key={c.title} style={{padding:"28px 32px"}}>
-              <div style={{fontSize:32,marginBottom:12}}>{c.icon}</div>
-              <h3 style={{fontSize:18,marginBottom:12}}>{c.title}</h3>
-              <p style={{lineHeight:1.8,color:"#444",fontSize:15}}>{c.body}</p>
+            <div className="card" key={c.title} style={{padding:"24px 28px"}}>
+              <div style={{fontSize:28,marginBottom:10}}>{c.icon}</div>
+              <h3 style={{fontSize:16,marginBottom:10}}>{c.title}</h3>
+              <p style={{lineHeight:1.8,color:"#444",fontSize:14}}>{c.body}</p>
             </div>
           ))}
-          <div className="card" style={{padding:"28px 32px"}}>
-            <div style={{fontSize:32,marginBottom:12}}>🔐</div>
-            <h3 style={{fontSize:18,marginBottom:16}}>User Roles</h3>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:12}}>
-              {[
-                {role:"Super Admin",desc:"Full platform access across all orgs."},
-                {role:"Org Admin",desc:"Manages their org events, members, and logs."},
-                {role:"Org Officer",desc:"E-board — can edit and pull attendance records."},
-                {role:"Org + Volunteer",desc:"Tracks both org attendance and volunteer hours."},
-                {role:"Org Member",desc:"Checks in to events and logs hours."},
-                {role:"Volunteer Only",desc:"Logs volunteer hours without joining an org."},
-                {role:"Guest",desc:"Exploring the platform."},
-              ].map(r=>(
-                <div key={r.role} style={{padding:12,background:OFF_WHITE,borderRadius:10}}>
-                  <div style={{fontWeight:700,fontSize:12,color:MAROON,marginBottom:4}}>{r.role}</div>
-                  <div style={{fontSize:11,color:TEXT_MUTED,lineHeight:1.5}}>{r.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
       <div className="footer"><strong>AAMU RSO Tracker</strong> · Alabama Agricultural and Mechanical University</div>
@@ -498,17 +491,13 @@ function ServicesPage(){
   const [openIdx,setOpenIdx]=useState(null);
   return(
     <div>
-      <div className="page-hero"><div className="page-hero-content"><h1>Our Services</h1><p>Every feature your organization needs — click any service to learn more.</p></div></div>
+      <div className="page-hero"><div className="page-hero-content"><h1>Our Services</h1><p>Every feature your organization needs — tap any service to learn more.</p></div></div>
       <div className="section">
-        <p className="section-sub">Tap each service below to expand the details.</p>
         {SERVICES.map((s,i)=>(
           <div className="service-item" key={s.title}>
             <div className="service-header" onClick={()=>setOpenIdx(openIdx===i?null:i)}>
-              <div className="service-icon-wrap" style={{background:s.color}}><span>{s.icon}</span></div>
-              <div className="service-header-text">
-                <div className="service-header-title">{s.title}</div>
-                <div className="service-header-for">For: {s.for}</div>
-              </div>
+              <div className="service-icon-wrap" style={{background:s.color}}>{s.icon}</div>
+              <div className="service-header-text"><div className="service-header-title">{s.title}</div><div className="service-header-for">For: {s.for}</div></div>
               <div className={"service-chevron"+(openIdx===i?" open":"")}>▼</div>
             </div>
             <div className={"service-body"+(openIdx===i?" open":"")}>
@@ -516,6 +505,50 @@ function ServicesPage(){
             </div>
           </div>
         ))}
+      </div>
+      <div className="footer"><strong>AAMU RSO Tracker</strong> · Alabama Agricultural and Mechanical University</div>
+    </div>
+  );
+}
+
+function ResourcesPage(){
+  return(
+    <div>
+      <div className="page-hero">
+        <div style={{position:"absolute",inset:0,backgroundImage:`url(${IMG_SCIENCE})`,backgroundSize:"cover",backgroundPosition:"center",opacity:.1}}/>
+        <div className="page-hero-content"><h1>Resources</h1><p>Everything you need to make the most of RSO Tracker and AAMU student organization life.</p></div>
+      </div>
+      <div className="section" style={{maxWidth:860}}>
+        <div className="section-title">Helpful Resources</div>
+        <p className="section-sub">Official documents, guides, and links for AAMU student organizations.</p>
+        {[
+          {icon:"📘",title:"RSO Handbook 2026",desc:"The official AAMU RSO handbook — policies, guidelines, and requirements for all student orgs.",link:"https://www.aamu.edu/campus-life/student-activities/student-organizations/_documents/rso-handbook-2026.pdf",tag:"Official Document"},
+          {icon:"🏫",title:"Student Activities Office",desc:"AAMU's Student Activities page — find information about all campus organizations and upcoming events.",link:"https://www.aamu.edu/campus-life/student-activities/student-organizations/",tag:"AAMU Website"},
+          {icon:"✉️",title:"Contact the Creator",desc:"Have questions or want to onboard your org? Reach out directly to Ayoola Akinlawon.",link:"mailto:ahmedakinlawon06@gmail.com",tag:"Support"},
+        ].map(r=>(
+          <a key={r.title} href={r.link} target="_blank" rel="noreferrer" className="resource-card">
+            <div style={{width:52,height:52,borderRadius:12,background:"#FAF0F2",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,flexShrink:0}}>{r.icon}</div>
+            <div style={{flex:1}}>
+              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6,flexWrap:"wrap"}}>
+                <div style={{fontWeight:700,fontSize:15,color:"#1a1a1a"}}>{r.title}</div>
+                <span style={{background:"#FAF0F2",color:MAROON,fontSize:10,fontWeight:700,padding:"2px 9px",borderRadius:20}}>{r.tag}</span>
+              </div>
+              <div style={{fontSize:13,color:"#8A7070",lineHeight:1.6}}>{r.desc}</div>
+            </div>
+            <div style={{color:MAROON,fontSize:18,flexShrink:0}}>→</div>
+          </a>
+        ))}
+        <div style={{marginTop:40}}>
+          <div className="section-title" style={{fontSize:"1.3rem",marginBottom:10}}>All AAMU Registered Student Organizations</div>
+          <p style={{fontSize:13,color:"#8A7070",marginBottom:20}}>All 75+ organizations below are preloaded in the RSO Tracker signup system.</p>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:8}}>
+            {AAMU_ORGS.filter(o=>o!=="Other (not listed)").map(org=>(
+              <div key={org} style={{background:"#fff",border:"1px solid #E0D8D8",borderRadius:9,padding:"9px 14px",fontSize:13,display:"flex",alignItems:"center",gap:8}}>
+                <span style={{color:MAROON,fontSize:11}}>●</span>{org}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       <div className="footer"><strong>AAMU RSO Tracker</strong> · Alabama Agricultural and Mechanical University</div>
     </div>
@@ -530,26 +563,24 @@ function ContactPage(){
     <div>
       <div className="page-hero"><div className="page-hero-content"><h1>Get in Touch</h1><p>Questions? Want to onboard your org? Reach out directly.</p></div></div>
       <div className="section" style={{maxWidth:900}}>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:40,alignItems:"start"}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:36,alignItems:"start"}}>
           <div>
-            <div style={{background:WHITE,border:`1px solid ${BORDER}`,borderRadius:14,padding:28}}>
-              <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:24,paddingBottom:20,borderBottom:`1px solid ${LIGHT_GRAY}`}}>
-                <img src={IMG_LOGO} alt="AAMU" style={{width:52,height:52,borderRadius:10,objectFit:"cover"}} />
-                <div>
-                  <div style={{fontWeight:700,fontSize:16,color:"#1a1a1a"}}>Ayoola Akinlawon</div>
-                  <div style={{fontSize:13,color:TEXT_MUTED}}>Senior Accounting Major · Platform Creator</div>
-                </div>
+            <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:24}}>
+              <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:20,paddingBottom:18,borderBottom:`1px solid ${LIGHT_GRAY}`}}>
+                <img src={IMG_LOGO} alt="AAMU" style={{width:48,height:48,borderRadius:10,objectFit:"cover"}}/>
+                <div><div style={{fontWeight:700,fontSize:15}}>Ayoola Akinlawon</div><div style={{fontSize:12,color:TEXT_MUTED}}>Senior Accounting · Platform Creator</div></div>
               </div>
               {[{icon:"✉️",label:"Email",value:"ahmedakinlawon06@gmail.com"},{icon:"🏫",label:"University",value:"Alabama A&M University"}].map(c=>(
                 <div className="contact-info" key={c.label}>
                   <div className="contact-icon">{c.icon}</div>
-                  <div><div style={{fontSize:12,color:TEXT_MUTED,fontWeight:600}}>{c.label}</div><div style={{fontSize:14,fontWeight:500,color:"#1a1a1a"}}>{c.value}</div></div>
+                  <div><div style={{fontSize:11,color:TEXT_MUTED,fontWeight:600}}>{c.label}</div><div style={{fontSize:13,fontWeight:500}}>{c.value}</div></div>
                 </div>
               ))}
             </div>
-            <div style={{marginTop:16,background:"#FAF0F2",border:`1px solid ${BORDER}`,borderRadius:14,padding:20}}>
-              <div style={{fontWeight:700,fontSize:14,color:MAROON,marginBottom:8}}>Want to bring RSO Tracker to your org?</div>
-              <div style={{fontSize:13,color:"#555",lineHeight:1.7}}>Send a message with your organization name and we will get you set up. RSO Tracker is free for all AAMU student organizations.</div>
+            <div style={{marginTop:14,background:"#EFF6FF",border:"1px solid #BFDBFE",borderRadius:12,padding:18}}>
+              <div style={{fontWeight:700,fontSize:13,color:"#1D4ED8",marginBottom:7}}>📘 RSO Handbook 2026</div>
+              <div style={{fontSize:12,color:"#555",lineHeight:1.7,marginBottom:10}}>Download the official AAMU RSO Handbook for policies and guidelines.</div>
+              <a href="https://www.aamu.edu/campus-life/student-activities/student-organizations/_documents/rso-handbook-2026.pdf" target="_blank" rel="noreferrer" style={{display:"inline-block",background:"#1D4ED8",color:"white",padding:"7px 14px",borderRadius:8,fontSize:12,fontWeight:700,textDecoration:"none"}}>Download PDF →</a>
             </div>
           </div>
           <div className="form-wrap" style={{margin:0}}>
@@ -558,11 +589,11 @@ function ContactPage(){
             {sent&&<div className="success-msg">Message sent! We will be in touch soon.</div>}
             <form onSubmit={handleSend}>
               <div className="form-row">
-                <div className="form-group"><label>Your Name</label><input placeholder="Full name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} /></div>
-                <div className="form-group"><label>Email</label><input type="email" placeholder="your@email.com" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} /></div>
+                <div className="form-group"><label>Your Name</label><input placeholder="Full name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></div>
+                <div className="form-group"><label>Email</label><input type="email" placeholder="your@email.com" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></div>
               </div>
-              <div className="form-group"><label>Subject</label><input placeholder="What is this about?" value={form.subject} onChange={e=>setForm({...form,subject:e.target.value})} /></div>
-              <div className="form-group"><label>Message</label><textarea placeholder="Tell us what you need..." value={form.message} onChange={e=>setForm({...form,message:e.target.value})} /></div>
+              <div className="form-group"><label>Subject</label><input placeholder="What is this about?" value={form.subject} onChange={e=>setForm({...form,subject:e.target.value})}/></div>
+              <div className="form-group"><label>Message</label><textarea placeholder="Tell us what you need..." value={form.message} onChange={e=>setForm({...form,message:e.target.value})}/></div>
               <button type="submit" className="btn-full">Send Message</button>
             </form>
           </div>
@@ -576,36 +607,28 @@ function ContactPage(){
 function AuthPage({mode,onAuth,onSwitch}){
   const [form,setForm]=useState({name:"",email:"",password:"",major:"",orgName:"",userType:"student"});
   const [error,setError]=useState("");
-  function handleSubmit(e){e.preventDefault();setError("");onAuth(mode,form,setError);}
   const needsOrg=form.userType==="student"||form.userType==="officer"||form.userType==="both";
   return(
-    <div style={{minHeight:"80vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"40px 16px",background:"linear-gradient(135deg,rgba(74,16,24,.08),#FAF8F8)"}}>
-      <div className="form-wrap" style={{width:"100%",maxWidth:580}}>
-        <div style={{textAlign:"center",marginBottom:20}}>
-          <img src={IMG_LOGO} alt="AAMU" style={{width:56,height:56,borderRadius:12,objectFit:"cover",marginBottom:12}} />
-        </div>
+    <div style={{minHeight:"80vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"36px 14px",background:"linear-gradient(135deg,rgba(74,16,24,.08),#FAF8F8)"}}>
+      <div className="form-wrap" style={{width:"100%",maxWidth:560}}>
+        <div style={{textAlign:"center",marginBottom:18}}><img src={IMG_LOGO} alt="AAMU" style={{width:52,height:52,borderRadius:11,objectFit:"cover",marginBottom:10}}/></div>
         <div className="form-title" style={{textAlign:"center"}}>{mode==="login"?"Welcome back":"Create your account"}</div>
-        <div className="form-sub" style={{textAlign:"center"}}>{mode==="login"?"Sign in to access your RSO dashboard.":"Join Alabama A&M RSO Tracker."}</div>
+        <div className="form-sub" style={{textAlign:"center"}}>{mode==="login"?"Sign in to your RSO dashboard.":"Join Alabama A&M RSO Tracker."}</div>
         {error&&<div className="error-msg">{error}</div>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={e=>{e.preventDefault();setError("");onAuth(mode,form,setError);}}>
           {mode==="signup"&&(
             <>
-              <div className="form-group">
-                <label>I am a...</label>
-                <RolePicker value={form.userType} onChange={v=>setForm({...form,userType:v})} />
-              </div>
-              <div className="form-group"><label>Full Name</label><input placeholder="Your full name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required /></div>
-              <div className="form-group"><label>Major and Year</label><input placeholder="e.g. Junior Biology" value={form.major} onChange={e=>setForm({...form,major:e.target.value})} /></div>
-              {needsOrg&&<div className="form-group"><label>Student Organization (optional)</label><input placeholder="e.g. Pre-Alumni Association, NSBE, SGA" value={form.orgName} onChange={e=>setForm({...form,orgName:e.target.value})} /></div>}
+              <div className="form-group"><label>I am a...</label><RolePicker value={form.userType} onChange={v=>setForm({...form,userType:v})}/></div>
+              <div className="form-group"><label>Full Name</label><input placeholder="Your full name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></div>
+              <div className="form-group"><label>Major and Year</label><input placeholder="e.g. Junior Biology" value={form.major} onChange={e=>setForm({...form,major:e.target.value})}/></div>
+              {needsOrg&&<div className="form-group"><label>Student Organization (optional)</label><OrgSearchInput value={form.orgName} onChange={v=>setForm({...form,orgName:v})}/><div style={{fontSize:11,color:TEXT_MUTED,marginTop:5}}>Search from 75+ AAMU orgs or type your own.</div></div>}
             </>
           )}
-          <div className="form-group"><label>Email</label><input type="email" placeholder="your@email.com" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required /></div>
-          <div className="form-group"><label>Password</label><PwInput value={form.password} onChange={e=>setForm({...form,password:e.target.value})} /></div>
+          <div className="form-group"><label>Email</label><input type="email" placeholder="your@email.com" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required/></div>
+          <div className="form-group"><label>Password</label><PwInput value={form.password} onChange={e=>setForm({...form,password:e.target.value})}/></div>
           <button type="submit" className="btn-full">{mode==="login"?"Sign In":"Create Account"}</button>
         </form>
-        <div className="form-switch">
-          {mode==="login"?<>No account? <a onClick={()=>onSwitch("signup")}>Sign up</a></>:<>Have an account? <a onClick={()=>onSwitch("login")}>Sign in</a></>}
-        </div>
+        <div className="form-switch">{mode==="login"?<>No account? <a onClick={()=>onSwitch("signup")}>Sign up</a></>:<>Have an account? <a onClick={()=>onSwitch("login")}>Sign in</a></>}</div>
       </div>
     </div>
   );
@@ -617,129 +640,82 @@ function ProfilePage({user,data,setData}){
   const [pwForm,setPwForm]=useState({current:"",next:"",confirm:""});
   const [pwError,setPwError]=useState("");
   const [pwSuccess,setPwSuccess]=useState("");
-  const [saveSuccess,setSaveSuccess]=useState("");
+  const [msg,setMsg]=useState("");
   const [tab,setTab]=useState("info");
   const fileRef=useRef();
   const myLogs=data.logs.filter(l=>l.userId===user.id);
   const volHours=myLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
   const myOrg=data.orgs.find(o=>o.id===user.orgId);
-
-  function saveProfile(){
-    const updated={...data,users:data.users.map(u=>u.id===user.id?{...u,...form}:u)};
-    setData(updated);saveData(updated);
-    user.name=form.name;user.major=form.major;user.bio=form.bio;user.instagram=form.instagram;user.linkedin=form.linkedin;
-    setEditing(false);setSaveSuccess("Profile saved!");setTimeout(()=>setSaveSuccess(""),3000);
-  }
-
-  function handlePhoto(e){
-    const file=e.target.files[0];if(!file)return;
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      const updated={...data,users:data.users.map(u=>u.id===user.id?{...u,photo:ev.target.result}:u)};
-      setData(updated);saveData(updated);user.photo=ev.target.result;
-      setSaveSuccess("Photo updated!");setTimeout(()=>setSaveSuccess(""),3000);
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function changePw(e){
-    e.preventDefault();setPwError("");setPwSuccess("");
-    if(pwForm.current!==user.password){setPwError("Current password is incorrect.");return;}
-    if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}
-    if(pwForm.next!==pwForm.confirm){setPwError("New passwords do not match.");return;}
-    const updated={...data,users:data.users.map(u=>u.id===user.id?{...u,password:pwForm.next}:u)};
-    setData(updated);saveData(updated);user.password=pwForm.next;
-    setPwForm({current:"",next:"",confirm:""});setPwSuccess("Password updated!");
-  }
-
+  function saveProfile(){const u={...data,users:data.users.map(u2=>u2.id===user.id?{...u2,...form}:u2)};setData(u);saveData(u);Object.assign(user,form);setEditing(false);setMsg("Profile saved!");setTimeout(()=>setMsg(""),3000);}
+  function handlePhoto(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{const u={...data,users:data.users.map(u2=>u2.id===user.id?{...u2,photo:ev.target.result}:u2)};setData(u);saveData(u);user.photo=ev.target.result;setMsg("Photo updated!");setTimeout(()=>setMsg(""),3000);};r.readAsDataURL(file);}
+  function changePw(e){e.preventDefault();setPwError("");setPwSuccess("");if(pwForm.current!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}const u={...data,users:data.users.map(u2=>u2.id===user.id?{...u2,password:pwForm.next}:u2)};setData(u);saveData(u);user.password=pwForm.next;setPwForm({current:"",next:"",confirm:""});setPwSuccess("Password updated!");}
   return(
-    <div style={{maxWidth:760,margin:"0 auto"}}>
+    <div style={{maxWidth:720,margin:"0 auto"}}>
       <div className="page-title">My Profile</div>
       <div className="page-sub">Manage your photo, bio, and account settings.</div>
-      {saveSuccess&&<div className="success-msg">{saveSuccess}</div>}
-
-      <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:16,overflow:"hidden",marginBottom:24}}>
+      {msg&&<div className="success-msg">{msg}</div>}
+      <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:16,overflow:"hidden",marginBottom:22}}>
         <div className="profile-header-bg">
           <div style={{position:"relative",cursor:"pointer"}} onClick={()=>fileRef.current.click()}>
-            <AvatarUI user={user} size={80} />
-            <div style={{position:"absolute",bottom:0,right:0,background:MAROON,color:"white",borderRadius:"50%",width:26,height:26,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,border:"2px solid white"}}>✏️</div>
-            <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={handlePhoto} />
+            <AvatarUI user={user} size={72}/>
+            <div style={{position:"absolute",bottom:0,right:0,background:MAROON,color:"white",borderRadius:"50%",width:24,height:24,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,border:"2px solid white"}}>✏️</div>
+            <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={handlePhoto}/>
           </div>
-          <div style={{color:"white",flex:1}}>
-            <div style={{fontFamily:"'Playfair Display',serif",fontSize:"1.4rem",fontWeight:700}}>{user.name}</div>
-            <div style={{fontSize:13,color:"rgba(255,255,255,.75)",marginTop:4}}>{user.major||"Alabama A&M University"}</div>
-            <div style={{marginTop:8,display:"flex",gap:8,flexWrap:"wrap"}}>
-              <span style={{background:"rgba(255,255,255,.2)",color:"white",padding:"3px 10px",borderRadius:20,fontSize:12,fontWeight:700}}>{getRoleLabel(user)}</span>
-              {myOrg&&<span style={{fontSize:12,color:"rgba(255,255,255,.7)"}}>📍 {myOrg.name}</span>}
+          <div style={{color:"white",flex:1,minWidth:0}}>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:"1.3rem",fontWeight:700}}>{user.name}</div>
+            <div style={{fontSize:12,color:"rgba(255,255,255,.75)",marginTop:3}}>{user.major||"Alabama A&M University"}</div>
+            <div style={{marginTop:7,display:"flex",gap:7,flexWrap:"wrap"}}>
+              <span style={{background:"rgba(255,255,255,.2)",color:"white",padding:"2px 9px",borderRadius:20,fontSize:11,fontWeight:700}}>{getRoleLabel(user)}</span>
+              {myOrg&&<span style={{fontSize:11,color:"rgba(255,255,255,.7)"}}>📍 {myOrg.name}</span>}
             </div>
           </div>
-          <div style={{display:"flex",gap:20,color:"white",flexShrink:0}}>
-            <div style={{textAlign:"center"}}><div style={{fontSize:"1.4rem",fontWeight:700}}>{myLogs.filter(l=>l.type==="event").length}</div><div style={{fontSize:11,color:"rgba(255,255,255,.65)"}}>Events</div></div>
-            <div style={{textAlign:"center"}}><div style={{fontSize:"1.4rem",fontWeight:700}}>{volHours}</div><div style={{fontSize:11,color:"rgba(255,255,255,.65)"}}>Vol Hrs</div></div>
+          <div style={{display:"flex",gap:18,color:"white",flexShrink:0}}>
+            <div style={{textAlign:"center"}}><div style={{fontSize:"1.3rem",fontWeight:700}}>{myLogs.filter(l=>l.type==="event").length}</div><div style={{fontSize:10,color:"rgba(255,255,255,.65)"}}>Events</div></div>
+            <div style={{textAlign:"center"}}><div style={{fontSize:"1.3rem",fontWeight:700}}>{volHours}</div><div style={{fontSize:10,color:"rgba(255,255,255,.65)"}}>Vol Hrs</div></div>
           </div>
         </div>
-        <div style={{padding:28}}>
+        <div style={{padding:24}}>
           <div className="tabs-row">
             {[{k:"info",l:"Personal Info"},{k:"security",l:"Security"}].map(t=>(
               <button key={t.k} className={"tab-btn"+(tab===t.k?" active":"")} onClick={()=>setTab(t.k)}>{t.l}</button>
             ))}
           </div>
-          {tab==="info"&&(
-            editing?(
-              <div>
-                {saveSuccess&&<div className="success-msg">{saveSuccess}</div>}
-                <div className="form-row">
-                  <div className="form-group"><label>Full Name</label><input value={form.name} onChange={e=>setForm({...form,name:e.target.value})} /></div>
-                  <div className="form-group"><label>Major and Year</label><input placeholder="e.g. Senior Accounting" value={form.major} onChange={e=>setForm({...form,major:e.target.value})} /></div>
-                </div>
-                <div className="form-group"><label>Bio</label><textarea placeholder="Tell your org about yourself..." value={form.bio} onChange={e=>setForm({...form,bio:e.target.value})} style={{minHeight:80}} /></div>
-                <div className="form-row">
-                  <div className="form-group"><label>Instagram (optional)</label><input placeholder="@username" value={form.instagram} onChange={e=>setForm({...form,instagram:e.target.value})} /></div>
-                  <div className="form-group"><label>LinkedIn (optional)</label><input placeholder="linkedin.com/in/..." value={form.linkedin} onChange={e=>setForm({...form,linkedin:e.target.value})} /></div>
-                </div>
-                <div style={{display:"flex",gap:10,marginTop:4}}>
-                  <button className="btn-sm btn-maroon" onClick={saveProfile}>Save Changes</button>
-                  <button className="btn-sm btn-ghost" onClick={()=>setEditing(false)}>Cancel</button>
-                </div>
+          {tab==="info"&&(editing?(
+            <div>
+              <div className="form-row"><div className="form-group"><label>Full Name</label><input value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></div><div className="form-group"><label>Major and Year</label><input placeholder="e.g. Senior Accounting" value={form.major} onChange={e=>setForm({...form,major:e.target.value})}/></div></div>
+              <div className="form-group"><label>Bio</label><textarea placeholder="Tell your org about yourself..." value={form.bio} onChange={e=>setForm({...form,bio:e.target.value})} style={{minHeight:75}}/></div>
+              <div className="form-row"><div className="form-group"><label>Instagram</label><input placeholder="@username" value={form.instagram} onChange={e=>setForm({...form,instagram:e.target.value})}/></div><div className="form-group"><label>LinkedIn</label><input placeholder="linkedin.com/in/..." value={form.linkedin} onChange={e=>setForm({...form,linkedin:e.target.value})}/></div></div>
+              <div style={{display:"flex",gap:9,marginTop:4}}><button className="btn-sm btn-maroon" onClick={saveProfile}>Save Changes</button><button className="btn-sm btn-ghost" onClick={()=>setEditing(false)}>Cancel</button></div>
+            </div>
+          ):(
+            <div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:18,marginBottom:18}}>
+                {[{label:"Full Name",value:user.name},{label:"Email",value:user.email},{label:"Major",value:user.major||"Not set"},{label:"Organization",value:myOrg?.name||"Not assigned yet"}].map(f=>(
+                  <div key={f.label}><div style={{fontSize:10,fontWeight:700,color:TEXT_MUTED,textTransform:"uppercase",letterSpacing:".06em",marginBottom:3}}>{f.label}</div><div style={{fontSize:14,color:"#1a1a1a",fontWeight:500}}>{f.value}</div></div>
+                ))}
               </div>
-            ):(
-              <div>
-                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:20,marginBottom:20}}>
-                  {[{label:"Full Name",value:user.name},{label:"Email",value:user.email},{label:"Major",value:user.major||"Not set"},{label:"Organization",value:myOrg?.name||"Not assigned yet"}].map(f=>(
-                    <div key={f.label}>
-                      <div style={{fontSize:11,fontWeight:700,color:TEXT_MUTED,textTransform:"uppercase",letterSpacing:".06em",marginBottom:4}}>{f.label}</div>
-                      <div style={{fontSize:15,color:"#1a1a1a",fontWeight:500}}>{f.value}</div>
-                    </div>
-                  ))}
-                </div>
-                {user.bio&&<div style={{marginBottom:16}}><div style={{fontSize:11,fontWeight:700,color:TEXT_MUTED,textTransform:"uppercase",letterSpacing:".06em",marginBottom:6}}>Bio</div><div style={{fontSize:14,color:"#444",lineHeight:1.7}}>{user.bio}</div></div>}
-                {(user.instagram||user.linkedin)&&(
-                  <div style={{display:"flex",gap:12,marginBottom:20,flexWrap:"wrap"}}>
-                    {user.instagram&&<span style={{fontSize:13,color:MAROON,fontWeight:600}}>📸 {user.instagram}</span>}
-                    {user.linkedin&&<span style={{fontSize:13,color:MAROON,fontWeight:600}}>💼 LinkedIn</span>}
-                  </div>
-                )}
-                <button className="btn-sm btn-maroon" onClick={()=>setEditing(true)}>Edit Profile</button>
-              </div>
-            )
-          )}
+              {user.bio&&<div style={{marginBottom:14}}><div style={{fontSize:10,fontWeight:700,color:TEXT_MUTED,textTransform:"uppercase",letterSpacing:".06em",marginBottom:5}}>Bio</div><div style={{fontSize:13,color:"#444",lineHeight:1.7}}>{user.bio}</div></div>}
+              {(user.instagram||user.linkedin)&&<div style={{display:"flex",gap:10,marginBottom:18,flexWrap:"wrap"}}>{user.instagram&&<span style={{fontSize:12,color:MAROON,fontWeight:600}}>📸 {user.instagram}</span>}{user.linkedin&&<span style={{fontSize:12,color:MAROON,fontWeight:600}}>💼 LinkedIn</span>}</div>}
+              <button className="btn-sm btn-maroon" onClick={()=>setEditing(true)}>Edit Profile</button>
+            </div>
+          ))}
           {tab==="security"&&(
-            <div style={{maxWidth:400}}>
-              <div style={{fontWeight:700,fontSize:15,marginBottom:16}}>Change Password</div>
+            <div style={{maxWidth:380}}>
+              <div style={{fontWeight:700,fontSize:14,marginBottom:14}}>Change Password</div>
               {pwError&&<div className="error-msg">{pwError}</div>}
               {pwSuccess&&<div className="success-msg">{pwSuccess}</div>}
               <form onSubmit={changePw}>
-                <div className="form-group"><label>Current Password</label><PwInput value={pwForm.current} onChange={e=>setPwForm({...pwForm,current:e.target.value})} /></div>
-                <div className="form-group"><label>New Password</label><PwInput value={pwForm.next} onChange={e=>setPwForm({...pwForm,next:e.target.value})} /></div>
-                <div className="form-group"><label>Confirm New Password</label><PwInput value={pwForm.confirm} onChange={e=>setPwForm({...pwForm,confirm:e.target.value})} /></div>
+                <div className="form-group"><label>Current Password</label><PwInput value={pwForm.current} onChange={e=>setPwForm({...pwForm,current:e.target.value})}/></div>
+                <div className="form-group"><label>New Password</label><PwInput value={pwForm.next} onChange={e=>setPwForm({...pwForm,next:e.target.value})}/></div>
+                <div className="form-group"><label>Confirm New Password</label><PwInput value={pwForm.confirm} onChange={e=>setPwForm({...pwForm,confirm:e.target.value})}/></div>
                 <button type="submit" className="btn-sm btn-maroon" style={{marginTop:4}}>Update Password</button>
               </form>
             </div>
           )}
         </div>
       </div>
-      <div style={{fontWeight:700,fontSize:16,marginBottom:14}}>My Participation Summary</div>
-      <div className="stats-row" style={{maxWidth:520}}>
+      <div style={{fontWeight:700,fontSize:15,marginBottom:12}}>My Participation Summary</div>
+      <div className="stats-row" style={{maxWidth:480}}>
         <div className="stat-card"><div className="stat-num">{myLogs.filter(l=>l.type==="event").length}</div><div className="stat-label">Events Attended</div></div>
         <div className="stat-card"><div className="stat-num">{volHours}</div><div className="stat-label">Volunteer Hours</div></div>
         <div className="stat-card"><div className="stat-num">{myLogs.length}</div><div className="stat-label">Total Logs</div></div>
@@ -753,60 +729,46 @@ function VolunteerLog({user,data,setData}){
   const [success,setSuccess]=useState("");
   const myLogs=data.logs.filter(l=>l.userId===user.id&&l.type==="volunteer"&&!l.eventId);
   const totalHours=myLogs.reduce((s,l)=>s+(l.hours||0),0);
-  function handleSubmit(e){
-    e.preventDefault();if(!form.eventName||!form.date||!form.hours)return;
-    const log={id:`log_${Date.now()}`,userId:user.id,eventId:null,orgId:user.orgId||null,type:"volunteer",hours:Number(form.hours),note:form.description,eventName:form.eventName,date:form.date,proofName:form.proof?.name||null,createdAt:new Date().toISOString()};
-    const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);
-    setForm({eventName:"",date:"",hours:"",description:"",proof:null});
-    setSuccess("Volunteer hours logged!");setTimeout(()=>setSuccess(""),4000);
-  }
+  function handleSubmit(e){e.preventDefault();if(!form.eventName||!form.date||!form.hours)return;const log={id:`log_${Date.now()}`,userId:user.id,eventId:null,orgId:user.orgId||null,type:"volunteer",hours:Number(form.hours),note:form.description,eventName:form.eventName,date:form.date,proofName:form.proof?.name||null,createdAt:new Date().toISOString()};const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);setForm({eventName:"",date:"",hours:"",description:"",proof:null});setSuccess("Volunteer hours logged!");setTimeout(()=>setSuccess(""),4000);}
   return(
     <div>
       <div className="page-title">Log Volunteer Hours</div>
       <div className="page-sub">Record volunteer experiences and build your service portfolio.</div>
-      <div className="stats-row" style={{maxWidth:320,marginBottom:28}}>
+      <div className="stats-row" style={{maxWidth:300,marginBottom:24}}>
         <div className="stat-card"><div className="stat-num">{totalHours}</div><div className="stat-label">Total Hours</div></div>
         <div className="stat-card"><div className="stat-num">{myLogs.length}</div><div className="stat-label">Activities</div></div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:32,alignItems:"start"}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:28,alignItems:"start"}}>
         <div className="form-wrap" style={{margin:0}}>
-          <div className="form-title" style={{fontSize:"1.2rem"}}>Add Entry</div>
+          <div className="form-title" style={{fontSize:"1.15rem"}}>Add Entry</div>
           {success&&<div className="success-msg">{success}</div>}
           <form onSubmit={handleSubmit}>
-            <div className="form-group"><label>Organization or Event Name</label><input placeholder="e.g. Huntsville Food Bank" value={form.eventName} onChange={e=>setForm({...form,eventName:e.target.value})} required /></div>
-            <div className="form-row">
-              <div className="form-group"><label>Date</label><input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})} required /></div>
-              <div className="form-group"><label>Hours</label><input type="number" min="0.5" step="0.5" placeholder="2" value={form.hours} onChange={e=>setForm({...form,hours:e.target.value})} required /></div>
-            </div>
-            <div className="form-group"><label>Description</label><textarea placeholder="What did you do?" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} style={{minHeight:80}} /></div>
+            <div className="form-group"><label>Organization or Event Name</label><input placeholder="e.g. Huntsville Food Bank" value={form.eventName} onChange={e=>setForm({...form,eventName:e.target.value})} required/></div>
+            <div className="form-row"><div className="form-group"><label>Date</label><input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})} required/></div><div className="form-group"><label>Hours</label><input type="number" min="0.5" step="0.5" placeholder="2" value={form.hours} onChange={e=>setForm({...form,hours:e.target.value})} required/></div></div>
+            <div className="form-group"><label>Description</label><textarea placeholder="What did you do?" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} style={{minHeight:75}}/></div>
             <div className="form-group">
               <label>Upload Proof (optional)</label>
               <div className="upload-area" onClick={()=>document.getElementById("vol-proof").click()}>
-                <div style={{fontSize:24}}>📎</div>
+                <div style={{fontSize:22}}>📎</div>
                 <p>{form.proof?form.proof.name:"Click to upload a photo"}</p>
-                <input id="vol-proof" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={e=>setForm({...form,proof:e.target.files[0]})} />
+                <input id="vol-proof" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={e=>setForm({...form,proof:e.target.files[0]})}/>
               </div>
             </div>
             <button type="submit" className="btn-full">Log Hours</button>
           </form>
         </div>
         <div>
-          <div style={{fontWeight:700,fontSize:15,marginBottom:14}}>My Volunteer History</div>
-          {myLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:32}}>No entries yet.</div>
-            :[...myLogs].reverse().map(log=>(
-              <div key={log.id} style={{background:WHITE,border:`1px solid ${BORDER}`,borderRadius:12,padding:16,marginBottom:12}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
-                  <div>
-                    <div style={{fontWeight:700,fontSize:14}}>{log.eventName||"Volunteer Activity"}</div>
-                    <div style={{fontSize:12,color:TEXT_MUTED,marginTop:3}}>{log.date?new Date(log.date+"T12:00").toLocaleDateString():new Date(log.createdAt).toLocaleDateString()}</div>
-                    {log.note&&<div style={{fontSize:13,color:"#666",marginTop:6}}>{log.note}</div>}
-                  </div>
-                  <div style={{flexShrink:0,background:"#F0FDF4",color:"#15803D",fontWeight:700,fontSize:14,padding:"4px 12px",borderRadius:20}}>{log.hours} hrs</div>
-                </div>
-                {log.proofName&&<div style={{fontSize:12,color:MAROON,marginTop:8,fontWeight:600}}>📎 {log.proofName}</div>}
+          <div style={{fontWeight:700,fontSize:14,marginBottom:12}}>My Volunteer History</div>
+          {myLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:28}}>No entries yet.</div>
+          :[...myLogs].reverse().map(log=>(
+            <div key={log.id} style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:11,padding:14,marginBottom:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8}}>
+                <div><div style={{fontWeight:700,fontSize:13}}>{log.eventName||"Volunteer Activity"}</div><div style={{fontSize:11,color:TEXT_MUTED,marginTop:2}}>{log.date?new Date(log.date+"T12:00").toLocaleDateString():new Date(log.createdAt).toLocaleDateString()}</div>{log.note&&<div style={{fontSize:12,color:"#666",marginTop:5}}>{log.note}</div>}</div>
+                <div style={{flexShrink:0,background:"#F0FDF4",color:"#15803D",fontWeight:700,fontSize:13,padding:"3px 10px",borderRadius:20}}>{log.hours} hrs</div>
               </div>
-            ))
-          }
+              {log.proofName&&<div style={{fontSize:11,color:MAROON,marginTop:6,fontWeight:600}}>📎 {log.proofName}</div>}
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -825,116 +787,64 @@ function AttendanceRecords({data,setData,myOrg}){
   const allMembers=data.users.filter(u=>u.orgId===myOrg?.id);
   const attendedIds=attendees.map(l=>l.userId);
   const absent=allMembers.filter(m=>!attendedIds.includes(m.id));
-
   function removeAttendee(logId){const u={...data,logs:data.logs.filter(l=>l.id!==logId)};setData(u);saveData(u);}
   function saveEdit(){const u={...data,logs:data.logs.map(l=>l.id===editLog?{...l,note:editNote}:l)};setData(u);saveData(u);setEditLog(null);}
-  function addAttendee(){
-    if(!addId||!ev)return;
-    const log={id:`log_${Date.now()}`,userId:addId,eventId:ev.id,orgId:ev.orgId,type:ev.type,hours:ev.hours||0,note:"Added by officer",proofName:null,createdAt:new Date().toISOString()};
-    const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);setAddModal(false);setAddId("");
-  }
-  function exportCSV(){
-    if(!ev)return;
-    const rows=[["Name","Email","Major","Time","Note"],...attendees.map(l=>[l.user?.name||"",l.user?.email||"",l.user?.major||"",new Date(l.createdAt).toLocaleString(),l.note||""])];
-    const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,"")+'"').join(",")).join("\n");
-    const blob=new Blob([csv],{type:"text/csv"});
-    const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=(ev.name||"attendance")+".csv";a.click();URL.revokeObjectURL(url);
-  }
+  function addAttendee(){if(!addId||!ev)return;const log={id:`log_${Date.now()}`,userId:addId,eventId:ev.id,orgId:ev.orgId,type:ev.type,hours:ev.hours||0,note:"Added by officer",proofName:null,createdAt:new Date().toISOString()};const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);setAddModal(false);setAddId("");}
+  function exportCSV(){if(!ev)return;const rows=[["Name","Email","Time","Note"],...attendees.map(l=>[l.user?.name||"",l.user?.email||"",new Date(l.createdAt).toLocaleString(),l.note||""])];const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,"")+'"').join(",")).join("\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=(ev.name||"attendance")+".csv";a.click();URL.revokeObjectURL(url);}
   return(
     <div>
       <div className="page-title">Attendance Records</div>
-      <div className="page-sub">Pull, edit, and export attendance for any event. Officers can correct records fairly.</div>
-      <div className="form-group" style={{maxWidth:420,marginBottom:24}}>
+      <div className="page-sub">Pull, edit, and export attendance. Officers can correct records fairly.</div>
+      <div className="form-group" style={{maxWidth:400,marginBottom:22}}>
         <label>Select Event</label>
         <select value={selEv} onChange={e=>setSelEv(e.target.value)}>
           <option value="">-- Choose an event --</option>
-          {orgEvents.map(e=><option key={e.id} value={e.id}>{e.name} ({new Date(e.date+"T12:00").toLocaleDateString()})</option>)}
+          {orgEvents.map(e=><option key={e.id} value={e.id}>{e.name}</option>)}
         </select>
       </div>
-      {ev&&(
-        <>
-          <div className="stats-row" style={{maxWidth:480,marginBottom:20}}>
-            <div className="stat-card"><div className="stat-num">{attendees.length}</div><div className="stat-label">Attended</div></div>
-            <div className="stat-card"><div className="stat-num">{absent.length}</div><div className="stat-label">Absent</div></div>
-            <div className="stat-card"><div className="stat-num">{allMembers.length}</div><div className="stat-label">Total Members</div></div>
-          </div>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14,flexWrap:"wrap",gap:10}}>
-            <div style={{fontWeight:700,fontSize:16}}>Who Attended: {ev.name}</div>
-            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-              <button className="btn-sm btn-maroon" onClick={()=>setAddModal(true)}>+ Add Member</button>
-              <button className="export-btn" onClick={exportCSV}>Download CSV</button>
-            </div>
-          </div>
-          <div className="table-wrap" style={{marginBottom:24}}>
-            <table>
-              <thead><tr><th>Member</th><th>Email</th><th>Time</th><th>Note</th><th>Actions</th></tr></thead>
-              <tbody>
-                {attendees.length===0?<tr><td colSpan={5} style={{textAlign:"center",color:TEXT_MUTED,padding:20}}>No check-ins yet.</td></tr>
-                  :attendees.map(l=>(
-                    <tr key={l.id}>
-                      <td><div style={{display:"flex",alignItems:"center",gap:8}}><AvatarUI user={l.user} size={28}/><span style={{fontWeight:500}}>{l.user?.name||"—"}</span></div></td>
-                      <td style={{color:TEXT_MUTED,fontSize:12}}>{l.user?.email||"—"}</td>
-                      <td>{new Date(l.createdAt).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</td>
-                      <td style={{color:"#666",fontSize:13}}>{l.note||"—"}</td>
-                      <td>
-                        <div style={{display:"flex",gap:6}}>
-                          <button className="btn-sm btn-ghost" style={{fontSize:12,padding:"4px 8px"}} onClick={()=>{setEditLog(l.id);setEditNote(l.note||"");}}>Edit</button>
-                          <button className="btn-sm btn-danger" style={{fontSize:12,padding:"4px 8px"}} onClick={()=>removeAttendee(l.id)}>Remove</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                }
-              </tbody>
-            </table>
-          </div>
-          {absent.length>0&&(
-            <>
-              <div style={{fontWeight:700,fontSize:15,marginBottom:12,color:"#991B1B"}}>Did Not Attend ({absent.length})</div>
-              <div className="table-wrap">
-                <table>
-                  <thead><tr><th>Member</th><th>Email</th><th>Major</th><th></th></tr></thead>
-                  <tbody>{absent.map(m=>(
-                    <tr key={m.id}>
-                      <td><div style={{display:"flex",alignItems:"center",gap:8}}><AvatarUI user={m} size={28}/><span style={{fontWeight:500}}>{m.name}</span></div></td>
-                      <td style={{color:TEXT_MUTED}}>{m.email}</td>
-                      <td style={{color:TEXT_MUTED}}>{m.major||"—"}</td>
-                      <td><button className="btn-sm btn-green" style={{fontSize:12,padding:"4px 8px"}} onClick={()=>{setAddId(m.id);setAddModal(true);}}>Mark Present</button></td>
-                    </tr>
-                  ))}</tbody>
-                </table>
-              </div>
-            </>
-          )}
-        </>
-      )}
-      {editLog&&(
-        <Modal title="Edit Attendance Note" onClose={()=>setEditLog(null)}>
-          <div className="form-group"><label>Note</label><textarea value={editNote} onChange={e=>setEditNote(e.target.value)} style={{minHeight:80}} /></div>
-          <div style={{display:"flex",gap:10}}><button className="btn-sm btn-maroon" onClick={saveEdit}>Save</button><button className="btn-sm btn-ghost" onClick={()=>setEditLog(null)}>Cancel</button></div>
-        </Modal>
-      )}
-      {addModal&&(
-        <Modal title="Add Member to Attendance" onClose={()=>{setAddModal(false);setAddId("");}}>
-          <div className="form-group">
-            <label>Select Member</label>
-            <select value={addId} onChange={e=>setAddId(e.target.value)}>
-              <option value="">-- Select a member --</option>
-              {absent.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}
-            </select>
-          </div>
-          <div style={{display:"flex",gap:10,marginTop:8}}>
-            <button className="btn-sm btn-maroon" onClick={addAttendee}>Confirm</button>
-            <button className="btn-sm btn-ghost" onClick={()=>{setAddModal(false);setAddId("");}}>Cancel</button>
-          </div>
-        </Modal>
-      )}
+      {ev&&(<>
+        <div className="stats-row" style={{maxWidth:440,marginBottom:18}}>
+          <div className="stat-card"><div className="stat-num">{attendees.length}</div><div className="stat-label">Attended</div></div>
+          <div className="stat-card"><div className="stat-num">{absent.length}</div><div className="stat-label">Absent</div></div>
+          <div className="stat-card"><div className="stat-num">{allMembers.length}</div><div className="stat-label">Total</div></div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12,flexWrap:"wrap",gap:8}}>
+          <div style={{fontWeight:700,fontSize:15}}>Who Attended: {ev.name}</div>
+          <div style={{display:"flex",gap:7}}><button className="btn-sm btn-maroon" onClick={()=>setAddModal(true)}>+ Add Member</button><button className="export-btn" onClick={exportCSV}>Download CSV</button></div>
+        </div>
+        <div className="table-wrap" style={{marginBottom:20}}>
+          <table><thead><tr><th>Member</th><th>Time</th><th>Note</th><th>Actions</th></tr></thead>
+          <tbody>{attendees.length===0?<tr><td colSpan={4} style={{textAlign:"center",color:TEXT_MUTED,padding:18}}>No check-ins yet.</td></tr>
+          :attendees.map(l=>(
+            <tr key={l.id}>
+              <td><div style={{display:"flex",alignItems:"center",gap:8}}><AvatarUI user={l.user} size={26}/><span style={{fontWeight:500}}>{l.user?.name||"—"}</span></div></td>
+              <td>{new Date(l.createdAt).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</td>
+              <td style={{color:"#666",fontSize:12}}>{l.note||"—"}</td>
+              <td><div style={{display:"flex",gap:5}}><button className="btn-sm btn-ghost" style={{fontSize:11,padding:"3px 7px"}} onClick={()=>{setEditLog(l.id);setEditNote(l.note||"");}}>Edit</button><button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={()=>removeAttendee(l.id)}>Remove</button></div></td>
+            </tr>
+          ))}</tbody></table>
+        </div>
+        {absent.length>0&&(<>
+          <div style={{fontWeight:700,fontSize:14,marginBottom:10,color:"#991B1B"}}>Did Not Attend ({absent.length})</div>
+          <div className="table-wrap"><table><thead><tr><th>Member</th><th>Email</th><th></th></tr></thead>
+          <tbody>{absent.map(m=>(
+            <tr key={m.id}>
+              <td><div style={{display:"flex",alignItems:"center",gap:8}}><AvatarUI user={m} size={26}/><span style={{fontWeight:500}}>{m.name}</span></div></td>
+              <td style={{color:TEXT_MUTED,fontSize:12}}>{m.email}</td>
+              <td><button className="btn-sm btn-green" style={{fontSize:11,padding:"3px 7px"}} onClick={()=>{setAddId(m.id);setAddModal(true);}}>Mark Present</button></td>
+            </tr>
+          ))}</tbody></table></div>
+        </>)}
+      </>)}
+      {editLog&&(<Modal title="Edit Attendance Note" onClose={()=>setEditLog(null)}><div className="form-group"><label>Note</label><textarea value={editNote} onChange={e=>setEditNote(e.target.value)} style={{minHeight:75}}/></div><div style={{display:"flex",gap:9}}><button className="btn-sm btn-maroon" onClick={saveEdit}>Save</button><button className="btn-sm btn-ghost" onClick={()=>setEditLog(null)}>Cancel</button></div></Modal>)}
+      {addModal&&(<Modal title="Add Member to Attendance" onClose={()=>{setAddModal(false);setAddId("");}}><div className="form-group"><label>Select Member</label><select value={addId} onChange={e=>setAddId(e.target.value)}><option value="">-- Select a member --</option>{absent.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select></div><div style={{display:"flex",gap:9,marginTop:8}}><button className="btn-sm btn-maroon" onClick={addAttendee}>Confirm</button><button className="btn-sm btn-ghost" onClick={()=>{setAddModal(false);setAddId("");}}>Cancel</button></div></Modal>)}
     </div>
   );
 }
 
 function Dashboard({user,data,setData}){
   const [section,setSection]=useState("overview");
+  const [drawerOpen,setDrawerOpen]=useState(false);
   const isSA=user.role==="superadmin";
   const isAdmin=user.role==="orgadmin"||isSA;
   const isOfficer=user.userType==="officer"||isAdmin;
@@ -943,7 +853,6 @@ function Dashboard({user,data,setData}){
   const myOrg=isSA?data.orgs[0]:data.orgs.find(o=>o.id===user.orgId);
   const myLogs=data.logs.filter(l=>l.userId===user.id);
   const volHours=myLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
-
   const nav=[
     {key:"overview",icon:"🏠",label:"Overview"},
     ...(!isVolOnly?[{key:"checkin",icon:"✅",label:"Check In"}]:[]),
@@ -954,45 +863,31 @@ function Dashboard({user,data,setData}){
     ...(isAdmin?[{key:"events",icon:"📅",label:"Manage Events",sec:"Admin"},{key:"members",icon:"👥",label:"Members"},{key:"all-logs",icon:"📋",label:"All Logs"}]:[]),
     ...(isSA?[{key:"orgs",icon:"🏢",label:"Organizations",sec:"Super Admin"},{key:"users",icon:"🔑",label:"All Users"}]:[]),
   ];
-
+  function goTo(k){setSection(k);setDrawerOpen(false);}
   return(
     <div className="dash-layout">
-      <nav className="dash-nav">
-        <div style={{padding:"0 10px 14px",borderBottom:`1px solid ${BORDER}`,marginBottom:10,cursor:"pointer"}} onClick={()=>setSection("profile")}>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
-            <AvatarUI user={user} size={40} />
-            <div>
-              <div style={{fontSize:13,fontWeight:700,color:MAROON}}>{user.name}</div>
-              <div style={{fontSize:11,color:TEXT_MUTED,marginTop:2}}>{getRoleLabel(user)}</div>
-            </div>
-          </div>
-          {myOrg&&<div style={{fontSize:11,color:TEXT_MUTED}}>{myOrg.name}</div>}
+      <div className={"dash-overlay"+(drawerOpen?" open":"")} onClick={()=>setDrawerOpen(false)}/>
+      <nav className={"dash-sidebar"+(drawerOpen?" open":"")}>
+        <div style={{padding:"0 10px 14px",borderBottom:`1px solid ${BORDER}`,marginBottom:10,cursor:"pointer"}} onClick={()=>goTo("profile")}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:7}}><AvatarUI user={user} size={38}/><div><div style={{fontSize:12,fontWeight:700,color:MAROON}}>{user.name}</div><div style={{fontSize:10,color:TEXT_MUTED,marginTop:1}}>{getRoleLabel(user)}</div></div></div>
+          {myOrg&&<div style={{fontSize:10,color:TEXT_MUTED}}>{myOrg.name}</div>}
         </div>
-        {nav.map((item,i)=>{
-          const prev=nav[i-1];const showSec=item.sec&&(!prev||prev.sec!==item.sec);
-          return(
-            <div key={item.key}>
-              {showSec&&<div className="dash-nav-section">{item.sec}</div>}
-              <button className={"dash-nav-item"+(section===item.key?" active":"")} onClick={()=>setSection(item.key)}>
-                <span>{item.icon}</span>{item.label}
-              </button>
-            </div>
-          );
-        })}
+        {nav.map((item,i)=>{const prev=nav[i-1];const showSec=item.sec&&(!prev||prev.sec!==item.sec);return(<div key={item.key}>{showSec&&<div className="dash-nav-section">{item.sec}</div>}<button className={"dash-nav-item"+(section===item.key?" active":"")} onClick={()=>goTo(item.key)}><span>{item.icon}</span>{item.label}</button></div>);})}
       </nav>
       <main className="dash-main">
-        {section==="overview"&&<Overview user={user} data={data} myLogs={myLogs} volHours={volHours} myOrg={myOrg} setSection={setSection} isVolOnly={isVolOnly} isBoth={isBoth} />}
-        {section==="checkin"&&<CheckIn user={user} data={data} setData={setData} myOrg={myOrg} />}
-        {section==="my-logs"&&<MyLogs data={data} myLogs={myLogs} />}
-        {section==="vol-log"&&<VolunteerLog user={user} data={data} setData={setData} />}
-        {section==="profile"&&<ProfilePage user={user} data={data} setData={setData} />}
-        {section==="attendance"&&isOfficer&&<AttendanceRecords data={data} setData={setData} myOrg={myOrg} />}
-        {section==="events"&&isAdmin&&<ManageEvents user={user} data={data} setData={setData} myOrg={myOrg} />}
-        {section==="members"&&isAdmin&&<Members user={user} data={data} setData={setData} myOrg={myOrg} />}
-        {section==="all-logs"&&isAdmin&&<AllLogs data={data} myOrg={myOrg} />}
-        {section==="orgs"&&isSA&&<ManageOrgs user={user} data={data} setData={setData} />}
-        {section==="users"&&isSA&&<AllUsers data={data} />}
+        {section==="overview"&&<Overview user={user} data={data} myLogs={myLogs} volHours={volHours} myOrg={myOrg} setSection={setSection} isVolOnly={isVolOnly} isBoth={isBoth}/>}
+        {section==="checkin"&&<CheckIn user={user} data={data} setData={setData} myOrg={myOrg}/>}
+        {section==="my-logs"&&<MyLogs data={data} myLogs={myLogs}/>}
+        {section==="vol-log"&&<VolunteerLog user={user} data={data} setData={setData}/>}
+        {section==="profile"&&<ProfilePage user={user} data={data} setData={setData}/>}
+        {section==="attendance"&&isOfficer&&<AttendanceRecords data={data} setData={setData} myOrg={myOrg}/>}
+        {section==="events"&&isAdmin&&<ManageEvents user={user} data={data} setData={setData} myOrg={myOrg}/>}
+        {section==="members"&&isAdmin&&<Members user={user} data={data} setData={setData} myOrg={myOrg}/>}
+        {section==="all-logs"&&isAdmin&&<AllLogs data={data} myOrg={myOrg}/>}
+        {section==="orgs"&&isSA&&<ManageOrgs user={user} data={data} setData={setData}/>}
+        {section==="users"&&isSA&&<AllUsers data={data}/>}
       </main>
+      <button className="dash-toggle" onClick={()=>setDrawerOpen(o=>!o)}>{drawerOpen?"✕":"☰"}</button>
     </div>
   );
 }
@@ -1003,8 +898,8 @@ function Overview({user,data,myLogs,volHours,myOrg,setSection,isVolOnly,isBoth})
     <div>
       <div className="page-title">Good to see you, {user.name.split(" ")[0]} 👋</div>
       <div className="page-sub">{myOrg?.name||"AAMU RSO Tracker"} · {new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</div>
-      {isVolOnly&&<div className="info-banner" style={{background:"#F0FDF4",border:"1px solid #BBF7D0",color:"#166534"}}>You are a Volunteer Only member. Log hours and build your personal service record anytime.</div>}
-      {isBoth&&<div className="info-banner" style={{background:"#F3E8FF",border:"1px solid #D8B4FE",color:"#6D28D9"}}>You are tracking both org attendance and volunteer hours. Use Check In for org events and Log Volunteer Hours for outside service activities.</div>}
+      {isVolOnly&&<div className="info-banner" style={{background:"#F0FDF4",border:"1px solid #BBF7D0",color:"#166534"}}>You are a Volunteer Only member. Log hours and build your service record anytime.</div>}
+      {isBoth&&<div className="info-banner" style={{background:"#F3E8FF",border:"1px solid #D8B4FE",color:"#6D28D9"}}>You are tracking both org attendance and volunteer hours. Use Check In for org events and Log Volunteer Hours for outside service.</div>}
       {user.userType==="guest"&&<div className="info-banner" style={{background:"#F9FAFB",border:"1px solid #E5E7EB",color:"#374151"}}>You are exploring as a Guest. Contact an org admin to join and unlock full features.</div>}
       <div className="stats-row">
         <div className="stat-card"><div className="stat-num">{myLogs.filter(l=>l.type==="event").length}</div><div className="stat-label">Events Attended</div></div>
@@ -1012,37 +907,21 @@ function Overview({user,data,myLogs,volHours,myOrg,setSection,isVolOnly,isBoth})
         <div className="stat-card"><div className="stat-num">{myLogs.length}</div><div className="stat-label">Total Logs</div></div>
         {user.role==="superadmin"&&<div className="stat-card"><div className="stat-num">{data.orgs.length}</div><div className="stat-label">Organizations</div></div>}
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:24}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20}}>
         <div>
-          <div style={{fontWeight:700,fontSize:15,marginBottom:12}}>Upcoming Events</div>
-          {upcoming.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,fontSize:14,padding:24}}>No upcoming events yet.</div>
-            :upcoming.map(ev=>(
-              <div className="checkin-card" key={ev.id}>
-                <div>
-                  <div style={{fontWeight:600,fontSize:14}}>{ev.name}</div>
-                  <div style={{fontSize:12,color:TEXT_MUTED,marginTop:3}}>{new Date(ev.date+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})} · <span className={"badge badge-"+ev.type}>{ev.type}</span></div>
-                </div>
-                <button className="btn-sm btn-maroon" onClick={()=>setSection("checkin")}>Check In</button>
-              </div>
-            ))
-          }
+          <div style={{fontWeight:700,fontSize:14,marginBottom:11}}>Upcoming Events</div>
+          {upcoming.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,fontSize:13,padding:20}}>No upcoming events yet.</div>
+          :upcoming.map(ev=>(
+            <div className="checkin-card" key={ev.id}>
+              <div><div style={{fontWeight:600,fontSize:13}}>{ev.name}</div><div style={{fontSize:11,color:TEXT_MUTED,marginTop:2}}>{new Date(ev.date+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})} · <span className={"badge badge-"+ev.type}>{ev.type}</span></div></div>
+              <button className="btn-sm btn-maroon" style={{fontSize:12}} onClick={()=>setSection("checkin")}>Check In</button>
+            </div>
+          ))}
         </div>
         <div>
-          <div style={{fontWeight:700,fontSize:15,marginBottom:12}}>Recent Activity</div>
-          {myLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,fontSize:14,padding:24}}>No activity yet. Start logging!</div>
-            :[...myLogs].reverse().slice(0,4).map(log=>{
-              const ev=data.events.find(e=>e.id===log.eventId);
-              return(
-                <div key={log.id} style={{display:"flex",gap:12,alignItems:"flex-start",marginBottom:14}}>
-                  <div style={{width:34,height:34,borderRadius:9,background:"#FAF0F2",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,flexShrink:0}}>{log.type==="volunteer"?"🤝":"✅"}</div>
-                  <div>
-                    <div style={{fontSize:13,fontWeight:600}}>{ev?.name||log.eventName||"Volunteer log"}</div>
-                    <div style={{fontSize:12,color:TEXT_MUTED}}>{new Date(log.createdAt).toLocaleDateString()}{log.hours?` · ${log.hours} hrs`:""}</div>
-                  </div>
-                </div>
-              );
-            })
-          }
+          <div style={{fontWeight:700,fontSize:14,marginBottom:11}}>Recent Activity</div>
+          {myLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,fontSize:13,padding:20}}>No activity yet. Start logging!</div>
+          :[...myLogs].reverse().slice(0,4).map(log=>{const ev=data.events.find(e=>e.id===log.eventId);return(<div key={log.id} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:12}}><div style={{width:32,height:32,borderRadius:8,background:"#FAF0F2",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,flexShrink:0}}>{log.type==="volunteer"?"🤝":"✅"}</div><div><div style={{fontSize:12,fontWeight:600}}>{ev?.name||log.eventName||"Volunteer log"}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{new Date(log.createdAt).toLocaleDateString()}{log.hours?` · ${log.hours} hrs`:""}</div></div></div>);})}
         </div>
       </div>
     </div>
@@ -1056,50 +935,26 @@ function CheckIn({user,data,setData,myOrg}){
   const [note,setNote]=useState("");
   const orgEvents=data.events.filter(e=>e.orgId===myOrg?.id);
   const myLogIds=data.logs.filter(l=>l.userId===user.id).map(l=>l.eventId);
-  function doCheckIn(ev){
-    const log={id:`log_${Date.now()}`,userId:user.id,eventId:ev.id,orgId:ev.orgId,type:ev.type,hours:ev.hours||0,note,proofName:proof?.name||null,createdAt:new Date().toISOString()};
-    const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);setModal(null);setNote("");setProof(null);
-    setSuccess(`Checked in to ${ev.name}!`);setTimeout(()=>setSuccess(""),4000);
-  }
+  function doCheckIn(ev){const log={id:`log_${Date.now()}`,userId:user.id,eventId:ev.id,orgId:ev.orgId,type:ev.type,hours:ev.hours||0,note,proofName:proof?.name||null,createdAt:new Date().toISOString()};const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);setModal(null);setNote("");setProof(null);setSuccess(`Checked in to ${ev.name}!`);setTimeout(()=>setSuccess(""),4000);}
   return(
     <div>
       <div className="page-title">Check In</div>
       <div className="page-sub">Select an event to log your attendance or volunteer hours.</div>
       {success&&<div className="success-msg">{success}</div>}
-      {!myOrg?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:40}}>You have not been added to an organization yet. Contact your org admin.</div>
-        :orgEvents.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:40}}>No events available yet. Check back soon.</div>
-        :orgEvents.map(ev=>{
-          const done=myLogIds.includes(ev.id);
-          return(
-            <div className="checkin-card" key={ev.id}>
-              <div style={{flex:1}}>
-                <div style={{fontWeight:700,fontSize:15}}>{ev.name}</div>
-                <div style={{fontSize:13,color:TEXT_MUTED,marginTop:4}}>{new Date(ev.date+"T12:00").toLocaleDateString("en-US",{weekday:"short",month:"long",day:"numeric"})} · <span className={"badge badge-"+ev.type}>{ev.type}</span>{ev.hours?` · ${ev.hours} hrs`:""}</div>
-                {ev.description&&<div style={{fontSize:13,color:"#666",marginTop:6}}>{ev.description}</div>}
-              </div>
-              {done?<span style={{fontSize:13,color:"#15803D",fontWeight:600}}>Logged</span>:<button className="btn-sm btn-maroon" onClick={()=>setModal(ev)}>Check In</button>}
-            </div>
-          );
-        })
-      }
-      {modal&&(
-        <Modal title={"Check In: "+modal.name} onClose={()=>setModal(null)}>
-          <div style={{marginBottom:16,padding:12,background:OFF_WHITE,borderRadius:10,fontSize:14,color:"#555"}}>
-            <strong>{modal.type==="volunteer"?"Volunteer Event":"Attendance Event"}</strong>{modal.hours?` · ${modal.hours} hours`:""}
-            {modal.description&&<div style={{marginTop:4}}>{modal.description}</div>}
-          </div>
-          <div className="form-group"><label>Note (optional)</label><textarea placeholder="What did you do?" value={note} onChange={e=>setNote(e.target.value)} style={{minHeight:80}} /></div>
-          <div className="form-group">
-            <label>Upload Proof (optional)</label>
-            <div className="upload-area" onClick={()=>document.getElementById("proof-input").click()}>
-              <div style={{fontSize:28}}>📎</div>
-              <p>{proof?proof.name:"Click to upload"}</p>
-              <input id="proof-input" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={e=>setProof(e.target.files[0])} />
-            </div>
-          </div>
-          <button className="btn-full" onClick={()=>doCheckIn(modal)}>Confirm Check In</button>
-        </Modal>
-      )}
+      {!myOrg?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36}}>You have not been added to an organization yet.</div>
+      :orgEvents.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36}}>No events available yet.</div>
+      :orgEvents.map(ev=>{const done=myLogIds.includes(ev.id);return(
+        <div className="checkin-card" key={ev.id}>
+          <div style={{flex:1}}><div style={{fontWeight:700,fontSize:14}}>{ev.name}</div><div style={{fontSize:12,color:TEXT_MUTED,marginTop:3}}>{new Date(ev.date+"T12:00").toLocaleDateString("en-US",{weekday:"short",month:"long",day:"numeric"})} · <span className={"badge badge-"+ev.type}>{ev.type}</span></div>{ev.description&&<div style={{fontSize:12,color:"#666",marginTop:5}}>{ev.description}</div>}</div>
+          {done?<span style={{fontSize:12,color:"#15803D",fontWeight:600}}>✓ Logged</span>:<button className="btn-sm btn-maroon" onClick={()=>setModal(ev)}>Check In</button>}
+        </div>
+      );})}
+      {modal&&(<Modal title={"Check In: "+modal.name} onClose={()=>setModal(null)}>
+        <div style={{marginBottom:14,padding:11,background:OFF_WHITE,borderRadius:9,fontSize:13,color:"#555"}}><strong>{modal.type==="volunteer"?"Volunteer Event":"Attendance Event"}</strong>{modal.hours?` · ${modal.hours} hours`:""}{modal.description&&<div style={{marginTop:3}}>{modal.description}</div>}</div>
+        <div className="form-group"><label>Note (optional)</label><textarea placeholder="What did you do?" value={note} onChange={e=>setNote(e.target.value)} style={{minHeight:75}}/></div>
+        <div className="form-group"><label>Upload Proof (optional)</label><div className="upload-area" onClick={()=>document.getElementById("proof-input").click()}><div style={{fontSize:26}}>📎</div><p>{proof?proof.name:"Click to upload"}</p><input id="proof-input" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={e=>setProof(e.target.files[0])}/></div></div>
+        <button className="btn-full" onClick={()=>doCheckIn(modal)}>Confirm Check In</button>
+      </Modal>)}
     </div>
   );
 }
@@ -1109,21 +964,15 @@ function MyLogs({data,myLogs}){
   return(
     <div>
       <div className="page-title">My Participation Log</div>
-      <div className="page-sub">Your complete record of events attended and volunteer hours logged.</div>
-      <div className="stats-row" style={{maxWidth:480}}>
+      <div className="page-sub">Your complete record of events and volunteer hours.</div>
+      <div className="stats-row" style={{maxWidth:440}}>
         <div className="stat-card"><div className="stat-num">{myLogs.filter(l=>l.type==="event").length}</div><div className="stat-label">Events</div></div>
         <div className="stat-card"><div className="stat-num">{myLogs.filter(l=>l.type==="volunteer").length}</div><div className="stat-label">Volunteer Entries</div></div>
         <div className="stat-card"><div className="stat-num">{totalHours}</div><div className="stat-label">Total Hours</div></div>
       </div>
-      {myLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:40}}>No logs yet.</div>
-        :<div className="table-wrap"><table>
-          <thead><tr><th>Event or Activity</th><th>Type</th><th>Hours</th><th>Date</th><th>Proof</th></tr></thead>
-          <tbody>{[...myLogs].reverse().map(log=>{
-            const ev=data.events.find(e=>e.id===log.eventId);
-            return(<tr key={log.id}><td style={{fontWeight:500}}>{ev?.name||log.eventName||"Activity"}</td><td><span className={"badge badge-"+log.type}>{log.type}</span></td><td>{log.hours||"—"}</td><td>{new Date(log.createdAt).toLocaleDateString()}</td><td>{log.proofName?<span style={{color:MAROON,fontSize:13,fontWeight:600}}>📎 {log.proofName}</span>:"—"}</td></tr>);
-          })}</tbody>
-        </table></div>
-      }
+      {myLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36}}>No logs yet.</div>
+      :<div className="table-wrap"><table><thead><tr><th>Event or Activity</th><th>Type</th><th>Hours</th><th>Date</th></tr></thead>
+      <tbody>{[...myLogs].reverse().map(log=>{const ev=data.events.find(e=>e.id===log.eventId);return(<tr key={log.id}><td style={{fontWeight:500}}>{ev?.name||log.eventName||"Activity"}</td><td><span className={"badge badge-"+log.type}>{log.type}</span></td><td>{log.hours||"—"}</td><td>{new Date(log.createdAt).toLocaleDateString()}</td></tr>);})}</tbody></table></div>}
     </div>
   );
 }
@@ -1132,46 +981,23 @@ function ManageEvents({user,data,setData,myOrg}){
   const [show,setShow]=useState(false);
   const [form,setForm]=useState({name:"",date:"",type:"event",hours:"",description:""});
   const orgEvents=data.events.filter(e=>e.orgId===myOrg?.id);
-  function addEvent(e){
-    e.preventDefault();
-    const ev={id:`ev_${Date.now()}`,orgId:myOrg.id,name:form.name,date:form.date,type:form.type,hours:form.type==="volunteer"?Number(form.hours):0,description:form.description,createdBy:user.id};
-    const u={...data,events:[...data.events,ev]};setData(u);saveData(u);setShow(false);setForm({name:"",date:"",type:"event",hours:"",description:""});
-  }
+  function addEvent(e){e.preventDefault();const ev={id:`ev_${Date.now()}`,orgId:myOrg.id,name:form.name,date:form.date,type:form.type,hours:form.type==="volunteer"?Number(form.hours):0,description:form.description,createdBy:user.id};const u={...data,events:[...data.events,ev]};setData(u);saveData(u);setShow(false);setForm({name:"",date:"",type:"event",hours:"",description:""});}
   return(
     <div>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8,flexWrap:"wrap",gap:10}}>
-        <div className="page-title">Manage Events</div>
-        <button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ New Event</button>
-      </div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7,flexWrap:"wrap",gap:9}}><div className="page-title">Manage Events</div><button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ New Event</button></div>
       <div className="page-sub">Create events for {myOrg?.name||"your organization"}.</div>
-      {orgEvents.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:40}}>No events yet.</div>
-        :<div className="table-wrap"><table>
-          <thead><tr><th>Name</th><th>Date</th><th>Type</th><th>Attendees</th><th></th></tr></thead>
-          <tbody>{orgEvents.map(ev=>(
-            <tr key={ev.id}>
-              <td style={{fontWeight:500}}>{ev.name}</td>
-              <td>{new Date(ev.date+"T12:00").toLocaleDateString()}</td>
-              <td><span className={"badge badge-"+ev.type}>{ev.type}</span></td>
-              <td>{data.logs.filter(l=>l.eventId===ev.id).length}</td>
-              <td><button className="btn-sm btn-danger" onClick={()=>{const u={...data,events:data.events.filter(x=>x.id!==ev.id),logs:data.logs.filter(l=>l.eventId!==ev.id)};setData(u);saveData(u);}}>Delete</button></td>
-            </tr>
-          ))}</tbody>
-        </table></div>
-      }
-      {show&&(
-        <Modal title="Create New Event" onClose={()=>setShow(false)}>
-          <form onSubmit={addEvent}>
-            <div className="form-group"><label>Event Name</label><input placeholder="e.g. Fall General Meeting" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required /></div>
-            <div className="form-row">
-              <div className="form-group"><label>Date</label><input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})} required /></div>
-              <div className="form-group"><label>Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})}><option value="event">Attendance Event</option><option value="volunteer">Volunteer Activity</option></select></div>
-            </div>
-            {form.type==="volunteer"&&<div className="form-group"><label>Hours</label><input type="number" min="0.5" step="0.5" placeholder="e.g. 2" value={form.hours} onChange={e=>setForm({...form,hours:e.target.value})} /></div>}
-            <div className="form-group"><label>Description</label><textarea placeholder="Brief description..." value={form.description} onChange={e=>setForm({...form,description:e.target.value})} /></div>
-            <button type="submit" className="btn-full">Create Event</button>
-          </form>
-        </Modal>
-      )}
+      {orgEvents.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36}}>No events yet.</div>
+      :<div className="table-wrap"><table><thead><tr><th>Name</th><th>Date</th><th>Type</th><th>Attendees</th><th></th></tr></thead>
+      <tbody>{orgEvents.map(ev=>(<tr key={ev.id}><td style={{fontWeight:500}}>{ev.name}</td><td>{new Date(ev.date+"T12:00").toLocaleDateString()}</td><td><span className={"badge badge-"+ev.type}>{ev.type}</span></td><td>{data.logs.filter(l=>l.eventId===ev.id).length}</td><td><button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={()=>{const u={...data,events:data.events.filter(x=>x.id!==ev.id),logs:data.logs.filter(l=>l.eventId!==ev.id)};setData(u);saveData(u);}}>Delete</button></td></tr>))}</tbody></table></div>}
+      {show&&(<Modal title="Create New Event" onClose={()=>setShow(false)}>
+        <form onSubmit={addEvent}>
+          <div className="form-group"><label>Event Name</label><input placeholder="e.g. Fall General Meeting" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></div>
+          <div className="form-row"><div className="form-group"><label>Date</label><input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})} required/></div><div className="form-group"><label>Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})}><option value="event">Attendance Event</option><option value="volunteer">Volunteer Activity</option></select></div></div>
+          {form.type==="volunteer"&&<div className="form-group"><label>Hours</label><input type="number" min="0.5" step="0.5" placeholder="e.g. 2" value={form.hours} onChange={e=>setForm({...form,hours:e.target.value})}/></div>}
+          <div className="form-group"><label>Description</label><textarea placeholder="Brief description..." value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></div>
+          <button type="submit" className="btn-full">Create Event</button>
+        </form>
+      </Modal>)}
     </div>
   );
 }
@@ -1181,51 +1007,24 @@ function Members({user,data,setData,myOrg}){
   const [form,setForm]=useState({name:"",email:"",role:"student",major:""});
   const [error,setError]=useState("");
   const members=data.users.filter(u=>u.orgId===myOrg?.id);
-  function addMember(e){
-    e.preventDefault();setError("");
-    if(data.users.find(u=>u.email===form.email)){setError("A user with that email already exists.");return;}
-    const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,role:form.role==="orgadmin"?"orgadmin":"student",userType:form.role,orgId:myOrg.id,password:"changeme123",major:form.major,bio:"",photo:null,instagram:"",linkedin:""};
-    const u={...data,users:[...data.users,nu]};setData(u);saveData(u);setShow(false);setForm({name:"",email:"",role:"student",major:""});
-  }
+  function addMember(e){e.preventDefault();setError("");if(data.users.find(u=>u.email===form.email)){setError("A user with that email already exists.");return;}const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,role:form.role==="orgadmin"?"orgadmin":"student",userType:form.role,orgId:myOrg.id,password:"changeme123",major:form.major,bio:"",photo:null,instagram:"",linkedin:""};const u={...data,users:[...data.users,nu]};setData(u);saveData(u);setShow(false);setForm({name:"",email:"",role:"student",major:""});}
   return(
     <div>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8,flexWrap:"wrap",gap:10}}>
-        <div className="page-title">Members</div>
-        <button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ Add Member</button>
-      </div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7,flexWrap:"wrap",gap:9}}><div className="page-title">Members</div><button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ Add Member</button></div>
       <div className="page-sub">Manage members of {myOrg?.name||"your organization"}.</div>
-      <div className="table-wrap"><table>
-        <thead><tr><th>Member</th><th>Email</th><th>Role</th><th>Logs</th><th></th></tr></thead>
-        <tbody>{members.map(m=>(
-          <tr key={m.id}>
-            <td><div style={{display:"flex",alignItems:"center",gap:10}}><AvatarUI user={m} size={32}/><div><div style={{fontWeight:500}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.major||""}</div></div></div></td>
-            <td style={{color:TEXT_MUTED,fontSize:12}}>{m.email}</td>
-            <td><span className={"badge badge-"+(m.userType||m.role)}>{m.userType==="officer"?"Officer":m.role==="orgadmin"?"Admin":m.userType==="both"?"Org+Vol":"Member"}</span></td>
-            <td>{data.logs.filter(l=>l.userId===m.id).length}</td>
-            <td>{m.id!==user.id&&<button className="btn-sm btn-danger" onClick={()=>{const u={...data,users:data.users.filter(x=>x.id!==m.id)};setData(u);saveData(u);}}>Remove</button>}</td>
-          </tr>
-        ))}</tbody>
-      </table></div>
-      {show&&(
-        <Modal title="Add Member" onClose={()=>setShow(false)}>
-          {error&&<div className="error-msg">{error}</div>}
-          <form onSubmit={addMember}>
-            <div className="form-group"><label>Full Name</label><input placeholder="Full name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required /></div>
-            <div className="form-group"><label>Email</label><input type="email" placeholder="email@example.com" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required /></div>
-            <div className="form-group"><label>Major or Year</label><input placeholder="e.g. Junior Biology" value={form.major} onChange={e=>setForm({...form,major:e.target.value})} /></div>
-            <div className="form-group"><label>Role</label>
-              <select value={form.role} onChange={e=>setForm({...form,role:e.target.value})}>
-                <option value="student">Student Member</option>
-                <option value="both">Org + Volunteer Tracker</option>
-                <option value="officer">Org Officer / E-Board</option>
-                <option value="orgadmin">Org Admin</option>
-              </select>
-            </div>
-            <div style={{padding:"10px 14px",background:"#FEF9C3",borderRadius:8,fontSize:13,color:"#92400E",marginBottom:16}}>Default password: changeme123 — they can update it in their profile.</div>
-            <button type="submit" className="btn-full">Add Member</button>
-          </form>
-        </Modal>
-      )}
+      <div className="table-wrap"><table><thead><tr><th>Member</th><th>Role</th><th>Logs</th><th></th></tr></thead>
+      <tbody>{members.map(m=>(<tr key={m.id}><td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={m} size={30}/><div><div style={{fontWeight:500,fontSize:13}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.email}</div></div></div></td><td><span className={"badge badge-"+(m.userType||m.role)}>{m.userType==="officer"?"Officer":m.role==="orgadmin"?"Admin":m.userType==="both"?"Org+Vol":"Member"}</span></td><td>{data.logs.filter(l=>l.userId===m.id).length}</td><td>{m.id!==user.id&&<button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={()=>{const u={...data,users:data.users.filter(x=>x.id!==m.id)};setData(u);saveData(u);}}>Remove</button>}</td></tr>))}</tbody></table></div>
+      {show&&(<Modal title="Add Member" onClose={()=>setShow(false)}>
+        {error&&<div className="error-msg">{error}</div>}
+        <form onSubmit={addMember}>
+          <div className="form-group"><label>Full Name</label><input placeholder="Full name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></div>
+          <div className="form-group"><label>Email</label><input type="email" placeholder="email@example.com" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required/></div>
+          <div className="form-group"><label>Major or Year</label><input placeholder="e.g. Junior Biology" value={form.major} onChange={e=>setForm({...form,major:e.target.value})}/></div>
+          <div className="form-group"><label>Role</label><select value={form.role} onChange={e=>setForm({...form,role:e.target.value})}><option value="student">Student Member</option><option value="both">Org + Volunteer Tracker</option><option value="officer">Org Officer / E-Board</option><option value="orgadmin">Org Admin</option></select></div>
+          <div style={{padding:"9px 12px",background:"#FEF9C3",borderRadius:8,fontSize:12,color:"#92400E",marginBottom:14}}>Default password: changeme123</div>
+          <button type="submit" className="btn-full">Add Member</button>
+        </form>
+      </Modal>)}
     </div>
   );
 }
@@ -1236,20 +1035,13 @@ function AllLogs({data,myOrg}){
     <div>
       <div className="page-title">All Logs</div>
       <div className="page-sub">Complete participation record for {myOrg?.name||"your organization"}.</div>
-      <div className="stats-row" style={{maxWidth:400}}>
+      <div className="stats-row" style={{maxWidth:360}}>
         <div className="stat-card"><div className="stat-num">{orgLogs.length}</div><div className="stat-label">Total Entries</div></div>
         <div className="stat-card"><div className="stat-num">{orgLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0)}</div><div className="stat-label">Volunteer Hours</div></div>
       </div>
-      {orgLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:40}}>No participation logged yet.</div>
-        :<div className="table-wrap"><table>
-          <thead><tr><th>Member</th><th>Event</th><th>Type</th><th>Hours</th><th>Date</th></tr></thead>
-          <tbody>{[...orgLogs].reverse().map(log=>{
-            const m=data.users.find(u=>u.id===log.userId);
-            const ev=data.events.find(e=>e.id===log.eventId);
-            return(<tr key={log.id}><td><div style={{display:"flex",alignItems:"center",gap:8}}><AvatarUI user={m} size={28}/><span style={{fontWeight:500}}>{m?.name||"—"}</span></div></td><td>{ev?.name||log.eventName||"—"}</td><td><span className={"badge badge-"+log.type}>{log.type}</span></td><td>{log.hours||"—"}</td><td>{new Date(log.createdAt).toLocaleDateString()}</td></tr>);
-          })}</tbody>
-        </table></div>
-      }
+      {orgLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36}}>No participation logged yet.</div>
+      :<div className="table-wrap"><table><thead><tr><th>Member</th><th>Event</th><th>Type</th><th>Hours</th><th>Date</th></tr></thead>
+      <tbody>{[...orgLogs].reverse().map(log=>{const m=data.users.find(u=>u.id===log.userId);const ev=data.events.find(e=>e.id===log.eventId);return(<tr key={log.id}><td><div style={{display:"flex",alignItems:"center",gap:7}}><AvatarUI user={m} size={26}/><span style={{fontWeight:500,fontSize:12}}>{m?.name||"—"}</span></div></td><td style={{fontSize:12}}>{ev?.name||log.eventName||"—"}</td><td><span className={"badge badge-"+log.type}>{log.type}</span></td><td>{log.hours||"—"}</td><td style={{fontSize:12}}>{new Date(log.createdAt).toLocaleDateString()}</td></tr>);})}</tbody></table></div>}
     </div>
   );
 }
@@ -1258,45 +1050,22 @@ function ManageOrgs({user,data,setData}){
   const [show,setShow]=useState(false);
   const [form,setForm]=useState({name:"",description:"",adminEmail:""});
   const [error,setError]=useState("");
-  function addOrg(e){
-    e.preventDefault();setError("");
-    const admin=data.users.find(u=>u.email===form.adminEmail);
-    if(!admin){setError("No user found with that email.");return;}
-    const org={id:`org_${Date.now()}`,name:form.name,description:form.description,adminId:admin.id};
-    const users=data.users.map(u=>u.id===admin.id?{...u,role:"orgadmin",orgId:org.id}:u);
-    const u={...data,orgs:[...data.orgs,org],users};setData(u);saveData(u);setShow(false);setForm({name:"",description:"",adminEmail:""});
-  }
+  function addOrg(e){e.preventDefault();setError("");const admin=data.users.find(u=>u.email===form.adminEmail);if(!admin){setError("No user found with that email.");return;}const org={id:`org_${Date.now()}`,name:form.name,description:form.description,adminId:admin.id};const users=data.users.map(u=>u.id===admin.id?{...u,role:"orgadmin",orgId:org.id}:u);const u={...data,orgs:[...data.orgs,org],users};setData(u);saveData(u);setShow(false);setForm({name:"",description:"",adminEmail:""});}
   return(
     <div>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8,flexWrap:"wrap",gap:10}}>
-        <div className="page-title">Organizations</div>
-        <button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ Add Org</button>
-      </div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7,flexWrap:"wrap",gap:9}}><div className="page-title">Organizations</div><button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ Add Org</button></div>
       <div className="page-sub">All RSOs on the platform.</div>
-      {data.orgs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:40}}>No organizations yet.</div>
-        :<div className="card-grid">{data.orgs.map(org=>(
-          <div className="card" key={org.id}>
-            <div style={{fontWeight:700,fontSize:16,marginBottom:6}}>{org.name}</div>
-            <div style={{fontSize:13,color:TEXT_MUTED,marginBottom:14}}>{org.description}</div>
-            <div style={{display:"flex",gap:16,fontSize:13,color:"#555"}}>
-              <span>👥 {data.users.filter(u=>u.orgId===org.id).length} members</span>
-              <span>📋 {data.logs.filter(l=>l.orgId===org.id).length} logs</span>
-            </div>
-            {data.users.find(u=>u.id===org.adminId)&&<div style={{marginTop:10,fontSize:12,color:TEXT_MUTED}}>Admin: {data.users.find(u=>u.id===org.adminId).name}</div>}
-          </div>
-        ))}</div>
-      }
-      {show&&(
-        <Modal title="Add Organization" onClose={()=>setShow(false)}>
-          {error&&<div className="error-msg">{error}</div>}
-          <form onSubmit={addOrg}>
-            <div className="form-group"><label>Organization Name</label><input placeholder="e.g. NSBE Chapter" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required /></div>
-            <div className="form-group"><label>Description</label><textarea placeholder="Brief description..." value={form.description} onChange={e=>setForm({...form,description:e.target.value})} /></div>
-            <div className="form-group"><label>Org Admin Email (registered user)</label><input type="email" placeholder="orgadmin@email.com" value={form.adminEmail} onChange={e=>setForm({...form,adminEmail:e.target.value})} required /></div>
-            <button type="submit" className="btn-full">Create Organization</button>
-          </form>
-        </Modal>
-      )}
+      {data.orgs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36}}>No organizations yet.</div>
+      :<div className="card-grid">{data.orgs.map(org=>(<div className="card" key={org.id}><div style={{fontWeight:700,fontSize:14,marginBottom:5}}>{org.name}</div><div style={{fontSize:12,color:TEXT_MUTED,marginBottom:12}}>{org.description}</div><div style={{display:"flex",gap:14,fontSize:12,color:"#555"}}><span>👥 {data.users.filter(u=>u.orgId===org.id).length} members</span><span>📋 {data.logs.filter(l=>l.orgId===org.id).length} logs</span></div>{data.users.find(u=>u.id===org.adminId)&&<div style={{marginTop:9,fontSize:11,color:TEXT_MUTED}}>Admin: {data.users.find(u=>u.id===org.adminId).name}</div>}</div>))}</div>}
+      {show&&(<Modal title="Add Organization" onClose={()=>setShow(false)}>
+        {error&&<div className="error-msg">{error}</div>}
+        <form onSubmit={addOrg}>
+          <div className="form-group"><label>Organization Name</label><input placeholder="e.g. NSBE Chapter" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></div>
+          <div className="form-group"><label>Description</label><textarea placeholder="Brief description..." value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></div>
+          <div className="form-group"><label>Org Admin Email (registered user)</label><input type="email" placeholder="orgadmin@email.com" value={form.adminEmail} onChange={e=>setForm({...form,adminEmail:e.target.value})} required/></div>
+          <button type="submit" className="btn-full">Create Organization</button>
+        </form>
+      </Modal>)}
     </div>
   );
 }
@@ -1306,13 +1075,8 @@ function AllUsers({data}){
     <div>
       <div className="page-title">All Users</div>
       <div className="page-sub">Everyone registered on the platform.</div>
-      <div className="table-wrap"><table>
-        <thead><tr><th>Member</th><th>Email</th><th>Type</th><th>Organization</th></tr></thead>
-        <tbody>{data.users.map(u=>{
-          const org=data.orgs.find(o=>o.id===u.orgId);
-          return(<tr key={u.id}><td><div style={{display:"flex",alignItems:"center",gap:10}}><AvatarUI user={u} size={32}/><div><div style={{fontWeight:500}}>{u.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{u.major||""}</div></div></div></td><td style={{color:TEXT_MUTED,fontSize:12}}>{u.email}</td><td><span className={"badge badge-"+(u.userType||u.role)}>{getRoleLabel(u)}</span></td><td>{org?.name||"—"}</td></tr>);
-        })}</tbody>
-      </table></div>
+      <div className="table-wrap"><table><thead><tr><th>Member</th><th>Type</th><th>Organization</th></tr></thead>
+      <tbody>{data.users.map(u=>{const org=data.orgs.find(o=>o.id===u.orgId);return(<tr key={u.id}><td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={u} size={30}/><div><div style={{fontWeight:500,fontSize:13}}>{u.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{u.email}</div></div></div></td><td><span className={"badge badge-"+(u.userType||u.role)}>{getRoleLabel(u)}</span></td><td style={{fontSize:12}}>{org?.name||"—"}</td></tr>);})}</tbody></table></div>
     </div>
   );
 }
@@ -1322,31 +1086,22 @@ export default function App(){
   const [page,setPage]=useState("home");
   const [user,setUser]=useState(null);
   const [authMode,setAuthMode]=useState(null);
-
   function handleAuth(mode,form,setError){
-    if(mode==="login"){
-      const found=data.users.find(u=>u.email===form.email&&u.password===form.password);
-      if(!found){setError("Incorrect email or password.");return;}
-      setUser(found);setPage("dashboard");
-    }else{
-      if(!form.name||!form.email||!form.password){setError("Please fill in all required fields.");return;}
-      if(data.users.find(u=>u.email===form.email)){setError("An account with that email already exists.");return;}
-      const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,password:form.password,role:"student",userType:form.userType||"student",orgId:null,major:form.major||"",orgName:form.orgName||"",bio:"",photo:null,instagram:"",linkedin:""};
-      const u={...data,users:[...data.users,nu]};setData(u);saveData(u);setUser(nu);setPage("dashboard");
-    }
+    if(mode==="login"){const found=data.users.find(u=>u.email===form.email&&u.password===form.password);if(!found){setError("Incorrect email or password.");return;}setUser(found);setPage("dashboard");}
+    else{if(!form.name||!form.email||!form.password){setError("Please fill in all required fields.");return;}if(data.users.find(u=>u.email===form.email)){setError("An account with that email already exists.");return;}const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,password:form.password,role:"student",userType:form.userType||"student",orgId:null,major:form.major||"",orgName:form.orgName||"",bio:"",photo:null,instagram:"",linkedin:""};const u={...data,users:[...data.users,nu]};setData(u);saveData(u);setUser(nu);setPage("dashboard");}
   }
-
   return(
     <>
       <style>{css}</style>
-      <Navbar page={page} setPage={setPage} user={user} onLogout={()=>{setUser(null);setPage("home");}} onLogin={m=>{setAuthMode(m);setPage("auth");}} />
-      {page==="home"&&<HomePage setPage={setPage} user={user} onLogin={m=>{setAuthMode(m);setPage("auth");}} />}
-      {page==="about"&&<AboutPage />}
-      {page==="services"&&<ServicesPage />}
-      {page==="contact"&&<ContactPage />}
-      {page==="auth"&&<AuthPage mode={authMode||"login"} onAuth={handleAuth} onSwitch={setAuthMode} />}
-      {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData} />}
-      {page==="dashboard"&&!user&&<AuthPage mode="login" onAuth={handleAuth} onSwitch={setAuthMode} />}
+      <Navbar page={page} setPage={setPage} user={user} onLogout={()=>{setUser(null);setPage("home");}} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>
+      {page==="home"&&<HomePage setPage={setPage} user={user} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>}
+      {page==="about"&&<AboutPage/>}
+      {page==="services"&&<ServicesPage/>}
+      {page==="resources"&&<ResourcesPage/>}
+      {page==="contact"&&<ContactPage/>}
+      {page==="auth"&&<AuthPage mode={authMode||"login"} onAuth={handleAuth} onSwitch={setAuthMode}/>}
+      {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData}/>}
+      {page==="dashboard"&&!user&&<AuthPage mode="login" onAuth={handleAuth} onSwitch={setAuthMode}/>}
     </>
   );
 }
