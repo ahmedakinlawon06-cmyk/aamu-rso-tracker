@@ -327,7 +327,7 @@ function HomePage({setPage,user,onLogin}){
   return(
     <div>
       <div className="hero">
-        <div className="hero-bg" style={{backgroundImage:`url(${IMG_CAMPUS})`}} />
+        <div className="hero-bg" style={{backgroundImage:`url(${IMG_HERO})`}} />
         <div className="hero-overlay" />
         <div className="hero-content">
           <div className="hero-badge">
@@ -394,7 +394,7 @@ function HomePage({setPage,user,onLogin}){
         </div>
       </div>
       <div className="feature-section">
-        <div className="feature-img"><img src={IMG_CAMPUS} alt="AAMU Campus" /><div className="feature-img-overlay" /></div>
+        <div className="feature-img"><img src={IMG_HERO} alt="AAMU Campus" /><div className="feature-img-overlay" /></div>
         <div className="feature-body">
           <div className="feature-tag">Student Profiles</div>
           <h2>Every Student Gets a Profile</h2>
@@ -434,7 +434,7 @@ function HomePage({setPage,user,onLogin}){
       </div>
       <div className="photo-grid">
         <img src={IMG_S1} alt="AAMU Students" />
-        <img src={IMG_CAMPUS} alt="AAMU Campus" />
+        <img src={IMG_HERO} alt="AAMU Campus" />
         <img src={IMG_S2} alt="AAMU Bulldogs" />
       </div>
       <div className="cta-banner">
