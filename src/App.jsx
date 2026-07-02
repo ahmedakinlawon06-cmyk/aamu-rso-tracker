@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const MAROON="#6B1B2A",MAROON_DARK="#4A1018";
 const WHITE="#FFFFFF",OFF_WHITE="#FAF8F8",LIGHT_GRAY="#F3F0F0",BORDER="#E0D8D8",TEXT_MUTED="#8A7070";
@@ -12,13 +12,34 @@ const IMG_FLAG="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+cAAAJJCAIAAABH/d
 
 const OFFICER_CODE="PREALUMNI2025";
 
-const INIT={
-  users:[{id:"u1",name:"Ayoola Akinlawon",email:"ahmedakinlawon06@gmail.com",role:"superadmin",orgId:"org1",password:"admin123",major:"Senior Accounting",userType:"officer",bio:"Platform creator.",photo:null,instagram:"",linkedin:""}],
-  orgs:[{id:"org1",name:"Pre-Alumni Association",description:"AAMU Pre-Alumni Association Member Portal",adminId:"u1"}],
-  events:[],logs:[]
-};
-function loadData(){try{const r=localStorage.getItem("prealumni_v3");if(r)return JSON.parse(r);}catch{}return INIT;}
-function saveData(d){try{localStorage.setItem("prealumni_v3",JSON.stringify(d));}catch{}}
+// ── Supabase ──────────────────────────────────────────────
+const SUPA_URL="https://wqdpiuuhywilizzdlfnv.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxZHBpdXVoeXdpbGl6emRsZm52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5NTc4OTYsImV4cCI6MjA5ODUzMzg5Nn0.c_KSwf5nFJFLChpXb1CskKRSrthDPi3QXcSNCZVk5WA";
+const HEADERS={"Content-Type":"application/json","apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY};
+
+async function dbGet(table,qs=""){
+  const r=await fetch(`${SUPA_URL}/rest/v1/${table}?${qs}&order=created_at.asc`,{headers:HEADERS});
+  return r.ok?r.json():[];
+}
+async function dbInsert(table,row){
+  await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:"POST",headers:{...HEADERS,Prefer:"resolution=merge-duplicates"},body:JSON.stringify(row)});
+}
+async function dbUpdate(table,filter,patch){
+  await fetch(`${SUPA_URL}/rest/v1/${table}?${filter}`,{method:"PATCH",headers:HEADERS,body:JSON.stringify(patch)});
+}
+async function dbDelete(table,filter){
+  await fetch(`${SUPA_URL}/rest/v1/${table}?${filter}`,{method:"DELETE",headers:HEADERS});
+}
+
+// Map DB row → app user object
+function rowToUser(r){return{id:r.id,name:r.name,email:r.email,password:r.password,role:r.role,userType:r.user_type,orgId:r.org_id,major:r.major,classification:r.classification,bio:r.bio,photo:r.photo,instagram:r.instagram,linkedin:r.linkedin,createdAt:r.created_at};}
+function userToRow(u){return{id:u.id,name:u.name,email:u.email,password:u.password,role:u.role,user_type:u.userType,org_id:u.orgId,major:u.major,classification:u.classification,bio:u.bio,photo:u.photo,instagram:u.instagram,linkedin:u.linkedin};}
+function rowToEvent(r){return{id:r.id,orgId:r.org_id,name:r.name,date:r.date,type:r.type,hours:r.hours,description:r.description,openToGuests:r.open_to_guests,createdBy:r.created_by,createdAt:r.created_at};}
+function eventToRow(e){return{id:e.id,org_id:e.orgId,name:e.name,date:e.date,type:e.type,hours:e.hours,description:e.description,open_to_guests:e.openToGuests,created_by:e.createdBy};}
+function rowToLog(r){return{id:r.id,userId:r.user_id,eventId:r.event_id,orgId:r.org_id,type:r.type,hours:r.hours,note:r.note,eventName:r.event_name,date:r.date,proofName:r.proof_name,createdAt:r.created_at};}
+function logToRow(l){return{id:l.id,user_id:l.userId,event_id:l.eventId,org_id:l.orgId,type:l.type,hours:l.hours,note:l.note,event_name:l.eventName,date:l.date,proof_name:l.proofName};}
+
+const INIT={users:[],orgs:[{id:"org1",name:"Pre-Alumni Association"}],events:[],logs:[]};
 const css=`
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -590,7 +611,8 @@ function AuthPage({mode,onAuth,onSwitch}){
             <>
               <div className="form-group"><label>I am a...</label><RolePicker value={form.userType} onChange={v=>setForm({...form,userType:v})}/></div>
               <div className="form-group"><label>Full Name</label><input placeholder="Your full name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></div>
-              <div className="form-group"><label>Major and Year</label><input placeholder="e.g. Junior Biology" value={form.major} onChange={e=>setForm({...form,major:e.target.value})}/></div>
+              <div className="form-group"><label>Major</label><input placeholder="e.g. Biology" value={form.major} onChange={e=>setForm({...form,major:e.target.value})}/></div>
+              <div className="form-group"><label>Classification</label><select value={form.classification||""} onChange={e=>setForm({...form,classification:e.target.value})}><option value="">-- Select --</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate Student</option></select></div>
               {form.userType==="officer"&&(
                 <div className="form-group">
                   <label>Officer Invite Code <span style={{color:"#991B1B"}}>*</span></label>
@@ -610,7 +632,7 @@ function AuthPage({mode,onAuth,onSwitch}){
   );
 }
 
-function ProfilePage({user,data,setData}){
+function ProfilePage({user,data,setData,reload}){
   const [editing,setEditing]=useState(false);
   const [form,setForm]=useState({name:user.name||"",major:user.major||"",bio:user.bio||"",instagram:user.instagram||"",linkedin:user.linkedin||""});
   const [pwForm,setPwForm]=useState({current:"",next:"",confirm:""});
@@ -621,9 +643,9 @@ function ProfilePage({user,data,setData}){
   const fileRef=useRef();
   const myLogs=data.logs.filter(l=>l.userId===user.id);
   const volHours=myLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
-  function saveProfile(){const u={...data,users:data.users.map(u2=>u2.id===user.id?{...u2,...form}:u2)};setData(u);saveData(u);Object.assign(user,form);setEditing(false);setMsg("Profile saved!");setTimeout(()=>setMsg(""),3000);}
-  function handlePhoto(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{const u={...data,users:data.users.map(u2=>u2.id===user.id?{...u2,photo:ev.target.result}:u2)};setData(u);saveData(u);user.photo=ev.target.result;setMsg("Photo updated!");setTimeout(()=>setMsg(""),3000);};r.readAsDataURL(file);}
-  function changePw(e){e.preventDefault();setPwError("");setPwOk("");if(pwForm.current!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}const u={...data,users:data.users.map(u2=>u2.id===user.id?{...u2,password:pwForm.next}:u2)};setData(u);saveData(u);user.password=pwForm.next;setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated!");}
+  async function saveProfile(){Object.assign(user,form);await dbUpdate("users","id=eq."+user.id,{name:form.name,major:form.major,classification:form.classification,bio:form.bio,instagram:form.instagram,linkedin:form.linkedin});await reload();setEditing(false);setMsg("Profile saved!");setTimeout(()=>setMsg(""),3000);}
+  function handlePhoto(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{user.photo=ev.target.result;await dbUpdate("users","id=eq."+user.id,{photo:ev.target.result});await reload();setMsg("Photo updated!");setTimeout(()=>setMsg(""),3000);};r.readAsDataURL(file);}
+  async function changePw(e){e.preventDefault();setPwError("");setPwOk("");if(pwForm.current!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}await dbUpdate("users","id=eq."+user.id,{password:pwForm.next});user.password=pwForm.next;setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated!");}
   return(
     <div style={{maxWidth:720,margin:"0 auto"}}>
       <div className="page-title">My Profile</div>
@@ -657,7 +679,8 @@ function ProfilePage({user,data,setData}){
           </div>
           {tab==="info"&&(editing?(
             <div>
-              <div className="form-row"><div className="form-group"><label>Full Name</label><input value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></div><div className="form-group"><label>Major and Year</label><input placeholder="e.g. Senior Accounting" value={form.major} onChange={e=>setForm({...form,major:e.target.value})}/></div></div>
+              <div className="form-row"><div className="form-group"><label>Full Name</label><input value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></div><div className="form-group"><label>Major</label><input placeholder="e.g. Accounting" value={form.major} onChange={e=>setForm({...form,major:e.target.value})}/></div>
+              <div className="form-group"><label>Classification</label><select value={form.classification||""} onChange={e=>setForm({...form,classification:e.target.value})}><option value="">-- Select --</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate Student</option></select></div></div>
               <div className="form-group"><label>Bio</label><textarea placeholder="Tell your org about yourself..." value={form.bio} onChange={e=>setForm({...form,bio:e.target.value})} style={{minHeight:80}}/></div>
               <div className="form-row"><div className="form-group"><label>Instagram</label><input placeholder="@username" value={form.instagram} onChange={e=>setForm({...form,instagram:e.target.value})}/></div><div className="form-group"><label>LinkedIn</label><input placeholder="linkedin.com/in/..." value={form.linkedin} onChange={e=>setForm({...form,linkedin:e.target.value})}/></div></div>
               <div style={{display:"flex",gap:9,marginTop:4}}><button className="btn-sm btn-maroon" onClick={saveProfile}>Save</button><button className="btn-sm btn-ghost" onClick={()=>setEditing(false)}>Cancel</button></div>
@@ -665,7 +688,7 @@ function ProfilePage({user,data,setData}){
           ):(
             <div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:18,marginBottom:18}}>
-                {[{label:"Full Name",value:user.name},{label:"Email",value:user.email},{label:"Major",value:user.major||"Not set"},{label:"Organization",value:"Pre-Alumni Association"}].map(f=>(
+                {[{label:"Full Name",value:user.name},{label:"Email",value:user.email},{label:"Major",value:user.major||"Not set"},{label:"Classification",value:user.classification||"Not set"},{label:"Organization",value:"Pre-Alumni Association"}].map(f=>(
                   <div key={f.label}><div style={{fontSize:10,fontWeight:700,color:TEXT_MUTED,textTransform:"uppercase",letterSpacing:".06em",marginBottom:3}}>{f.label}</div><div style={{fontSize:14,color:"#1a1a1a",fontWeight:500}}>{f.value}</div></div>
                 ))}
               </div>
@@ -699,7 +722,7 @@ function ProfilePage({user,data,setData}){
   );
 }
 
-function CheckIn({user,data,setData}){
+function CheckIn({user,data,setData,reload}){
   const [success,setSuccess]=useState("");
   const [modal,setModal]=useState(null);
   const [proof,setProof]=useState(null);
@@ -707,7 +730,7 @@ function CheckIn({user,data,setData}){
   const isGuest=user.userType==="guest";
   const orgEvents=data.events.filter(e=>e.orgId==="org1"&&(!isGuest||e.openToGuests));
   const myLogIds=data.logs.filter(l=>l.userId===user.id).map(l=>l.eventId);
-  function doCheckIn(ev){const log={id:`log_${Date.now()}`,userId:user.id,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note,proofName:proof?.name||null,createdAt:new Date().toISOString()};const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);setModal(null);setNote("");setProof(null);setSuccess(`Checked in to ${ev.name}!`);setTimeout(()=>setSuccess(""),4000);}
+  async function doCheckIn(ev){const log={id:`log_${Date.now()}`,userId:user.id,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note,proofName:proof?.name||null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setModal(null);setNote("");setProof(null);setSuccess(`Checked in to ${ev.name}!`);setTimeout(()=>setSuccess(""),4000);}
   return(
     <div>
       <div className="page-title">Check In</div>
@@ -735,12 +758,12 @@ function CheckIn({user,data,setData}){
   );
 }
 
-function VolunteerLog({user,data,setData}){
+function VolunteerLog({user,data,setData,reload}){
   const [form,setForm]=useState({eventName:"",date:"",hours:"",description:"",proof:null});
   const [success,setSuccess]=useState("");
   const myLogs=data.logs.filter(l=>l.userId===user.id&&l.type==="volunteer"&&!l.eventId);
   const totalHours=myLogs.reduce((s,l)=>s+(l.hours||0),0);
-  function handleSubmit(e){e.preventDefault();if(!form.eventName||!form.date||!form.hours)return;const log={id:`log_${Date.now()}`,userId:user.id,eventId:null,orgId:"org1",type:"volunteer",hours:Number(form.hours),note:form.description,eventName:form.eventName,date:form.date,proofName:form.proof?.name||null,createdAt:new Date().toISOString()};const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);setForm({eventName:"",date:"",hours:"",description:"",proof:null});setSuccess("Volunteer hours logged!");setTimeout(()=>setSuccess(""),4000);}
+  async function handleSubmit(e){e.preventDefault();if(!form.eventName||!form.date||!form.hours)return;const log={id:`log_${Date.now()}`,userId:user.id,eventId:null,orgId:"org1",type:"volunteer",hours:Number(form.hours),note:form.description,eventName:form.eventName,date:form.date,proofName:form.proof?.name||null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setForm({eventName:"",date:"",hours:"",description:"",proof:null});setSuccess("Volunteer hours logged!");setTimeout(()=>setSuccess(""),4000);}
   return(
     <div>
       <div className="page-title">Log Volunteer Hours</div>
@@ -810,7 +833,7 @@ function MyLogs({data,myLogs}){
   );
 }
 
-function AttendanceRecords({data,setData}){
+function AttendanceRecords({data,setData,reload}){
   const [selEv,setSelEv]=useState("");
   const [editLog,setEditLog]=useState(null);
   const [editNote,setEditNote]=useState("");
@@ -822,9 +845,9 @@ function AttendanceRecords({data,setData}){
   const allMembers=data.users.filter(u=>u.orgId==="org1");
   const attendedIds=attendees.map(l=>l.userId);
   const absent=allMembers.filter(m=>!attendedIds.includes(m.id));
-  function removeAttendee(logId){const u={...data,logs:data.logs.filter(l=>l.id!==logId)};setData(u);saveData(u);}
-  function saveEdit(){const u={...data,logs:data.logs.map(l=>l.id===editLog?{...l,note:editNote}:l)};setData(u);saveData(u);setEditLog(null);}
-  function addAttendee(){if(!addId||!ev)return;const log={id:`log_${Date.now()}`,userId:addId,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note:"Added by officer",proofName:null,createdAt:new Date().toISOString()};const u={...data,logs:[...data.logs,log]};setData(u);saveData(u);setAddModal(false);setAddId("");}
+  async function removeAttendee(logId){await dbDelete("logs","id=eq."+logId);await reload();}
+  async function saveEdit(){await dbUpdate("logs","id=eq."+editLog,{note:editNote});await reload();setEditLog(null);}
+  async function addAttendee(){if(!addId||!ev)return;const log={id:`log_${Date.now()}`,userId:addId,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note:"Added by officer",proofName:null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setAddModal(false);setAddId("");}
   function exportCSV(){if(!ev)return;const rows=[["Name","Email","Time","Note"],...attendees.map(l=>[l.user?.name||"",l.user?.email||"",new Date(l.createdAt).toLocaleString(),l.note||""])];const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,"")+'"').join(",")).join("\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=(ev.name||"attendance")+".csv";a.click();URL.revokeObjectURL(url);}
   return(
     <div>
@@ -860,18 +883,18 @@ function AttendanceRecords({data,setData}){
   );
 }
 
-function ManageEvents({user,data,setData}){
+function ManageEvents({user,data,setData,reload}){
   const [show,setShow]=useState(false);
   const [form,setForm]=useState({name:"",date:"",type:"event",hours:"",description:"",openToGuests:false});
   const orgEvents=data.events.filter(e=>e.orgId==="org1");
-  function addEvent(e){e.preventDefault();const ev={id:`ev_${Date.now()}`,orgId:"org1",name:form.name,date:form.date,type:form.type,hours:form.type==="volunteer"?Number(form.hours):0,description:form.description,openToGuests:form.openToGuests,createdBy:user.id};const u={...data,events:[...data.events,ev]};setData(u);saveData(u);setShow(false);setForm({name:"",date:"",type:"event",hours:"",description:"",openToGuests:false});}
+  async function addEvent(e){e.preventDefault();const ev={id:`ev_${Date.now()}`,orgId:"org1",name:form.name,date:form.date,type:form.type,hours:form.type==="volunteer"?Number(form.hours):0,description:form.description,openToGuests:form.openToGuests,createdBy:user.id};await dbInsert("events",eventToRow(ev));await reload();setShow(false);setForm({name:"",date:"",type:"event",hours:"",description:"",openToGuests:false});}
   return(
     <div>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7,flexWrap:"wrap",gap:9}}><div className="page-title">Manage Events</div><button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ New Event</button></div>
       <div className="page-sub">Create events for Pre-Alumni Association members to check into.</div>
       {orgEvents.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36,fontSize:13}}>No events yet. Create one above.</div>
       :<div className="table-wrap"><table><thead><tr><th>Name</th><th>Date</th><th>Type</th><th>Open</th><th>Check-ins</th><th></th></tr></thead>
-      <tbody>{orgEvents.map(ev=>(<tr key={ev.id}><td style={{fontWeight:500}}>{ev.name}</td><td style={{fontSize:12}}>{new Date(ev.date+"T12:00").toLocaleDateString()}</td><td><span className={"badge badge-"+ev.type}>{ev.type}</span></td><td style={{fontSize:12}}>{ev.openToGuests?"✓ Open":""}</td><td>{data.logs.filter(l=>l.eventId===ev.id).length}</td><td><button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={()=>{const u={...data,events:data.events.filter(x=>x.id!==ev.id),logs:data.logs.filter(l=>l.eventId!==ev.id)};setData(u);saveData(u);}}>Delete</button></td></tr>))}</tbody></table></div>}
+      <tbody>{orgEvents.map(ev=>(<tr key={ev.id}><td style={{fontWeight:500}}>{ev.name}</td><td style={{fontSize:12}}>{new Date(ev.date+"T12:00").toLocaleDateString()}</td><td><span className={"badge badge-"+ev.type}>{ev.type}</span></td><td style={{fontSize:12}}>{ev.openToGuests?"✓ Open":""}</td><td>{data.logs.filter(l=>l.eventId===ev.id).length}</td><td><button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={async()=>{await dbDelete("logs","event_id=eq."+ev.id);await dbDelete("events","id=eq."+ev.id);await reload();}}>Delete</button></td></tr>))}</tbody></table></div>}
       {show&&(<Modal title="Create New Event" onClose={()=>setShow(false)}>
         <form onSubmit={addEvent}>
           <div className="form-group"><label>Event Name</label><input placeholder="e.g. Fall General Meeting" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></div>
@@ -886,19 +909,19 @@ function ManageEvents({user,data,setData}){
   );
 }
 
-function Members({user,data,setData}){
+function Members({user,data,setData,reload}){
   const [show,setShow]=useState(false);
   const [form,setForm]=useState({name:"",email:"",role:"student",major:""});
   const [error,setError]=useState("");
   const members=data.users.filter(u=>u.orgId==="org1");
-  function addMember(e){e.preventDefault();setError("");if(data.users.find(u=>u.email===form.email)){setError("A user with that email already exists.");return;}const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,role:form.role==="orgadmin"?"orgadmin":"student",userType:form.role,orgId:"org1",password:"changeme123",major:form.major,bio:"",photo:null,instagram:"",linkedin:""};const u={...data,users:[...data.users,nu]};setData(u);saveData(u);setShow(false);setForm({name:"",email:"",role:"student",major:""});}
+  async function addMember(e){e.preventDefault();setError("");if(data.users.find(u=>u.email===form.email)){setError("A user with that email already exists.");return;}const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,role:form.role==="orgadmin"?"orgadmin":"student",userType:form.role,orgId:"org1",password:"changeme123",major:form.major,classification:"",bio:"",photo:null,instagram:"",linkedin:""};try{await dbInsert("users",userToRow(nu));await reload();setShow(false);setForm({name:"",email:"",role:"student",major:""});}catch(e){setError("Failed to add member.");}}
   return(
     <div>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7,flexWrap:"wrap",gap:9}}><div className="page-title">Members</div><button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ Add Member</button></div>
       <div className="page-sub">Manage Pre-Alumni Association members and officers.</div>
       <div className="table-wrap">
         <table><thead><tr><th>Member</th><th>Role</th><th>Logs</th><th></th></tr></thead>
-        <tbody>{members.map(m=>(<tr key={m.id}><td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={m} size={30}/><div><div style={{fontWeight:500,fontSize:13}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.email}</div></div></div></td><td><span className={"badge badge-"+(m.userType||m.role)}>{getRoleLabel(m)}</span></td><td>{data.logs.filter(l=>l.userId===m.id).length}</td><td>{m.id!==user.id&&<button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={()=>{const u={...data,users:data.users.filter(x=>x.id!==m.id)};setData(u);saveData(u);}}>Remove</button>}</td></tr>))}</tbody>
+        <tbody>{members.map(m=>(<tr key={m.id}><td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={m} size={30}/><div><div style={{fontWeight:500,fontSize:13}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.email}</div></div></div></td><td><span className={"badge badge-"+(m.userType||m.role)}>{getRoleLabel(m)}</span></td><td>{data.logs.filter(l=>l.userId===m.id).length}</td><td>{m.id!==user.id&&<button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={async()=>{await dbDelete("users","id=eq."+m.id);await reload();}}>Remove</button>}</td></tr>))}</tbody>
         </table>
       </div>
       {show&&(<Modal title="Add Member" onClose={()=>setShow(false)}>
@@ -980,7 +1003,7 @@ function Overview({user,data,myLogs,volHours,setSection}){
   );
 }
 
-function Dashboard({user,data,setData}){
+function Dashboard({user,data,setData,reload}){
   const [section,setSection]=useState("overview");
   const [drawerOpen,setDrawerOpen]=useState(false);
   const isOfficer=user.role==="superadmin"||user.role==="orgadmin"||user.userType==="officer";
@@ -1013,13 +1036,13 @@ function Dashboard({user,data,setData}){
       </nav>
       <main className="dash-main">
         {section==="overview"&&<Overview user={user} data={data} myLogs={myLogs} volHours={volHours} setSection={setSection}/>}
-        {section==="checkin"&&<CheckIn user={user} data={data} setData={setData}/>}
-        {section==="vol-log"&&<VolunteerLog user={user} data={data} setData={setData}/>}
+        {section==="checkin"&&<CheckIn user={user} data={data} setData={setData} reload={reload}/>}
+        {section==="vol-log"&&<VolunteerLog user={user} data={data} setData={setData} reload={reload}/>}
         {section==="my-logs"&&<MyLogs data={data} myLogs={myLogs}/>}
-        {section==="profile"&&<ProfilePage user={user} data={data} setData={setData}/>}
-        {section==="attendance"&&isOfficer&&<AttendanceRecords data={data} setData={setData}/>}
-        {section==="events"&&isOfficer&&<ManageEvents user={user} data={data} setData={setData}/>}
-        {section==="members"&&isOfficer&&<Members user={user} data={data} setData={setData}/>}
+        {section==="profile"&&<ProfilePage user={user} data={data} setData={setData} reload={reload}/>}
+        {section==="attendance"&&isOfficer&&<AttendanceRecords data={data} setData={setData} reload={reload}/>}
+        {section==="events"&&isOfficer&&<ManageEvents user={user} data={data} setData={setData} reload={reload}/>}
+        {section==="members"&&isOfficer&&<Members user={user} data={data} setData={setData} reload={reload}/>}
         {section==="all-logs"&&isOfficer&&<AllLogs data={data}/>}
         {section==="users"&&isOfficer&&<AllUsers data={data}/>}
       </main>
@@ -1029,11 +1052,29 @@ function Dashboard({user,data,setData}){
 }
 
 export default function App(){
-  const [data,setData]=useState(loadData);
+  const [data,setData]=useState(INIT);
   const [page,setPage]=useState("home");
   const [user,setUser]=useState(null);
   const [authMode,setAuthMode]=useState(null);
-  function handleAuth(mode,form,setError){
+  const [loading,setLoading]=useState(true);
+
+  async function reload(){
+    try{
+      const [users,events,logs]=await Promise.all([
+        dbGet("users").then(rows=>rows.map(rowToUser)),
+        dbGet("events").then(rows=>rows.map(rowToEvent)),
+        dbGet("logs").then(rows=>rows.map(rowToLog)),
+      ]);
+      setData(d=>({...d,users,events,logs}));
+      return {users,events,logs};
+    }catch(e){console.error("Reload error:",e);return null;}
+  }
+
+  useEffect(()=>{
+    reload().finally(()=>setLoading(false));
+  },[]);
+
+  async function handleAuth(mode,form,setError){
     if(mode==="login"){
       const found=data.users.find(u=>u.email===form.email&&u.password===form.password);
       if(!found){setError("Incorrect email or password.");return;}
@@ -1042,10 +1083,24 @@ export default function App(){
       if(!form.name||!form.email||!form.password){setError("Please fill in all required fields.");return;}
       if(data.users.find(u=>u.email===form.email)){setError("An account with that email already exists.");return;}
       if(form.userType==="officer"&&form.officerCode!==OFFICER_CODE){setError("Invalid officer invite code. Contact your Pre-Alumni president.");return;}
-      const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,password:form.password,role:"student",userType:form.userType||"student",orgId:"org1",major:form.major||"",bio:"",photo:null,instagram:"",linkedin:""};
-      const u={...data,users:[...data.users,nu]};setData(u);saveData(u);setUser(nu);setPage("dashboard");
+      const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,password:form.password,role:"student",userType:form.userType||"student",orgId:"org1",major:form.major||"",classification:form.classification||"",bio:"",photo:null,instagram:"",linkedin:""};
+      try{
+        await dbInsert("users",userToRow(nu));
+        const fresh=await reload();
+        const saved=fresh?.users?.find(u=>u.email===nu.email)||nu;
+        setUser(saved);setPage("dashboard");
+      }catch(e){setError("Signup failed. Please try again.");}
     }
   }
+
+  if(loading) return(
+    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:16,background:"#FAF8F8"}}>
+      <img src={IMG_LOGO} alt="AAMU" style={{width:64,height:64,borderRadius:14,objectFit:"cover"}}/>
+      <div style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:700,color:MAROON}}>Pre-Alumni Association</div>
+      <div style={{fontSize:13,color:TEXT_MUTED}}>Loading portal...</div>
+    </div>
+  );
+
   return(
     <>
       <style>{css}</style>
@@ -1055,7 +1110,7 @@ export default function App(){
       {page==="resources"&&<ResourcesPage/>}
       {page==="contact"&&<ContactPage/>}
       {page==="auth"&&<AuthPage mode={authMode||"login"} onAuth={handleAuth} onSwitch={setAuthMode}/>}
-      {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData}/>}
+      {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData} reload={reload}/>}
       {page==="dashboard"&&!user&&<AuthPage mode="login" onAuth={handleAuth} onSwitch={setAuthMode}/>}
     </>
   );
