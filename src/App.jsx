@@ -41,6 +41,15 @@ function logToRow(l){return{id:l.id,user_id:l.userId,event_id:l.eventId,org_id:l
 
 const INIT={users:[],orgs:[{id:"org1",name:"Pre-Alumni Association"}],events:[],logs:[]};
 
+// ── Security ──────────────────────────────────────────────
+async function hashPassword(password){
+  const msgBuffer = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+
 // ── Email Notifications via Resend ──────────────────────
 const RESEND_KEY="re_fiD3XzdL_KbPbAmfA7RaAyCXeuTmp6Gxv";
 
@@ -749,7 +758,7 @@ function ProfilePage({user,data,setData,reload}){
   const volHours=myLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
   async function saveProfile(){Object.assign(user,form);await dbUpdate("users","id=eq."+user.id,{name:form.name,major:form.major,classification:form.classification,bio:form.bio,instagram:form.instagram,linkedin:form.linkedin});await reload();setEditing(false);setMsg("Profile saved!");setTimeout(()=>setMsg(""),3000);}
   function handlePhoto(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{user.photo=ev.target.result;await dbUpdate("users","id=eq."+user.id,{photo:ev.target.result});await reload();setMsg("Photo updated!");setTimeout(()=>setMsg(""),3000);};r.readAsDataURL(file);}
-  async function changePw(e){e.preventDefault();setPwError("");setPwOk("");if(pwForm.current!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}await dbUpdate("users","id=eq."+user.id,{password:pwForm.next});sendPasswordChangedEmail(user);user.password=pwForm.next;setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated! A confirmation email has been sent.");}
+  async function changePw(e){e.preventDefault();setPwError("");setPwOk("");const hashedCurrent=await hashPassword(pwForm.current);if(hashedCurrent!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}const hashedNew=await hashPassword(pwForm.next);await dbUpdate("users","id=eq."+user.id,{password:hashedNew});sendPasswordChangedEmail(user);user.password=hashedNew;setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated! A confirmation email has been sent.");}
   return(
     <div style={{maxWidth:720,margin:"0 auto"}}>
       <div className="page-title">My Profile</div>
@@ -1178,16 +1187,36 @@ export default function App(){
     reload().finally(()=>setLoading(false));
   },[]);
 
+  // Session timeout - 30 minutes inactivity
+  useEffect(()=>{
+    if(!user) return;
+    let timer=setTimeout(()=>{
+      setUser(null);
+      localStorage.removeItem("pa_user");
+      setPage("home");
+      alert("You have been logged out due to inactivity.");
+    }, 30*60*1000);
+    const reset=()=>{clearTimeout(timer);timer=setTimeout(()=>{setUser(null);localStorage.removeItem("pa_user");setPage("home");alert("You have been logged out due to inactivity.");},30*60*1000);};
+    window.addEventListener("mousemove",reset);
+    window.addEventListener("keydown",reset);
+    window.addEventListener("click",reset);
+    return()=>{clearTimeout(timer);window.removeEventListener("mousemove",reset);window.removeEventListener("keydown",reset);window.removeEventListener("click",reset);};
+  },[user]);
+
+
+
   async function handleAuth(mode,form,setError){
     if(mode==="login"){
-      const found=data.users.find(u=>u.email===form.email&&u.password===form.password);
+      const hashed=await hashPassword(form.password);
+      const found=data.users.find(u=>u.email===form.email&&u.password===hashed);
       if(!found){setError("Incorrect email or password.");return;}
       setUser(found);localStorage.setItem("pa_user",JSON.stringify(found));setPage("dashboard");
     } else {
       if(!form.name||!form.email||!form.password){setError("Please fill in all required fields.");return;}
       if(data.users.find(u=>u.email===form.email)){setError("An account with that email already exists.");return;}
       if(form.userType==="officer"&&form.officerCode!==OFFICER_CODE){setError("Invalid officer invite code. Contact your Pre-Alumni president.");return;}
-      const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,password:form.password,role:"student",userType:form.userType||"student",orgId:"org1",major:form.major||"",classification:form.classification||"",bio:"",photo:null,instagram:"",linkedin:""};
+      const hashed=await hashPassword(form.password);
+      const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,password:hashed,role:"student",userType:form.userType||"student",orgId:"org1",major:form.major||"",classification:form.classification||"",bio:"",photo:null,instagram:"",linkedin:""};
       try{
         await dbInsert("users",userToRow(nu));
         const fresh=await reload();
