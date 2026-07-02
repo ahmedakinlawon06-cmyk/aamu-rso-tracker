@@ -296,7 +296,7 @@ function RolePicker({value,onChange}){
 function Navbar({page,setPage,user,onLogout,onLogin}){
   const [mob,setMob]=useState(false);
   const pages=["home","about","resources","contact"];
-  const labels={home:"Home",about:"About & Services",resources:"Resources",contact:"Contact"};
+  const labels={home:"Home",about:"About",resources:"Resources",contact:"Contact"};
   return(
     <>
       <div className="top-bar">Pre-Alumni Association · Alabama Agricultural and Mechanical University</div>
@@ -468,7 +468,7 @@ function AboutPage(){
       <div className="page-hero">
         <div className="page-hero-bg" style={{backgroundImage:`url(${IMG_HERO})`}}/>
         <div className="page-hero-content">
-          <h1>About & Services</h1>
+          <h1>About</h1>
           <p>Why we built this portal and everything it does for Pre-Alumni Association members.</p>
         </div>
       </div>
@@ -510,6 +510,33 @@ function AboutPage(){
   );
 }
 
+function TermsDropdown(){
+  const [open,setOpen]=useState(false);
+  return(
+    <div style={{marginTop:40,background:"#fff",border:"1px solid #E0D8D8",borderRadius:14,overflow:"hidden"}}>
+      <div onClick={()=>setOpen(o=>!o)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"18px 24px",cursor:"pointer",userSelect:"none"}}>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <div style={{width:42,height:42,borderRadius:10,background:"#FAF0F2",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>📋</div>
+          <div><div style={{fontWeight:700,fontSize:15,color:"#1a1a1a"}}>Terms & Conditions</div><div style={{fontSize:12,color:TEXT_MUTED,marginTop:2}}>Data visibility, officer access, and your rights</div></div>
+        </div>
+        <div style={{fontSize:14,color:TEXT_MUTED,transition:"transform .25s",transform:open?"rotate(180deg)":"rotate(0deg)"}}>▼</div>
+      </div>
+      {open&&(
+        <div style={{padding:"0 24px 24px",borderTop:"1px solid #F3F0F0"}}>
+          <div style={{fontSize:13,color:"#555",lineHeight:1.9,display:"flex",flexDirection:"column",gap:12,marginTop:16}}>
+            <p><strong style={{color:MAROON}}>Data Visibility:</strong> By creating an account on this portal, you understand that your name, attendance records, volunteer hours, and participation logs may be visible to Pre-Alumni Association officers and administrators. This information is used solely for organizational record-keeping.</p>
+            <p><strong style={{color:MAROON}}>Officer Access:</strong> Officers and E-Board members have the ability to view all member attendance records, add or remove attendance entries, and export participation data as needed for official organizational purposes.</p>
+            <p><strong style={{color:MAROON}}>Profile Information:</strong> Information you add to your profile (major, classification, bio, social links) is visible to officers and admins on the platform. Your password is stored securely and is never visible to anyone including officers.</p>
+            <p><strong style={{color:MAROON}}>Data Use:</strong> Your data is used exclusively for Pre-Alumni Association membership tracking and is not shared with any third parties outside of the organization.</p>
+            <p><strong style={{color:MAROON}}>Account Responsibility:</strong> You are responsible for keeping your login credentials secure. If you believe your account has been compromised, contact an officer immediately.</p>
+            <p style={{color:"#8A7070",fontSize:12,marginTop:4}}>Last updated: July 2026 · Pre-Alumni Association, Alabama A&M University</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ResourcesPage(){
   return(
     <div>
@@ -538,6 +565,7 @@ function ResourcesPage(){
             <div style={{color:MAROON,fontSize:18,flexShrink:0}}>→</div>
           </a>
         ))}
+        <TermsDropdown/>
       </div>
       <div className="footer"><strong>AAMU Pre-Alumni Association — Member Portal</strong></div>
     </div>
@@ -566,10 +594,15 @@ function ContactPage(){
                 </div>
               ))}
             </div>
-            <div style={{background:"#EFF6FF",border:"1px solid #BFDBFE",borderRadius:12,padding:18}}>
+            <div style={{background:"#EFF6FF",border:"1px solid #BFDBFE",borderRadius:12,padding:18,marginBottom:14}}>
               <div style={{fontWeight:700,fontSize:13,color:"#1D4ED8",marginBottom:7}}>📘 RSO Handbook 2026</div>
               <div style={{fontSize:12,color:"#555",lineHeight:1.7,marginBottom:10}}>Download the official AAMU RSO Handbook for policies and guidelines.</div>
               <a href="https://www.aamu.edu/campus-life/student-activities/student-organizations/_documents/rso-handbook-2026.pdf" target="_blank" rel="noreferrer" style={{display:"inline-block",background:"#1D4ED8",color:"white",padding:"7px 14px",borderRadius:8,fontSize:12,fontWeight:700,textDecoration:"none"}}>Download PDF →</a>
+            </div>
+            <div style={{background:"#F0FDF4",border:"1px solid #BBF7D0",borderRadius:12,padding:18}}>
+              <div style={{fontWeight:700,fontSize:13,color:"#15803D",marginBottom:7}}>📱 Join Our Band Community</div>
+              <div style={{fontSize:12,color:"#555",lineHeight:1.7,marginBottom:10}}>Pre-Alumni Association's primary communication happens on Band. Join to stay connected with announcements, events, and members.</div>
+              <a href="https://www.band.us/n/abaab7Obhbcd4" target="_blank" rel="noreferrer" style={{display:"inline-block",background:"#15803D",color:"white",padding:"7px 14px",borderRadius:8,fontSize:12,fontWeight:700,textDecoration:"none"}}>Join the Band App →</a>
             </div>
           </div>
           <div className="form-wrap" style={{margin:0}}>
@@ -1054,7 +1087,7 @@ function Dashboard({user,data,setData,reload}){
 export default function App(){
   const [data,setData]=useState(INIT);
   const [page,setPage]=useState("home");
-  const [user,setUser]=useState(null);
+  const [user,setUser]=useState(()=>{try{const u=localStorage.getItem("pa_user");return u?JSON.parse(u):null;}catch{return null;}});
   const [authMode,setAuthMode]=useState(null);
   const [loading,setLoading]=useState(true);
 
@@ -1078,7 +1111,7 @@ export default function App(){
     if(mode==="login"){
       const found=data.users.find(u=>u.email===form.email&&u.password===form.password);
       if(!found){setError("Incorrect email or password.");return;}
-      setUser(found);setPage("dashboard");
+      setUser(found);localStorage.setItem("pa_user",JSON.stringify(found));setPage("dashboard");
     } else {
       if(!form.name||!form.email||!form.password){setError("Please fill in all required fields.");return;}
       if(data.users.find(u=>u.email===form.email)){setError("An account with that email already exists.");return;}
@@ -1088,7 +1121,7 @@ export default function App(){
         await dbInsert("users",userToRow(nu));
         const fresh=await reload();
         const saved=fresh?.users?.find(u=>u.email===nu.email)||nu;
-        setUser(saved);setPage("dashboard");
+        setUser(saved);localStorage.setItem("pa_user",JSON.stringify(saved));setPage("dashboard");
       }catch(e){setError("Signup failed. Please try again.");}
     }
   }
@@ -1104,7 +1137,7 @@ export default function App(){
   return(
     <>
       <style>{css}</style>
-      <Navbar page={page} setPage={setPage} user={user} onLogout={()=>{setUser(null);setPage("home");}} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>
+      <Navbar page={page} setPage={setPage} user={user} onLogout={()=>{setUser(null);localStorage.removeItem("pa_user");setPage("home");}} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>
       {page==="home"&&<HomePage setPage={setPage} user={user} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>}
       {page==="about"&&<AboutPage/>}
       {page==="resources"&&<ResourcesPage/>}
