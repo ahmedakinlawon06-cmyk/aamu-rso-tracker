@@ -40,6 +40,77 @@ function rowToLog(r){return{id:r.id,userId:r.user_id,eventId:r.event_id,orgId:r.
 function logToRow(l){return{id:l.id,user_id:l.userId,event_id:l.eventId,org_id:l.orgId,type:l.type,hours:l.hours,note:l.note,event_name:l.eventName,date:l.date,proof_name:l.proofName};}
 
 const INIT={users:[],orgs:[{id:"org1",name:"Pre-Alumni Association"}],events:[],logs:[]};
+
+// ── Email Notifications via Resend ──────────────────────
+const RESEND_KEY="re_fiD3XzdL_KbPbAmfA7RaAyCXeuTmp6Gxv";
+
+async function sendEmail({to, subject, html}){
+  try{
+    await fetch("https://api.resend.com/emails",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+RESEND_KEY},
+      body:JSON.stringify({
+        from:"Pre-Alumni Association <onboarding@resend.dev>",
+        to:[to],
+        subject,
+        html
+      })
+    });
+  }catch(e){console.log("Email error:",e);}
+}
+
+async function sendWelcomeEmail(user){
+  await sendEmail({
+    to: user.email,
+    subject: "Welcome to Pre-Alumni Association Portal!",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #E0D8D8;">
+        <div style="background:#6B1B2A;padding:32px 28px;text-align:center;">
+          <h1 style="color:white;font-size:22px;margin:0;">Pre-Alumni Association</h1>
+          <p style="color:rgba(255,255,255,.8);margin:8px 0 0;font-size:14px;">Alabama Agricultural and Mechanical University</p>
+        </div>
+        <div style="padding:32px 28px;">
+          <h2 style="color:#6B1B2A;font-size:20px;margin:0 0 12px;">Welcome, ${user.name}! 🎉</h2>
+          <p style="color:#444;line-height:1.7;font-size:14px;">Your Pre-Alumni Association Member Portal account has been created successfully.</p>
+          <div style="background:#FAF0F2;border-radius:10px;padding:16px;margin:20px 0;">
+            <p style="margin:0;font-size:13px;color:#555;"><strong>Your account details:</strong></p>
+            <p style="margin:8px 0 0;font-size:13px;color:#555;">📧 Email: ${user.email}</p>
+            <p style="margin:4px 0 0;font-size:13px;color:#555;">👤 Role: ${user.userType==="officer"?"Officer / E-Board":user.userType==="guest"?"Guest":"Member"}</p>
+          </div>
+          <p style="color:#444;line-height:1.7;font-size:14px;">You can now log in to track your attendance, log volunteer hours, and manage your profile.</p>
+          <a href="https://aamu-rso-tracker.netlify.app" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
+          <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">Pre-Alumni Association · Alabama A&M University · Huntsville, AL</p>
+        </div>
+      </div>
+    `
+  });
+}
+
+async function sendPasswordChangedEmail(user){
+  await sendEmail({
+    to: user.email,
+    subject: "Your Pre-Alumni Portal Password Was Changed",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #E0D8D8;">
+        <div style="background:#6B1B2A;padding:32px 28px;text-align:center;">
+          <h1 style="color:white;font-size:22px;margin:0;">Pre-Alumni Association</h1>
+          <p style="color:rgba(255,255,255,.8);margin:8px 0 0;font-size:14px;">Alabama Agricultural and Mechanical University</p>
+        </div>
+        <div style="padding:32px 28px;">
+          <h2 style="color:#6B1B2A;font-size:20px;margin:0 0 12px;">Password Changed 🔐</h2>
+          <p style="color:#444;line-height:1.7;font-size:14px;">Hi ${user.name}, your Pre-Alumni Association portal password was recently changed.</p>
+          <div style="background:#FEF9C3;border:1px solid #FDE68A;border-radius:10px;padding:16px;margin:20px 0;">
+            <p style="margin:0;font-size:13px;color:#92400E;">⚠️ If you did not make this change, please contact an officer immediately.</p>
+          </div>
+          <p style="color:#444;line-height:1.7;font-size:14px;">If this was you, no further action is needed.</p>
+          <a href="https://aamu-rso-tracker.netlify.app" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
+          <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">Pre-Alumni Association · Alabama A&M University · Huntsville, AL</p>
+        </div>
+      </div>
+    `
+  });
+}
+
 const css=`
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -678,7 +749,7 @@ function ProfilePage({user,data,setData,reload}){
   const volHours=myLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
   async function saveProfile(){Object.assign(user,form);await dbUpdate("users","id=eq."+user.id,{name:form.name,major:form.major,classification:form.classification,bio:form.bio,instagram:form.instagram,linkedin:form.linkedin});await reload();setEditing(false);setMsg("Profile saved!");setTimeout(()=>setMsg(""),3000);}
   function handlePhoto(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{user.photo=ev.target.result;await dbUpdate("users","id=eq."+user.id,{photo:ev.target.result});await reload();setMsg("Photo updated!");setTimeout(()=>setMsg(""),3000);};r.readAsDataURL(file);}
-  async function changePw(e){e.preventDefault();setPwError("");setPwOk("");if(pwForm.current!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}await dbUpdate("users","id=eq."+user.id,{password:pwForm.next});user.password=pwForm.next;setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated!");}
+  async function changePw(e){e.preventDefault();setPwError("");setPwOk("");if(pwForm.current!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}await dbUpdate("users","id=eq."+user.id,{password:pwForm.next});sendPasswordChangedEmail(user);user.password=pwForm.next;setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated! A confirmation email has been sent.");}
   return(
     <div style={{maxWidth:720,margin:"0 auto"}}>
       <div className="page-title">My Profile</div>
@@ -1121,7 +1192,7 @@ export default function App(){
         await dbInsert("users",userToRow(nu));
         const fresh=await reload();
         const saved=fresh?.users?.find(u=>u.email===nu.email)||nu;
-        setUser(saved);localStorage.setItem("pa_user",JSON.stringify(saved));setPage("dashboard");
+        sendWelcomeEmail(saved);setUser(saved);localStorage.setItem("pa_user",JSON.stringify(saved));setPage("dashboard");
       }catch(e){setError("Signup failed. Please try again.");}
     }
   }
