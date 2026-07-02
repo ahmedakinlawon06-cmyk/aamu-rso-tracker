@@ -95,6 +95,31 @@ async function sendWelcomeEmail(user){
   });
 }
 
+async function sendVerificationEmail(user, token){
+  const verifyUrl=`https://aamu-rso-tracker.netlify.app?verify=${token}`;
+  await sendEmail({
+    to: user.email,
+    subject: "Verify your Pre-Alumni Portal account",
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #E0D8D8;">
+        <div style="background:#6B1B2A;padding:32px 28px;text-align:center;">
+          <h1 style="color:white;font-size:22px;margin:0;">Pre-Alumni Association</h1>
+          <p style="color:rgba(255,255,255,.8);margin:8px 0 0;font-size:14px;">Alabama Agricultural and Mechanical University</p>
+        </div>
+        <div style="padding:32px 28px;">
+          <h2 style="color:#6B1B2A;font-size:20px;margin:0 0 12px;">Verify your email, ${user.name}! 📧</h2>
+          <p style="color:#444;line-height:1.7;font-size:14px;">Thanks for joining the Pre-Alumni Association Member Portal! Click the button below to verify your email address and activate your account.</p>
+          <div style="text-align:center;margin:28px 0;">
+            <a href="${verifyUrl}" style="display:inline-block;background:#6B1B2A;color:white;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;">Verify My Account →</a>
+          </div>
+          <p style="color:#8A7070;font-size:12px;">If the button doesn't work, copy and paste this link:<br/><a href="${verifyUrl}" style="color:#6B1B2A;">${verifyUrl}</a></p>
+          <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">Pre-Alumni Association · Alabama A&M University · Huntsville, AL</p>
+        </div>
+      </div>
+    `
+  });
+}
+
 async function sendPasswordChangedEmail(user){
   await sendEmail({
     to: user.email,
@@ -134,8 +159,8 @@ body{font-family:'Inter',sans-serif;background:#FAF8F8;color:#1a1a1a;min-height:
 .nav-btn{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:all .18s}
 .nav-btn.solid{background:#fff;color:#6B1B2A}
 .nav-right{display:flex;align-items:center;gap:8px}
-.hamburger{display:none;background:none;border:none;color:white;font-size:26px;cursor:pointer;padding:4px}
-@media(max-width:768px){.nav-links{display:none}.hamburger{display:block}.nav-logo{font-size:13px}.nav{padding:0 1rem}}
+.hamburger{display:none;background:none;border:none;color:white;font-size:26px;cursor:pointer;padding:4px;line-height:1}
+@media(max-width:768px){.nav-links{display:none}.hamburger{display:block}.nav-logo{font-size:12px;gap:7px}.nav-logo img{width:30px;height:30px}.nav{padding:0 .8rem;height:56px}}
 .hero{position:relative;min-height:88vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(74,16,24,.92),rgba(107,27,42,.85),rgba(139,37,53,.78))}
@@ -304,6 +329,11 @@ tr:hover td{background:#FAF8F8}
 .tabs-row{display:flex;gap:4px;background:#F3F0F0;padding:4px;border-radius:10px;margin-bottom:22px}
 .tab-btn{flex:1;padding:8px 12px;border:none;border-radius:7px;background:none;cursor:pointer;font-size:12px;font-weight:500;color:#8A7070;transition:all .18s;text-align:center}
 .tab-btn.active{background:#fff;color:#6B1B2A;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:7px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-dark{border-color:rgba(107,27,42,.2);border-top-color:#6B1B2A}
+
 `;
 
 const SERVICES=[
@@ -395,7 +425,7 @@ function Navbar({page,setPage,user,onLogout,onLogin}){
         </div>
       </nav>
       {mob&&(
-        <div style={{background:"#4A1018",padding:"8px",position:"sticky",top:64,zIndex:99,boxShadow:"0 4px 12px rgba(0,0,0,.2)"}}>
+        <div style={{background:"#4A1018",padding:"8px",position:"sticky",top:56,zIndex:99,boxShadow:"0 4px 12px rgba(0,0,0,.2)"}}>
           {pages.map(p=><button key={p} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 14px",color:"rgba(255,255,255,.85)",background:"none",border:"none",cursor:"pointer",fontSize:"14px"}} onClick={()=>{setPage(p);setMob(false);}}>{labels[p]}</button>)}
           {user&&<button style={{display:"block",width:"100%",textAlign:"left",padding:"10px 14px",color:"rgba(255,255,255,.85)",background:"none",border:"none",cursor:"pointer",fontSize:"14px"}} onClick={()=>{setPage("dashboard");setMob(false);}}>Dashboard</button>}
         </div>
@@ -706,6 +736,73 @@ function ContactPage(){
   );
 }
 
+
+function ForgotPassword({onBack,data,reload}){
+  const [email,setEmail]=useState("");
+  const [msg,setMsg]=useState("");
+  const [error,setError]=useState("");
+  const [loading,setLoading]=useState(false);
+
+  async function handleReset(e){
+    e.preventDefault();
+    setError("");setMsg("");setLoading(true);
+    const user=data.users.find(u=>u.email===email);
+    if(!user){setError("No account found with that email.");setLoading(false);return;}
+    // Generate temp password
+    const temp="TEMP-"+Math.random().toString(36).substring(2,8).toUpperCase();
+    const hashed=await hashPassword(temp);
+    await dbUpdate("users","id=eq."+user.id,{password:hashed});
+    await reload();
+    // Send email with temp password
+    await sendEmail({
+      to:email,
+      subject:"Pre-Alumni Portal — Password Reset",
+      html:`
+        <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #E0D8D8;">
+          <div style="background:#6B1B2A;padding:32px 28px;text-align:center;">
+            <h1 style="color:white;font-size:22px;margin:0;">Pre-Alumni Association</h1>
+            <p style="color:rgba(255,255,255,.8);margin:8px 0 0;font-size:14px;">Password Reset</p>
+          </div>
+          <div style="padding:32px 28px;">
+            <h2 style="color:#6B1B2A;font-size:20px;margin:0 0 12px;">Hi ${user.name} 👋</h2>
+            <p style="color:#444;line-height:1.7;font-size:14px;">We received a request to reset your password. Here is your temporary password:</p>
+            <div style="background:#FAF0F2;border-radius:10px;padding:20px;margin:20px 0;text-align:center;">
+              <div style="font-size:24px;font-weight:700;color:#6B1B2A;letter-spacing:.1em;">${temp}</div>
+            </div>
+            <p style="color:#444;line-height:1.7;font-size:14px;">Log in with this temporary password, then go to <strong>My Profile → Security</strong> to set a new password.</p>
+            <a href="https://aamu-rso-tracker.netlify.app" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
+            <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">If you did not request this, contact an officer immediately.</p>
+          </div>
+        </div>
+      `
+    });
+    setMsg("A temporary password has been sent to "+email+". Check your inbox!");
+    setLoading(false);
+  }
+
+  return(
+    <div style={{minHeight:"80vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"36px 14px",background:"linear-gradient(135deg,rgba(74,16,24,.07),#FAF8F8)"}}>
+      <div className="form-wrap" style={{width:"100%",maxWidth:460}}>
+        <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:22}}>
+          <img src={IMG_LOGO} alt="AAMU" style={{width:54,height:54,borderRadius:12,objectFit:"cover",flexShrink:0}}/>
+          <div style={{fontFamily:"'Playfair Display',serif",fontSize:"20px",fontWeight:800,color:MAROON,letterSpacing:".02em",whiteSpace:"nowrap"}}>Pre-Alumni Association</div>
+        </div>
+        <div className="form-title">Forgot Password</div>
+        <div className="form-sub">Enter your email and we will send you a temporary password.</div>
+        {error&&<div className="error-msg">{error}</div>}
+        {msg&&<div className="success-msg">{msg}</div>}
+        {!msg&&(
+          <form onSubmit={handleReset}>
+            <div className="form-group"><label>Email</label><input type="email" placeholder="your@email.com" value={email} onChange={e=>setEmail(e.target.value)} required/></div>
+            <button type="submit" className="btn-full" disabled={loading}>{loading?"Sending...":"Send Temporary Password"}</button>
+          </form>
+        )}
+        <div className="form-switch"><a onClick={onBack}>← Back to Sign In</a></div>
+      </div>
+    </div>
+  );
+}
+
 function AuthPage({mode,onAuth,onSwitch}){
   const [form,setForm]=useState({name:"",email:"",password:"",major:"",userType:"student"});
   const [error,setError]=useState("");
@@ -739,7 +836,7 @@ function AuthPage({mode,onAuth,onSwitch}){
           <div className="form-group"><label>Password</label><PwInput value={form.password} onChange={e=>setForm({...form,password:e.target.value})}/></div>
           <button type="submit" className="btn-full">{mode==="login"?"Sign In":"Create Account"}</button>
         </form>
-        <div className="form-switch">{mode==="login"?<>No account? <a onClick={()=>onSwitch("signup")}>Sign up free</a></>:<>Have an account? <a onClick={()=>onSwitch("login")}>Sign in</a></>}</div>
+        <div className="form-switch">{mode==="login"?<><>No account? <a onClick={()=>onSwitch("signup")}>Sign up free</a></> · <a onClick={()=>onSwitch("forgot")}>Forgot password?</a></>:<>Have an account? <a onClick={()=>onSwitch("login")}>Sign in</a></>}</div>
       </div>
     </div>
   );
@@ -801,7 +898,7 @@ function ProfilePage({user,data,setData,reload}){
           ):(
             <div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:18,marginBottom:18}}>
-                {[{label:"Full Name",value:user.name},{label:"Email",value:user.email},{label:"Major",value:user.major||"Not set"},{label:"Classification",value:user.classification||"Not set"},{label:"Organization",value:"Pre-Alumni Association"}].map(f=>(
+                {[{label:"Full Name",value:user.name},{label:"Email",value:user.email},{label:"Major",value:user.major||"Not set"},{label:"Classification",value:user.classification||"Not set"},{label:"Organization",value:"Pre-Alumni Association"},{label:"Role",value:getRoleLabel(user)}].map(f=>(
                   <div key={f.label}><div style={{fontSize:10,fontWeight:700,color:TEXT_MUTED,textTransform:"uppercase",letterSpacing:".06em",marginBottom:3}}>{f.label}</div><div style={{fontSize:14,color:"#1a1a1a",fontWeight:500}}>{f.value}</div></div>
                 ))}
               </div>
@@ -840,10 +937,12 @@ function CheckIn({user,data,setData,reload}){
   const [modal,setModal]=useState(null);
   const [proof,setProof]=useState(null);
   const [note,setNote]=useState("");
+  const [saving,setSaving]=useState(false);
   const isGuest=user.userType==="guest";
   const orgEvents=data.events.filter(e=>e.orgId==="org1"&&(!isGuest||e.openToGuests));
   const myLogIds=data.logs.filter(l=>l.userId===user.id).map(l=>l.eventId);
-  async function doCheckIn(ev){const log={id:`log_${Date.now()}`,userId:user.id,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note,proofName:proof?.name||null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setModal(null);setNote("");setProof(null);setSuccess(`Checked in to ${ev.name}!`);setTimeout(()=>setSuccess(""),4000);}
+  setLoading(true);
+  async function doCheckIn(ev){setSaving(true);try{const log={id:`log_${Date.now()}`,userId:user.id,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note,proofName:proof?.name||null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setModal(null);setNote("");setProof(null);setSuccess(`Checked in to ${ev.name}!`);setTimeout(()=>setSuccess(""),4000);}catch(e){alert("Check-in failed. Please try again.");}finally{setSaving(false);}}
   return(
     <div>
       <div className="page-title">Check In</div>
@@ -865,7 +964,7 @@ function CheckIn({user,data,setData,reload}){
         <div style={{marginBottom:14,padding:11,background:OFF_WHITE,borderRadius:9,fontSize:13,color:"#555"}}><strong>{modal.type==="volunteer"?"Volunteer Event":"Attendance Event"}</strong>{modal.hours?` · ${modal.hours} hours`:""}{modal.description&&<div style={{marginTop:3}}>{modal.description}</div>}</div>
         <div className="form-group"><label>Note (optional)</label><textarea placeholder="Any notes..." value={note} onChange={e=>setNote(e.target.value)} style={{minHeight:70}}/></div>
         <div className="form-group"><label>Upload Proof (optional)</label><div className="upload-area" onClick={()=>document.getElementById("proof-input").click()}><div style={{fontSize:26}}>📎</div><p>{proof?proof.name:"Click to upload"}</p><input id="proof-input" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={e=>setProof(e.target.files[0])}/></div></div>
-        <button className="btn-full" onClick={()=>doCheckIn(modal)}>Confirm Check In</button>
+        <button className="btn-full" onClick={()=>doCheckIn(modal)} disabled={saving}>{saving?<><span className="spinner"/>Saving...</>:"Confirm Check In"}</button>
       </Modal>)}
     </div>
   );
@@ -958,7 +1057,7 @@ function AttendanceRecords({data,setData,reload}){
   const allMembers=data.users.filter(u=>u.orgId==="org1");
   const attendedIds=attendees.map(l=>l.userId);
   const absent=allMembers.filter(m=>!attendedIds.includes(m.id));
-  async function removeAttendee(logId){await dbDelete("logs","id=eq."+logId);await reload();}
+  async function removeAttendee(logId){if(!window.confirm("Remove this attendee from the record?"))return;await dbDelete("logs","id=eq."+logId);await reload();}
   async function saveEdit(){await dbUpdate("logs","id=eq."+editLog,{note:editNote});await reload();setEditLog(null);}
   async function addAttendee(){if(!addId||!ev)return;const log={id:`log_${Date.now()}`,userId:addId,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note:"Added by officer",proofName:null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setAddModal(false);setAddId("");}
   function exportCSV(){if(!ev)return;const rows=[["Name","Email","Time","Note"],...attendees.map(l=>[l.user?.name||"",l.user?.email||"",new Date(l.createdAt).toLocaleString(),l.note||""])];const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,"")+'"').join(",")).join("\n");const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=(ev.name||"attendance")+".csv";a.click();URL.revokeObjectURL(url);}
@@ -1007,7 +1106,7 @@ function ManageEvents({user,data,setData,reload}){
       <div className="page-sub">Create events for Pre-Alumni Association members to check into.</div>
       {orgEvents.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36,fontSize:13}}>No events yet. Create one above.</div>
       :<div className="table-wrap"><table><thead><tr><th>Name</th><th>Date</th><th>Type</th><th>Open</th><th>Check-ins</th><th></th></tr></thead>
-      <tbody>{orgEvents.map(ev=>(<tr key={ev.id}><td style={{fontWeight:500}}>{ev.name}</td><td style={{fontSize:12}}>{new Date(ev.date+"T12:00").toLocaleDateString()}</td><td><span className={"badge badge-"+ev.type}>{ev.type}</span></td><td style={{fontSize:12}}>{ev.openToGuests?"✓ Open":""}</td><td>{data.logs.filter(l=>l.eventId===ev.id).length}</td><td><button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={async()=>{await dbDelete("logs","event_id=eq."+ev.id);await dbDelete("events","id=eq."+ev.id);await reload();}}>Delete</button></td></tr>))}</tbody></table></div>}
+      <tbody>{orgEvents.map(ev=>(<tr key={ev.id}><td style={{fontWeight:500}}>{ev.name}</td><td style={{fontSize:12}}>{new Date(ev.date+"T12:00").toLocaleDateString()}</td><td><span className={"badge badge-"+ev.type}>{ev.type}</span></td><td style={{fontSize:12}}>{ev.openToGuests?"✓ Open":""}</td><td>{data.logs.filter(l=>l.eventId===ev.id).length}</td><td><button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={async()=>{if(!window.confirm("Delete event \""+ev.name+"\"? This will also remove all check-ins for this event."))return;await dbDelete("logs","event_id=eq."+ev.id);await dbDelete("events","id=eq."+ev.id);await reload();}}>Delete</button></td></tr>))}</tbody></table></div>}
       {show&&(<Modal title="Create New Event" onClose={()=>setShow(false)}>
         <form onSubmit={addEvent}>
           <div className="form-group"><label>Event Name</label><input placeholder="e.g. Fall General Meeting" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></div>
@@ -1027,14 +1126,14 @@ function Members({user,data,setData,reload}){
   const [form,setForm]=useState({name:"",email:"",role:"student",major:""});
   const [error,setError]=useState("");
   const members=data.users.filter(u=>u.orgId==="org1");
-  async function addMember(e){e.preventDefault();setError("");if(data.users.find(u=>u.email===form.email)){setError("A user with that email already exists.");return;}const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,role:form.role==="orgadmin"?"orgadmin":"student",userType:form.role,orgId:"org1",password:"changeme123",major:form.major,classification:"",bio:"",photo:null,instagram:"",linkedin:""};try{await dbInsert("users",userToRow(nu));await reload();setShow(false);setForm({name:"",email:"",role:"student",major:""});}catch(e){setError("Failed to add member.");}}
+  async function addMember(e){e.preventDefault();setError("");if(data.users.find(u=>u.email===form.email)){setError("A user with that email already exists.");return;}const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,role:form.role==="orgadmin"?"orgadmin":"student",userType:form.role,orgId:"org1",password:"changeme123",mustChangePassword:true,major:form.major,classification:"",bio:"",photo:null,instagram:"",linkedin:""};try{await dbInsert("users",userToRow(nu));await reload();setShow(false);setForm({name:"",email:"",role:"student",major:""});}catch(e){setError("Failed to add member.");}}
   return(
     <div>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7,flexWrap:"wrap",gap:9}}><div className="page-title">Members</div><button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ Add Member</button></div>
       <div className="page-sub">Manage Pre-Alumni Association members and officers.</div>
       <div className="table-wrap">
         <table><thead><tr><th>Member</th><th>Role</th><th>Logs</th><th></th></tr></thead>
-        <tbody>{members.map(m=>(<tr key={m.id}><td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={m} size={30}/><div><div style={{fontWeight:500,fontSize:13}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.email}</div></div></div></td><td><span className={"badge badge-"+(m.userType||m.role)}>{getRoleLabel(m)}</span></td><td>{data.logs.filter(l=>l.userId===m.id).length}</td><td>{m.id!==user.id&&<button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={async()=>{await dbDelete("users","id=eq."+m.id);await reload();}}>Remove</button>}</td></tr>))}</tbody>
+        <tbody>{members.map(m=>(<tr key={m.id}><td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={m} size={30}/><div><div style={{fontWeight:500,fontSize:13}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.email}</div></div></div></td><td><span className={"badge badge-"+(m.userType||m.role)}>{getRoleLabel(m)}</span></td><td>{data.logs.filter(l=>l.userId===m.id).length}</td><td>{m.id!==user.id&&<button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={async()=>{if(!window.confirm("Remove "+m.name+" from Pre-Alumni Association?"))return;await dbDelete("users","id=eq."+m.id);await reload();}}>Remove</button>}</td></tr>))}</tbody>
         </table>
       </div>
       {show&&(<Modal title="Add Member" onClose={()=>setShow(false)}>
@@ -1116,6 +1215,407 @@ function Overview({user,data,myLogs,volHours,setSection}){
   );
 }
 
+
+
+
+function SemesterCalendar({data,user,reload}){
+  const [showAdd,setShowAdd]=useState(false);
+  const [form,setForm]=useState({name:"",date:"",type:"event",hours:"",description:"",openToGuests:false});
+  const [saving,setSaving]=useState(false);
+
+  const orgEvents=[...data.events.filter(e=>e.orgId==="org1")].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const upcoming=orgEvents.filter(e=>new Date(e.date+"T23:59")>=new Date());
+  const past=orgEvents.filter(e=>new Date(e.date+"T23:59")<new Date());
+
+  async function addEvent(e){
+    e.preventDefault();setSaving(true);
+    try{
+      const ev={id:`ev_${Date.now()}`,orgId:"org1",name:form.name,date:form.date,type:form.type,hours:form.type==="volunteer"?Number(form.hours):0,description:form.description,openToGuests:form.openToGuests,createdBy:user.id};
+      await dbInsert("events",eventToRow(ev));
+      await reload();
+      setShowAdd(false);setForm({name:"",date:"",type:"event",hours:"",description:"",openToGuests:false});
+    }catch(e){alert("Failed to add event.");}finally{setSaving(false);}
+  }
+
+  function EventCard({ev,isPast}){
+    const checkins=data.logs.filter(l=>l.eventId===ev.id).length;
+    const members=data.users.filter(u=>u.orgId==="org1").length;
+    const d=new Date(ev.date+"T12:00");
+    return(
+      <div style={{background:"#fff",border:`1px solid ${isPast?"#E0D8D8":MAROON}`,borderRadius:12,padding:16,marginBottom:10,opacity:isPast?.7:1,borderLeft:`4px solid ${ev.type==="volunteer"?"#15803D":MAROON}`}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8,flexWrap:"wrap"}}>
+          <div>
+            <div style={{fontWeight:700,fontSize:14,color:isPast?"#888":"#1a1a1a"}}>{ev.name}</div>
+            <div style={{fontSize:12,color:TEXT_MUTED,marginTop:3}}>
+              {d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"})}
+              {" · "}<span className={"badge badge-"+ev.type}>{ev.type}</span>
+              {ev.openToGuests&&<span style={{marginLeft:6,background:"#F9FAFB",color:"#6B7280",fontSize:10,fontWeight:600,padding:"1px 7px",borderRadius:20,border:"1px solid #E5E7EB"}}>Open</span>}
+            </div>
+            {ev.description&&<div style={{fontSize:12,color:"#666",marginTop:4}}>{ev.description}</div>}
+          </div>
+          <div style={{textAlign:"right",flexShrink:0}}>
+            {isPast&&<div style={{fontSize:12,color:TEXT_MUTED}}>{checkins}/{members} attended</div>}
+            {!isPast&&<div style={{fontSize:11,color:MAROON,fontWeight:600}}>Upcoming</div>}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return(
+    <div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:9,marginBottom:6}}>
+        <div className="page-title">Semester Calendar</div>
+        <button className="btn-sm btn-maroon" onClick={()=>setShowAdd(true)}>+ Add Event</button>
+      </div>
+      <div className="page-sub">Plan and manage all Pre-Alumni events for the semester.</div>
+
+      {upcoming.length>0&&(
+        <div style={{marginBottom:28}}>
+          <div style={{fontWeight:700,fontSize:14,marginBottom:12,color:MAROON}}>📅 Upcoming ({upcoming.length})</div>
+          {upcoming.map(ev=><EventCard key={ev.id} ev={ev} isPast={false}/>)}
+        </div>
+      )}
+      {past.length>0&&(
+        <div>
+          <div style={{fontWeight:700,fontSize:14,marginBottom:12,color:TEXT_MUTED}}>✓ Past Events ({past.length})</div>
+          {past.map(ev=><EventCard key={ev.id} ev={ev} isPast={true}/>)}
+        </div>
+      )}
+      {orgEvents.length===0&&<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36,fontSize:13}}>No events yet. Add your first event above!</div>}
+
+      {showAdd&&(
+        <Modal title="Add Event to Calendar" onClose={()=>setShowAdd(false)}>
+          <form onSubmit={addEvent}>
+            <div className="form-group"><label>Event Name</label><input placeholder="e.g. Fall General Meeting" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} required/></div>
+            <div className="form-row">
+              <div className="form-group"><label>Date</label><input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})} required/></div>
+              <div className="form-group"><label>Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})}><option value="event">Attendance Event</option><option value="volunteer">Volunteer Activity</option></select></div>
+            </div>
+            {form.type==="volunteer"&&<div className="form-group"><label>Hours</label><input type="number" min="0.5" step="0.5" placeholder="e.g. 2" value={form.hours} onChange={e=>setForm({...form,hours:e.target.value})}/></div>}
+            <div className="form-group"><label>Description (optional)</label><textarea placeholder="Brief description..." value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></div>
+            <div className="form-group" style={{display:"flex",alignItems:"center",gap:9}}>
+              <input type="checkbox" id="openG" checked={form.openToGuests} onChange={e=>setForm({...form,openToGuests:e.target.checked})} style={{width:"auto",margin:0}}/>
+              <label htmlFor="openG" style={{margin:0,fontSize:13,fontWeight:500,cursor:"pointer"}}>Open to Guests (whole school)</label>
+            </div>
+            <button type="submit" className="btn-full" disabled={saving}>{saving?<><span className="spinner"/>Adding...</>:"Add to Calendar"}</button>
+          </form>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+
+function BulkImport({data,user,reload}){
+  const [text,setText]=useState("");
+  const [preview,setPreview]=useState([]);
+  const [saving,setSaving]=useState(false);
+  const [done,setDone]=useState(false);
+  const [errors,setErrors]=useState([]);
+
+  function parseMembers(raw){
+    const lines=raw.split("\n").map(l=>l.trim()).filter(Boolean);
+    return lines.map(line=>{
+      const parts=line.split(",").map(p=>p.trim());
+      return{name:parts[0]||"",email:parts[1]||"",major:parts[2]||"",classification:parts[3]||"",role:parts[4]||"student"};
+    }).filter(m=>m.name&&m.email);
+  }
+
+  function handlePreview(){
+    const parsed=parseMembers(text);
+    setPreview(parsed);
+    setDone(false);setErrors([]);
+  }
+
+  async function handleImport(){
+    setSaving(true);setErrors([]);
+    const errs=[];
+    for(const m of preview){
+      if(data.users.find(u=>u.email===m.email)){errs.push(`${m.email} already exists`);continue;}
+      const nu={id:`u_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,name:m.name,email:m.email,password:"changeme123",mustChangePassword:true,role:"student",userType:m.role||"student",orgId:"org1",major:m.major,classification:m.classification,bio:"",photo:null,instagram:"",linkedin:""};
+      try{await dbInsert("users",userToRow(nu));}catch(e){errs.push(`Failed to add ${m.email}`);}
+    }
+    await reload();
+    setErrors(errs);setDone(true);setSaving(false);
+    if(errs.length===0){setText("");setPreview([]);}
+  }
+
+  return(
+    <div>
+      <div className="page-title">Bulk Member Import</div>
+      <div className="page-sub">Add all your members at once at the start of the semester.</div>
+
+      <div style={{background:"#EFF6FF",border:"1px solid #BFDBFE",borderRadius:12,padding:16,marginBottom:20,fontSize:13,color:"#1D4ED8"}}>
+        <strong>Format:</strong> One member per line — <code style={{background:"#DBEAFE",padding:"1px 5px",borderRadius:4}}>Full Name, Email, Major, Classification, Role</code><br/>
+        <span style={{fontSize:12,marginTop:4,display:"block",color:"#3B82F6"}}>Role options: student, officer. Major and Classification are optional. Default password is changeme123.</span>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:24,alignItems:"start"}}>
+        <div>
+          <div className="form-group">
+            <label>Paste Member List</label>
+            <textarea
+              placeholder={"John Smith, john@aamu.edu, Biology, Freshman, student\nJane Doe, jane@aamu.edu, Accounting, Senior, officer\nMike Johnson, mike@aamu.edu, Engineering, Junior"}
+              value={text}
+              onChange={e=>{setText(e.target.value);setPreview([]);setDone(false);}}
+              style={{minHeight:200,fontFamily:"monospace",fontSize:12}}
+            />
+          </div>
+          <div style={{display:"flex",gap:9}}>
+            <button className="btn-sm btn-maroon" onClick={handlePreview} disabled={!text.trim()}>Preview Members</button>
+            {preview.length>0&&<button className="btn-sm btn-ghost" onClick={()=>{setText("");setPreview([]);setDone(false);}}>Clear</button>}
+          </div>
+        </div>
+
+        <div>
+          {preview.length>0&&(
+            <div>
+              <div style={{fontWeight:700,fontSize:14,marginBottom:12}}>Preview ({preview.length} members)</div>
+              <div style={{maxHeight:280,overflowY:"auto",marginBottom:14}}>
+                {preview.map((m,i)=>(
+                  <div key={i} style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:9,padding:"10px 14px",marginBottom:7,fontSize:13}}>
+                    <div style={{fontWeight:600}}>{m.name}</div>
+                    <div style={{fontSize:11,color:TEXT_MUTED}}>{m.email} · {m.major||"No major"} · {m.classification||"No class"} · <span className={"badge badge-"+m.role}>{m.role}</span></div>
+                  </div>
+                ))}
+              </div>
+              {!done&&<button className="btn-full" onClick={handleImport} disabled={saving}>{saving?<><span className="spinner"/>Importing...</>:`Import ${preview.length} Members`}</button>}
+              {done&&errors.length===0&&<div className="success-msg">✅ All {preview.length} members imported successfully! Default password: changeme123</div>}
+              {errors.length>0&&<div className="error-msg">{errors.map((e,i)=><div key={i}>{e}</div>)}</div>}
+            </div>
+          )}
+          {preview.length===0&&<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:28,fontSize:13}}>Paste your member list on the left and click Preview to review before importing.</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function QRCheckin({data,setData,reload}){
+  const [selEv,setSelEv]=useState("");
+  const [showQR,setShowQR]=useState(false);
+  const orgEvents=data.events.filter(e=>e.orgId==="org1");
+  const ev=orgEvents.find(e=>e.id===selEv);
+  const checkinUrl=ev?`${window.location.origin}${window.location.pathname}?checkin=${ev.id}`:"";
+  const qrUrl=ev?`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(checkinUrl)}`:"";
+
+  function printQR(){
+    const w=window.open('','_blank');
+    w.document.write(`
+      <html><head><style>
+        body{font-family:Arial,sans-serif;text-align:center;padding:40px}
+        h2{color:#6B1B2A;margin-bottom:8px}
+        p{color:#666;font-size:14px;margin-bottom:24px}
+        img{border:3px solid #6B1B2A;border-radius:12px;padding:12px}
+        .footer{margin-top:24px;font-size:12px;color:#999}
+      </style></head>
+      <body>
+        <h2>Pre-Alumni Association</h2>
+        <p>Scan to check in to: <strong>${ev?.name}</strong></p>
+        <img src="${qrUrl}" width="250" height="250"/>
+        <div class="footer">Alabama A&M University · aamu-rso-tracker.netlify.app</div>
+      </body></html>
+    `);
+    w.document.close();
+    w.print();
+  }
+
+  return(
+    <div>
+      <div className="page-title">QR Code Check-in</div>
+      <div className="page-sub">Generate a QR code for any event — members scan to check in instantly.</div>
+      <div className="form-group" style={{maxWidth:420,marginBottom:22}}>
+        <label>Select Event</label>
+        <select value={selEv} onChange={e=>setSelEv(e.target.value)}>
+          <option value="">-- Choose an event --</option>
+          {orgEvents.map(e=><option key={e.id} value={e.id}>{e.name}</option>)}
+        </select>
+      </div>
+      {ev&&(
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:24,alignItems:"start"}}>
+          <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:24,textAlign:"center"}}>
+            <div style={{fontWeight:700,fontSize:15,marginBottom:4}}>{ev.name}</div>
+            <div style={{fontSize:12,color:TEXT_MUTED,marginBottom:20}}>{new Date(ev.date+"T12:00").toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</div>
+            <img src={qrUrl} alt="QR Code" style={{width:220,height:220,border:`3px solid ${MAROON}`,borderRadius:12,padding:10}}/>
+            <div style={{marginTop:20,display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+              <button className="btn-sm btn-maroon" onClick={printQR}>🖨️ Print QR Code</button>
+              <a href={qrUrl} download={`${ev.name}-qr.png`} className="btn-sm btn-ghost" style={{textDecoration:"none",display:"inline-flex",alignItems:"center"}}>⬇ Download</a>
+            </div>
+            <div style={{marginTop:16,padding:"10px 14px",background:"#FAF0F2",borderRadius:9,fontSize:11,color:TEXT_MUTED,lineHeight:1.6}}>
+              Members scan this QR code with their phone camera to check in. They must be logged in to the portal.
+            </div>
+          </div>
+          <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:24}}>
+            <div style={{fontWeight:700,fontSize:14,marginBottom:14}}>How it works</div>
+            {[
+              {n:"1",t:"Display or Print",d:"Show this QR code on a screen or print it out at the event entrance."},
+              {n:"2",t:"Members Scan",d:"Members open their phone camera and scan the QR code."},
+              {n:"3",t:"Auto Check-in",d:"They're taken straight to the check-in page for this event — no searching needed."},
+              {n:"4",t:"Real-time Updates",d:"Attendance records update instantly in your dashboard."},
+            ].map(s=>(
+              <div key={s.n} style={{display:"flex",gap:12,marginBottom:16}}>
+                <div style={{width:28,height:28,borderRadius:"50%",background:MAROON,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{s.n}</div>
+                <div><div style={{fontWeight:600,fontSize:13,marginBottom:3}}>{s.t}</div><div style={{fontSize:12,color:TEXT_MUTED,lineHeight:1.6}}>{s.d}</div></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {!ev&&<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36,fontSize:13}}>Select an event above to generate its QR code.</div>}
+    </div>
+  );
+}
+
+function Analytics({data}){
+  const orgLogs=data.logs.filter(l=>l.orgId==="org1");
+  const orgEvents=data.events.filter(e=>e.orgId==="org1");
+  const members=data.users.filter(u=>u.orgId==="org1");
+  const totalVolHours=orgLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
+
+  // Participation rate per member
+  const memberStats=members.map(m=>{
+    const logs=orgLogs.filter(l=>l.userId===m.id);
+    const events=logs.filter(l=>l.type==="event").length;
+    const hours=logs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
+    const rate=orgEvents.length>0?Math.round((events/orgEvents.length)*100):0;
+    return{...m,events,hours,rate,total:logs.length};
+  }).sort((a,b)=>b.total-a.total);
+
+  // Event attendance counts
+  const eventStats=orgEvents.map(ev=>({
+    ...ev,
+    count:orgLogs.filter(l=>l.eventId===ev.id).length
+  })).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
+
+  // Monthly activity (last 6 months)
+  const months=[];
+  for(let i=5;i>=0;i--){
+    const d=new Date();
+    d.setMonth(d.getMonth()-i);
+    const key=d.toLocaleDateString("en-US",{month:"short",year:"2-digit"});
+    const count=orgLogs.filter(l=>{
+      const ld=new Date(l.createdAt);
+      return ld.getMonth()===d.getMonth()&&ld.getFullYear()===d.getFullYear();
+    }).length;
+    months.push({key,count});
+  }
+  const maxMonthCount=Math.max(...months.map(m=>m.count),1);
+
+  function exportPDF(){
+    const rows=memberStats.map(m=>`
+      <tr>
+        <td>${m.name}</td>
+        <td>${m.email}</td>
+        <td style="text-align:center">${m.events}</td>
+        <td style="text-align:center">${m.hours}</td>
+        <td style="text-align:center">${m.rate}%</td>
+      </tr>
+    `).join('');
+    const html=`
+      <html><head><style>
+        body{font-family:Arial,sans-serif;padding:32px;color:#1a1a1a}
+        h1{color:#6B1B2A;font-size:22px;margin-bottom:4px}
+        p{color:#888;font-size:13px;margin-bottom:24px}
+        table{width:100%;border-collapse:collapse;font-size:13px}
+        th{background:#6B1B2A;color:white;padding:10px 14px;text-align:left}
+        td{padding:9px 14px;border-bottom:1px solid #eee}
+        tr:nth-child(even) td{background:#FAF8F8}
+        .stats{display:flex;gap:24px;margin-bottom:24px}
+        .stat{background:#FAF0F2;border-radius:8px;padding:14px 20px;text-align:center}
+        .stat-num{font-size:24px;font-weight:700;color:#6B1B2A}
+        .stat-label{font-size:11px;color:#888;margin-top:4px}
+      </style></head><body>
+        <h1>Pre-Alumni Association — Participation Report</h1>
+        <p>Generated ${new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</p>
+        <div class="stats">
+          <div class="stat"><div class="stat-num">${members.length}</div><div class="stat-label">Total Members</div></div>
+          <div class="stat"><div class="stat-num">${orgEvents.length}</div><div class="stat-label">Total Events</div></div>
+          <div class="stat"><div class="stat-num">${orgLogs.length}</div><div class="stat-label">Total Logs</div></div>
+          <div class="stat"><div class="stat-num">${totalVolHours}</div><div class="stat-label">Volunteer Hours</div></div>
+        </div>
+        <table>
+          <thead><tr><th>Member</th><th>Email</th><th>Events</th><th>Vol Hours</th><th>Attendance Rate</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </body></html>
+    `;
+    const w=window.open('','_blank');
+    w.document.write(html);
+    w.document.close();
+    w.print();
+  }
+
+  return(
+    <div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:6}}>
+        <div className="page-title">Analytics</div>
+        <button className="btn-sm btn-maroon" onClick={exportPDF}>⬇ Export PDF Report</button>
+      </div>
+      <div className="page-sub">Participation overview for Pre-Alumni Association.</div>
+
+      <div className="stats-row">
+        <div className="stat-card"><div className="stat-num">{members.length}</div><div className="stat-label">Total Members</div></div>
+        <div className="stat-card"><div className="stat-num">{orgEvents.length}</div><div className="stat-label">Total Events</div></div>
+        <div className="stat-card"><div className="stat-num">{orgLogs.length}</div><div className="stat-label">Total Logs</div></div>
+        <div className="stat-card"><div className="stat-num">{totalVolHours}</div><div className="stat-label">Volunteer Hours</div></div>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:20,marginBottom:24}}>
+        <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:22}}>
+          <div style={{fontWeight:700,fontSize:14,marginBottom:16}}>📅 Activity by Month</div>
+          <div style={{display:"flex",alignItems:"flex-end",gap:8,height:120}}>
+            {months.map(m=>(
+              <div key={m.key} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+                <div style={{fontSize:11,fontWeight:600,color:MAROON}}>{m.count||""}</div>
+                <div style={{width:"100%",background:MAROON,borderRadius:"4px 4px 0 0",height:`${Math.max((m.count/maxMonthCount)*100,4)}%`,minHeight:4,transition:"height .3s"}}/>
+                <div style={{fontSize:10,color:TEXT_MUTED,textAlign:"center"}}>{m.key}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:22}}>
+          <div style={{fontWeight:700,fontSize:14,marginBottom:16}}>📋 Recent Event Attendance</div>
+          {eventStats.length===0?<div style={{color:TEXT_MUTED,fontSize:13}}>No events yet.</div>
+          :eventStats.map(ev=>(
+            <div key={ev.id} style={{marginBottom:12}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                <div style={{fontSize:12,fontWeight:600,color:"#1a1a1a"}}>{ev.name}</div>
+                <div style={{fontSize:12,color:MAROON,fontWeight:700}}>{ev.count}/{members.length}</div>
+              </div>
+              <div style={{background:"#F3F0F0",borderRadius:20,height:7,overflow:"hidden"}}>
+                <div style={{background:MAROON,height:"100%",borderRadius:20,width:`${members.length>0?(ev.count/members.length)*100:0}%`,transition:"width .4s"}}/>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:22}}>
+        <div style={{fontWeight:700,fontSize:14,marginBottom:16}}>👥 Member Participation</div>
+        {memberStats.length===0?<div style={{color:TEXT_MUTED,fontSize:13}}>No members yet.</div>
+        :<div className="table-wrap"><table><thead><tr><th>Member</th><th>Events</th><th>Vol Hours</th><th>Attendance Rate</th></tr></thead>
+        <tbody>{memberStats.map(m=>(
+          <tr key={m.id}>
+            <td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={m} size={28}/><div><div style={{fontWeight:500,fontSize:13}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.email}</div></div></div></td>
+            <td>{m.events}</td>
+            <td>{m.hours} hrs</td>
+            <td>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <div style={{background:"#F3F0F0",borderRadius:20,height:7,width:80,overflow:"hidden"}}>
+                  <div style={{background:m.rate>=75?"#15803D":m.rate>=50?MAROON:"#F59E0B",height:"100%",borderRadius:20,width:`${m.rate}%`}}/>
+                </div>
+                <span style={{fontSize:12,fontWeight:600,color:m.rate>=75?"#15803D":m.rate>=50?MAROON:"#F59E0B"}}>{m.rate}%</span>
+              </div>
+            </td>
+          </tr>
+        ))}</tbody></table></div>}
+      </div>
+    </div>
+  );
+}
+
 function Dashboard({user,data,setData,reload}){
   const [section,setSection]=useState("overview");
   const [drawerOpen,setDrawerOpen]=useState(false);
@@ -1130,10 +1630,13 @@ function Dashboard({user,data,setData,reload}){
     {key:"profile",icon:"👤",label:"My Profile"},
     ...(isOfficer?[
       {key:"attendance",icon:"📊",label:"Attendance Records",sec:"Officer"},
+      {key:"analytics",icon:"📈",label:"Analytics"},
+      {key:"qr",icon:"📱",label:"QR Check-in"},
       {key:"events",icon:"📅",label:"Manage Events"},
       {key:"members",icon:"👥",label:"Members"},
       {key:"all-logs",icon:"📋",label:"All Logs"},
       {key:"users",icon:"🔑",label:"All Users"},
+      {key:"calendar",icon:"📅",label:"Semester Calendar",sec:"Planning"},{key:"bulk",icon:"📥",label:"Bulk Import"},
     ]:[]),
   ];
   function goTo(k){setSection(k);setDrawerOpen(false);}
@@ -1154,10 +1657,14 @@ function Dashboard({user,data,setData,reload}){
         {section==="my-logs"&&<MyLogs data={data} myLogs={myLogs}/>}
         {section==="profile"&&<ProfilePage user={user} data={data} setData={setData} reload={reload}/>}
         {section==="attendance"&&isOfficer&&<AttendanceRecords data={data} setData={setData} reload={reload}/>}
+        {section==="analytics"&&isOfficer&&<Analytics data={data}/>}
+        {section==="qr"&&isOfficer&&<QRCheckin data={data} setData={setData} reload={reload}/>}
         {section==="events"&&isOfficer&&<ManageEvents user={user} data={data} setData={setData} reload={reload}/>}
         {section==="members"&&isOfficer&&<Members user={user} data={data} setData={setData} reload={reload}/>}
         {section==="all-logs"&&isOfficer&&<AllLogs data={data}/>}
         {section==="users"&&isOfficer&&<AllUsers data={data}/>}
+        {section==="calendar"&&isOfficer&&<SemesterCalendar data={data} user={user} reload={reload}/>}
+        {section==="bulk"&&isOfficer&&<BulkImport data={data} user={user} reload={reload}/>}
       </main>
       <button className="dash-toggle" onClick={()=>setDrawerOpen(o=>!o)}>{drawerOpen?"✕":"☰"}</button>
     </div>
@@ -1170,6 +1677,8 @@ export default function App(){
   const [user,setUser]=useState(()=>{try{const u=localStorage.getItem("pa_user");return u?JSON.parse(u):null;}catch{return null;}});
   const [authMode,setAuthMode]=useState(null);
   const [loading,setLoading]=useState(true);
+  const [dbError,setDbError]=useState("");
+  const [verifyMsg,setVerifyMsg]=useState("");
 
   async function reload(){
     try{
@@ -1180,12 +1689,40 @@ export default function App(){
       ]);
       setData(d=>({...d,users,events,logs}));
       return {users,events,logs};
-    }catch(e){console.error("Reload error:",e);return null;}
+    }catch(e){console.error("Reload error:",e);setDbError("Connection issue. Check your internet and refresh.");return null;}
   }
 
   useEffect(()=>{
-    reload().finally(()=>setLoading(false));
+    reload().then(async(fresh)=>{
+      // Handle email verification token
+      const params=new URLSearchParams(window.location.search);
+      const token=params.get("verify");
+      const checkinId=params.get("checkin");
+      if(token&&fresh){
+        const found=fresh.users.find(u=>u.verifyToken===token);
+        if(found){
+          await dbUpdate("users","id=eq."+found.id,{verified:true,verify_token:null});
+          await reload();
+          setVerifyMsg("success");
+          setPage("auth");setAuthMode("login");
+        } else {
+          setVerifyMsg("invalid");
+        }
+      }
+      if(checkinId) sessionStorage.setItem("qr_checkin",checkinId);
+    }).finally(()=>setLoading(false));
   },[]);
+
+  // After login, auto-navigate to checkin if came from QR
+  useEffect(()=>{
+    if(user){
+      const qrId=sessionStorage.getItem("qr_checkin");
+      if(qrId){
+        sessionStorage.removeItem("qr_checkin");
+        setPage("dashboard");
+      }
+    }
+  },[user]);
 
   // Session timeout - 30 minutes inactivity
   useEffect(()=>{
@@ -1210,18 +1747,23 @@ export default function App(){
       const hashed=await hashPassword(form.password);
       const found=data.users.find(u=>u.email===form.email&&u.password===hashed);
       if(!found){setError("Incorrect email or password.");return;}
+      if(found.role!=="superadmin"&&!found.verified&&!found.mustChangePassword){
+        setError("Please verify your email first. Check your inbox for the verification link.");return;
+      }
       setUser(found);localStorage.setItem("pa_user",JSON.stringify(found));setPage("dashboard");
     } else {
       if(!form.name||!form.email||!form.password){setError("Please fill in all required fields.");return;}
       if(data.users.find(u=>u.email===form.email)){setError("An account with that email already exists.");return;}
       if(form.userType==="officer"&&form.officerCode!==OFFICER_CODE){setError("Invalid officer invite code. Contact your Pre-Alumni president.");return;}
       const hashed=await hashPassword(form.password);
-      const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,password:hashed,role:"student",userType:form.userType||"student",orgId:"org1",major:form.major||"",classification:form.classification||"",bio:"",photo:null,instagram:"",linkedin:""};
+      const token=Math.random().toString(36).substring(2)+Math.random().toString(36).substring(2);
+      const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,password:hashed,role:"student",userType:form.userType||"student",orgId:"org1",major:form.major||"",classification:form.classification||"",bio:"",photo:null,instagram:"",linkedin:"",verified:false,verifyToken:token};
       try{
         await dbInsert("users",userToRow(nu));
-        const fresh=await reload();
-        const saved=fresh?.users?.find(u=>u.email===nu.email)||nu;
-        sendWelcomeEmail(saved);setUser(saved);localStorage.setItem("pa_user",JSON.stringify(saved));setPage("dashboard");
+        await reload();
+        await sendVerificationEmail(nu, token);
+        setError("");
+        setAuthMode("check_email");
       }catch(e){setError("Signup failed. Please try again.");}
     }
   }
@@ -1238,13 +1780,28 @@ export default function App(){
     <>
       <style>{css}</style>
       <Navbar page={page} setPage={setPage} user={user} onLogout={()=>{setUser(null);localStorage.removeItem("pa_user");setPage("home");}} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>
+      {dbError&&<div style={{background:"#FEF2F2",borderBottom:"1px solid #FECACA",color:"#991B1B",padding:"10px 20px",fontSize:13,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>⚠️ {dbError} <button onClick={()=>setDbError("")} style={{background:"none",border:"none",color:"#991B1B",cursor:"pointer",fontSize:16}}>✕</button></div>}
+      {user?.mustChangePassword&&page==="dashboard"&&<div style={{background:"#FEF9C3",borderBottom:"1px solid #FDE68A",color:"#92400E",padding:"10px 20px",fontSize:13,textAlign:"center"}}>⚠️ Your account was set up by an officer. Please <strong>change your password</strong> in My Profile → Security before continuing.</div>}
+      {verifyMsg==="success"&&<div style={{background:"#F0FDF4",borderBottom:"1px solid #BBF7D0",color:"#166534",padding:"10px 20px",fontSize:13,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>✅ Email verified! You can now sign in. <button onClick={()=>setVerifyMsg("")} style={{background:"none",border:"none",color:"#166534",cursor:"pointer",fontSize:16}}>✕</button></div>}
+      {verifyMsg==="invalid"&&<div style={{background:"#FEF2F2",borderBottom:"1px solid #FECACA",color:"#991B1B",padding:"10px 20px",fontSize:13,textAlign:"center"}}>❌ Invalid or expired verification link.</div>}
       {page==="home"&&<HomePage setPage={setPage} user={user} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>}
       {page==="about"&&<AboutPage/>}
       {page==="resources"&&<ResourcesPage/>}
       {page==="contact"&&<ContactPage/>}
-      {page==="auth"&&<AuthPage mode={authMode||"login"} onAuth={handleAuth} onSwitch={setAuthMode}/>}
+      {page==="auth"&&authMode==="forgot"&&<ForgotPassword onBack={()=>setAuthMode("login")} data={data} reload={reload}/>}
+      {page==="auth"&&authMode==="check_email"&&(
+        <div style={{minHeight:"80vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"36px 14px"}}>
+          <div className="form-wrap" style={{textAlign:"center",maxWidth:460}}>
+            <div style={{fontSize:48,marginBottom:16}}>📧</div>
+            <div className="form-title">Check your email!</div>
+            <div className="form-sub" style={{marginBottom:20}}>We sent a verification link to your email address. Click the link to activate your account then come back to sign in.</div>
+            <button className="btn-full" onClick={()=>setAuthMode("login")}>Go to Sign In</button>
+          </div>
+        </div>
+      )}
+      {page==="auth"&&authMode!=="forgot"&&<AuthPage mode={authMode||"login"} onAuth={handleAuth} onSwitch={setAuthMode}/>}
       {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData} reload={reload}/>}
-      {page==="dashboard"&&!user&&<AuthPage mode="login" onAuth={handleAuth} onSwitch={setAuthMode}/>}
+      {page==="dashboard"&&!user&&<AuthPage mode="login" onAuth={handleAuth} onSwitch={m=>{setAuthMode(m);setPage("auth");}}/>}
     </>
   );
 }
