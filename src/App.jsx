@@ -14,13 +14,44 @@ const IMG_VOLUNTEER="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAMC
 
 const OFFICER_CODE="PREALUMNI2025";
 
-const INIT={
-  users:[{id:"u1",name:"Ayoola Akinlawon",email:"ahmedakinlawon06@gmail.com",role:"superadmin",orgId:"org1",password:"admin123",major:"Senior Accounting",userType:"officer",bio:"Platform creator.",photo:null,instagram:"",linkedin:"",verified:true,mustChangePassword:false}],
-  orgs:[{id:"org1",name:"Pre-Alumni Association",description:"AAMU Pre-Alumni Association Member Portal",adminId:"u1"}],
-  events:[],logs:[]
-};
-function loadData(){try{const r=localStorage.getItem("prealumni_v3");if(r)return JSON.parse(r);}catch{}return INIT;}
-function saveData(d){try{localStorage.setItem("prealumni_v3",JSON.stringify(d));}catch{}}
+// ── Supabase ──────────────────────────────────────────────
+const SUPA_URL="https://wqdpiuuhywilizzdlfnv.supabase.co";
+const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxZHBpdXVoeXdpbGl6emRsZm52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5NTc4OTYsImV4cCI6MjA5ODUzMzg5Nn0.c_KSwf5nFJFLChpXb1CskKRSrthDPi3QXcSNCZVk5WA";
+const HEADERS={"Content-Type":"application/json","apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY};
+
+async function dbGet(table,qs=""){
+  try{
+    const r=await fetch(`${SUPA_URL}/rest/v1/${table}?select=*&${qs}&order=created_at.asc`,{headers:HEADERS});
+    if(!r.ok){const t=await r.text();console.error("dbGet error",table,t);return[];}
+    return r.json();
+  }catch(e){console.error("dbGet fetch error",e);return[];}
+}
+async function dbInsert(table,row){
+  try{
+    const r=await fetch(`${SUPA_URL}/rest/v1/${table}`,{method:"POST",headers:{...HEADERS,Prefer:"resolution=merge-duplicates"},body:JSON.stringify(row)});
+    if(!r.ok){const t=await r.text();console.error("dbInsert error",table,t);throw new Error(t);}
+  }catch(e){throw e;}
+}
+async function dbUpdate(table,filter,patch){
+  try{
+    const r=await fetch(`${SUPA_URL}/rest/v1/${table}?${filter}`,{method:"PATCH",headers:HEADERS,body:JSON.stringify(patch)});
+    if(!r.ok){const t=await r.text();console.error("dbUpdate error",t);}
+  }catch(e){console.error("dbUpdate error",e);}
+}
+async function dbDelete(table,filter){
+  try{
+    await fetch(`${SUPA_URL}/rest/v1/${table}?${filter}`,{method:"DELETE",headers:HEADERS});
+  }catch(e){console.error("dbDelete error",e);}
+}
+
+function rowToUser(r){return{id:r.id,name:r.name,email:r.email,password:r.password,role:r.role,userType:r.user_type,orgId:r.org_id,major:r.major,classification:r.classification,bio:r.bio,photo:r.photo,instagram:r.instagram,linkedin:r.linkedin,mustChangePassword:r.must_change_password,verified:r.verified,verifyToken:r.verify_token,createdAt:r.created_at};}
+function userToRow(u){return{id:u.id,name:u.name,email:u.email,password:u.password,role:u.role,user_type:u.userType,org_id:u.orgId,major:u.major,classification:u.classification,bio:u.bio,photo:u.photo,instagram:u.instagram,linkedin:u.linkedin,must_change_password:u.mustChangePassword||false,verified:u.verified||false,verify_token:u.verifyToken||null};}
+function rowToEvent(r){return{id:r.id,orgId:r.org_id,name:r.name,date:r.date,type:r.type,hours:r.hours,description:r.description,openToGuests:r.open_to_guests,createdBy:r.created_by,createdAt:r.created_at};}
+function eventToRow(e){return{id:e.id,org_id:e.orgId,name:e.name,date:e.date,type:e.type,hours:e.hours,description:e.description,open_to_guests:e.openToGuests,created_by:e.createdBy};}
+function rowToLog(r){return{id:r.id,userId:r.user_id,eventId:r.event_id,orgId:r.org_id,type:r.type,hours:r.hours,note:r.note,eventName:r.event_name,date:r.date,proofName:r.proof_name,createdAt:r.created_at};}
+function logToRow(l){return{id:l.id,user_id:l.userId,event_id:l.eventId,org_id:l.orgId,type:l.type,hours:l.hours,note:l.note,event_name:l.eventName,date:l.date,proof_name:l.proofName};}
+
+const INIT={users:[],orgs:[{id:"org1",name:"Pre-Alumni Association"}],events:[],logs:[]};
 
 // ── Security ──────────────────────────────────────────────
 async function hashPassword(password){
@@ -1670,7 +1701,7 @@ export default function App(){
       ]);
       setData(d=>({...d,users,events,logs}));
       return {users,events,logs};
-    }catch(e){console.error("Reload error:",e);setDbError("Connection issue. Check your internet and refresh.");return null;}
+    }catch(e){console.error("Reload error:",e);return null;}
   }
 
   useEffect(()=>{
@@ -1761,7 +1792,7 @@ export default function App(){
     <>
       <style>{css}</style>
       <Navbar page={page} setPage={setPage} user={user} onLogout={()=>{setUser(null);localStorage.removeItem("pa_user");setPage("home");}} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>
-      {dbError&&<div style={{background:"#FEF2F2",borderBottom:"1px solid #FECACA",color:"#991B1B",padding:"10px 20px",fontSize:13,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>⚠️ {dbError} <button onClick={()=>setDbError("")} style={{background:"none",border:"none",color:"#991B1B",cursor:"pointer",fontSize:16}}>✕</button></div>}
+
       {user?.mustChangePassword&&page==="dashboard"&&<div style={{background:"#FEF9C3",borderBottom:"1px solid #FDE68A",color:"#92400E",padding:"10px 20px",fontSize:13,textAlign:"center"}}>⚠️ Your account was set up by an officer. Please <strong>change your password</strong> in My Profile → Security before continuing.</div>}
       {verifyMsg==="success"&&<div style={{background:"#F0FDF4",borderBottom:"1px solid #BBF7D0",color:"#166534",padding:"10px 20px",fontSize:13,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>✅ Email verified! You can now sign in. <button onClick={()=>setVerifyMsg("")} style={{background:"none",border:"none",color:"#166534",cursor:"pointer",fontSize:16}}>✕</button></div>}
       {verifyMsg==="invalid"&&<div style={{background:"#FEF2F2",borderBottom:"1px solid #FECACA",color:"#991B1B",padding:"10px 20px",fontSize:13,textAlign:"center"}}>❌ Invalid or expired verification link.</div>}
