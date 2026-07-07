@@ -696,7 +696,34 @@ function ResourcesPage(){
 function ContactPage(){
   const [form,setForm]=useState({name:"",email:"",subject:"",message:""});
   const [sent,setSent]=useState(false);
-  function handleSend(e){e.preventDefault();if(!form.name||!form.email||!form.message)return;setSent(true);setForm({name:"",email:"",subject:"",message:""});setTimeout(()=>setSent(false),5000);}
+  const [sending,setSending]=useState(false);
+  async function handleSend(e){
+    e.preventDefault();
+    if(!form.name||!form.email||!form.message)return;
+    setSending(true);
+    await sendEmail({
+      to:"ahmedakinlawon06@gmail.com",
+      subject:`Pre-Alumni Portal Message: ${form.subject||"New message from "+form.name}`,
+      html:`
+        <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #E0D8D8;">
+          <div style="background:#6B1B2A;padding:24px 28px;">
+            <h2 style="color:white;margin:0;font-size:18px;">New Message — Pre-Alumni Portal</h2>
+          </div>
+          <div style="padding:24px 28px;">
+            <p style="margin:0 0 8px;font-size:14px;color:#555;"><strong>From:</strong> ${form.name}</p>
+            <p style="margin:0 0 8px;font-size:14px;color:#555;"><strong>Email:</strong> ${form.email}</p>
+            <p style="margin:0 0 16px;font-size:14px;color:#555;"><strong>Subject:</strong> ${form.subject||"No subject"}</p>
+            <div style="background:#FAF8F8;border-radius:8px;padding:16px;font-size:14px;color:#333;line-height:1.7;">${form.message}</div>
+            <p style="margin-top:16px;font-size:12px;color:#8A7070;">Sent from prealumni.org contact form</p>
+          </div>
+        </div>
+      `
+    });
+    setSending(false);
+    setSent(true);
+    setForm({name:"",email:"",subject:"",message:""});
+    setTimeout(()=>setSent(false),5000);
+  }
   return(
     <div>
       <div className="page-hero"><div className="page-hero-content"><h1>Get in Touch</h1><p>Questions about the portal or your membership? Reach out directly.</p></div></div>
@@ -737,7 +764,7 @@ function ContactPage(){
               </div>
               <div className="form-group"><label>Subject</label><input placeholder="What is this about?" value={form.subject} onChange={e=>setForm({...form,subject:e.target.value})}/></div>
               <div className="form-group"><label>Message</label><textarea placeholder="Tell us what you need..." value={form.message} onChange={e=>setForm({...form,message:e.target.value})}/></div>
-              <button type="submit" className="btn-full">Send Message</button>
+              <button type="submit" className="btn-full" disabled={sending}>{sending?<><span className="spinner"/>Sending...</>:"Send Message"}</button>
             </form>
           </div>
         </div>
