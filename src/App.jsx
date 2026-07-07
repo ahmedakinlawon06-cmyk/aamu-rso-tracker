@@ -67,22 +67,14 @@ const RESEND_KEY="re_fiD3XzdL_KbPbAmfA7RaAyCXeuTmp6Gxv";
 
 async function sendEmail({to, subject, html}){
   try{
-    const res=await fetch("https://api.resend.com/emails",{
+    const res=await fetch("/.netlify/functions/send-email",{
       method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer "+RESEND_KEY,
-      },
-      body:JSON.stringify({
-        from:"Pre-Alumni Association <noreply@prealumni.org>",
-        to:[to],
-        subject,
-        html
-      })
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({to,subject,html})
     });
     const data=await res.json();
-    if(!res.ok){console.error("Resend error:",res.status,data);}
-    else{console.log("Email sent successfully:",data);}
+    if(!res.ok){console.error("Email error:",data);}
+    else{console.log("Email sent!",data);}
     return data;
   }catch(e){console.error("Email fetch error:",e);}
 }
