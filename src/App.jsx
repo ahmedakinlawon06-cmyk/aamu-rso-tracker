@@ -145,7 +145,7 @@ async function sendPasswordChangedEmail(user){
           <h2 style="color:#6B1B2A;font-size:20px;margin:0 0 12px;">Password Changed 🔐</h2>
           <p style="color:#444;line-height:1.7;font-size:14px;">Hi ${user.name}, your Pre-Alumni Association portal password was recently changed.</p>
           <div style="background:#FEF9C3;border:1px solid #FDE68A;border-radius:10px;padding:16px;margin:20px 0;">
-            <p style="margin:0;font-size:13px;color:#92400E;">⚠️ If you did not make this change, please contact an officer immediately.</p>
+            <p style="margin:0;font-size:13px;color:#92400E;">⚠️ If you did not make this change, please contact an officer or the portal creator immediately.</p>
           </div>
           <p style="color:#444;line-height:1.7;font-size:14px;">If this was you, no further action is needed.</p>
           <a href="https://prealumni.org" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
@@ -350,7 +350,7 @@ tr:hover td{background:#FAF8F8}
 const SERVICES=[
   {icon:"📋",title:"Event Attendance Tracking",for:"Members & Officers",color:"#EFF6FF",pts:["Self check-in from any device","Officers can add or remove attendees","See who attended vs absent","Export attendance as CSV"]},
   {icon:"🤝",title:"Volunteer Hour Logging",for:"Everyone",color:"#F0FDF4",pts:["Log hours for any activity","Upload photo proof","Add descriptions to each entry","Build your full service portfolio"]},
-  {icon:"📊",title:"Attendance Records",for:"Officers",color:"#F3E8FF",pts:["Pull records for any event","Edit or correct any entry","Mark absent members present","Export as CSV"]},
+  {icon:"📊",title:"Officer Management Tools",for:"Officers",color:"#F3E8FF",pts:["Pull and edit attendance records","Add or remove members","Create and manage events","Export reports as CSV"]},
   {icon:"👥",title:"Member Management",for:"Officers",color:"#FEF9C3",pts:["Add or remove members","Assign officer roles","View full member roster","See each member's logs"]},
   {icon:"👤",title:"Member Profiles",for:"Everyone",color:"#FFF0F3",pts:["Upload a profile photo","Add bio and social links","View your participation history","Edit anytime"]},
   {icon:"🌐",title:"Guest Access",for:"Guests",color:"#F9FAFB",pts:["Check in to open events","Log volunteer hours","No org commitment needed","Upgrade to member anytime"]},
@@ -552,12 +552,12 @@ function HomePage({setPage,user,onLogin}){
           <p className="section-sub" style={{textAlign:"center",margin:"0 auto 40px"}}>Built specifically for Pre-Alumni Association — no extra clutter.</p>
         </div>
         <div className="card-grid">
-          {[{icon:"📋",title:"Event Attendance",desc:"Self check-in or officer check-in with real-time editable logs and CSV export."},
-            {icon:"🤝",title:"Volunteer Logging",desc:"Track hours, add descriptions, and upload photo proof for every entry."},
-            {icon:"✏️",title:"Editable Records",desc:"Officers can fairly add, remove, or correct any attendance record."},
-            {icon:"👤",title:"Member Profiles",desc:"Photo, bio, major, social links, and your full participation history."},
-            {icon:"🌐",title:"Guest Access",desc:"Guests can check in to open events and log volunteer hours without joining."},
-            {icon:"📱",title:"Mobile Friendly",desc:"Works great on phone — dashboard slides open on mobile with a single tap."},
+          {[{icon:"🎓",title:"For Members",desc:"Check in to events, log volunteer hours, and keep a full record of your involvement."},
+            {icon:"📋",title:"For Officers",desc:"Manage the roster, create events, pull attendance, export reports, and track your own hours."},
+            {icon:"👤",title:"For Guests",desc:"Attend open school-wide events and log volunteer hours — no full membership required."},
+            {icon:"📊",title:"Real-Time Records",desc:"Every check-in and volunteer log saves instantly and is accessible from any device."},
+            {icon:"📧",title:"Email Notifications",desc:"Get notified when your account is created and when your password changes."},
+            {icon:"📱",title:"Mobile First",desc:"Built to work perfectly on your phone — the dashboard slides open with one tap."},
           ].map((f,i)=>(
             <div className="card" key={i}><div className="card-icon">{f.icon}</div><h3>{f.title}</h3><p>{f.desc}</p></div>
           ))}
@@ -590,38 +590,28 @@ function AboutPage(){
         <div className="page-hero-bg" style={{backgroundImage:`url(${IMG_HERO})`}}/>
         <div className="page-hero-content">
           <h1>About</h1>
-          <p>Why we built this portal and everything it does for Pre-Alumni Association members.</p>
+          
         </div>
       </div>
       <div className="section" style={{maxWidth:1100}}>
-        <div className="section-title">About This Portal</div>
-        <p className="section-sub">Built for Pre-Alumni Association at Alabama A&M University.</p>
-        <div className="about-grid">
-          {[{icon:"💡",title:"The Problem",body:"Pre-Alumni Association members had no easy way to track attendance, log volunteer hours, or produce verifiable proof of participation. This portal fixes that — free, purpose-built for one org."},
-            {icon:"🎯",title:"Our Vision",body:"Give every Pre-Alumni member a clean, professional record of their involvement — attendance, volunteer hours, and service history — all in one place accessible from any device."},
-            {icon:"👤",title:"Who Built This",body:"Created by Ayoola Akinlawon, a Senior Accounting major at Alabama A&M and Pre-Alumni Association member, to make involvement tracking easy for every member and officer."},
-          ].map(c=>(
-            <div className="about-card" key={c.title}>
-              <div style={{fontSize:30,marginBottom:12}}>{c.icon}</div>
-              <h3 style={{fontSize:16,fontWeight:700,marginBottom:10,color:"#1a1a1a"}}>{c.title}</h3>
-              <p style={{fontSize:14,color:"#555",lineHeight:1.8}}>{c.body}</p>
-            </div>
-          ))}
-        </div>
-        <div className="section-title" style={{marginTop:8}}>What This Portal Does</div>
-        <p className="section-sub">Tap any service to see details.</p>
-        {SERVICES.map((s,i)=>(
-          <div className="service-item" key={s.title}>
+        <p style={{fontSize:15,color:"#555",lineHeight:1.8,marginBottom:32}}>Built for Pre-Alumni Association at Alabama Agricultural and Mechanical University — giving every member a professional, verifiable record of their attendance and volunteer involvement, accessible from any device, anytime.</p>
+        <div className="section-title" style={{marginBottom:6}}>What This Portal Does</div>
+        <p className="section-sub">Tap any to see details.</p>
+        {[
+          {key:"members",icon:"🎓",title:"Members",color:"#F3E8FF",pts:["Check in to events from any device","Log volunteer hours and upload proof","View your full participation history","Edit your profile anytime"]},
+          {key:"officers",icon:"📋",title:"Officers / E-Board",color:"#FEF9C3",pts:["Do everything a member can do","Manage the full member roster","Create and manage events","Pull, edit, and export attendance records"]},
+          {key:"guests",icon:"👤",title:"Guests",color:"#F9FAFB",pts:["Attend open school-wide events","Log volunteer hours","No full membership required","Upgrade to member anytime"]},
+        ].map((r,i)=>(
+          <div className="service-item" key={r.key}>
             <div className="service-header" onClick={()=>setOpenIdx(openIdx===i?null:i)}>
-              <div className="service-icon-wrap" style={{background:s.color}}>{s.icon}</div>
+              <div className="service-icon-wrap" style={{background:r.color}}>{r.icon}</div>
               <div className="service-header-text">
-                <div className="service-header-title">{s.title}</div>
-                <div className="service-header-for">For: {s.for}</div>
+                <div className="service-header-title">{r.title}</div>
               </div>
               <div className={"service-chevron"+(openIdx===i?" open":"")}>▼</div>
             </div>
             <div className={"service-body"+(openIdx===i?" open":"")}>
-              <div className="service-points">{s.pts.map(pt=><div className="service-point" key={pt}>{pt}</div>)}</div>
+              <div className="service-points">{r.pts.map(pt=><div className="service-point" key={pt}>{pt}</div>)}</div>
             </div>
           </div>
         ))}
@@ -649,7 +639,7 @@ function TermsDropdown(){
             <p><strong style={{color:MAROON}}>Officer Access:</strong> Officers and E-Board members have the ability to view all member attendance records, add or remove attendance entries, and export participation data as needed for official organizational purposes.</p>
             <p><strong style={{color:MAROON}}>Profile Information:</strong> Information you add to your profile (major, classification, bio, social links) is visible to officers and admins on the platform. Your password is stored securely and is never visible to anyone including officers.</p>
             <p><strong style={{color:MAROON}}>Data Use:</strong> Your data is used exclusively for Pre-Alumni Association membership tracking and is not shared with any third parties outside of the organization.</p>
-            <p><strong style={{color:MAROON}}>Account Responsibility:</strong> You are responsible for keeping your login credentials secure. If you believe your account has been compromised, contact an officer immediately.</p>
+            <p><strong style={{color:MAROON}}>Account Responsibility:</strong> You are responsible for keeping your login credentials secure. If you believe your account has been compromised, contact an officer or the portal creator immediately.</p>
             <p style={{color:"#8A7070",fontSize:12,marginTop:4}}>Last updated: July 2026 · Pre-Alumni Association, Alabama A&M University</p>
           </div>
         </div>
@@ -663,11 +653,10 @@ function ResourcesPage(){
     <div>
       <div className="page-hero">
         <div className="page-hero-bg" style={{backgroundImage:`url(${IMG_HERO})`}}/>
-        <div className="page-hero-content"><h1>Resources</h1><p>Helpful links and documents for Pre-Alumni Association members.</p></div>
+        <div className="page-hero-content"><h1>Resources</h1></div>
       </div>
       <div className="section" style={{maxWidth:860}}>
-        <div className="section-title">Helpful Links</div>
-        <p className="section-sub">Official documents and resources for AAMU student org members.</p>
+        <p style={{fontSize:14,color:"#555",marginBottom:20}}>Official documents and helpful links for Pre-Alumni Association members.</p>
         {[
           {icon:"📘",title:"RSO Handbook 2026",desc:"The official AAMU RSO handbook — policies, guidelines, and requirements for all registered student organizations.",link:"https://www.aamu.edu/campus-life/student-activities/student-organizations/_documents/rso-handbook-2026.pdf",tag:"Official Document"},
           {icon:"🏫",title:"Student Activities Office",desc:"AAMU's Student Activities page — campus organizations and upcoming events.",link:"https://www.aamu.edu/campus-life/student-activities/student-organizations/",tag:"AAMU Website"},
@@ -733,7 +722,7 @@ function ContactPage(){
             <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:24,marginBottom:14}}>
               <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:20,paddingBottom:18,borderBottom:`1px solid ${LIGHT_GRAY}`}}>
                 <img src={IMG_LOGO} alt="AAMU" style={{width:48,height:48,borderRadius:10,objectFit:"cover"}}/>
-                <div><div style={{fontWeight:700,fontSize:15}}>Ayoola Akinlawon</div><div style={{fontSize:12,color:TEXT_MUTED}}>Senior Accounting · Portal Creator</div></div>
+                <div><div style={{fontWeight:700,fontSize:15}}>Ayoola Akinlawon</div><div style={{fontSize:12,color:TEXT_MUTED}}>Senior Accounting Major · Portal Creator</div></div>
               </div>
               {[{icon:"✉️",label:"Email",value:"ahmedakinlawon06@gmail.com"},{icon:"🏫",label:"University",value:"Alabama A&M University"}].map(c=>(
                 <div className="contact-info" key={c.label}>
@@ -742,11 +731,7 @@ function ContactPage(){
                 </div>
               ))}
             </div>
-            <div style={{background:"#EFF6FF",border:"1px solid #BFDBFE",borderRadius:12,padding:18,marginBottom:14}}>
-              <div style={{fontWeight:700,fontSize:13,color:"#1D4ED8",marginBottom:7}}>📘 RSO Handbook 2026</div>
-              <div style={{fontSize:12,color:"#555",lineHeight:1.7,marginBottom:10}}>Download the official AAMU RSO Handbook for policies and guidelines.</div>
-              <a href="https://www.aamu.edu/campus-life/student-activities/student-organizations/_documents/rso-handbook-2026.pdf" target="_blank" rel="noreferrer" style={{display:"inline-block",background:"#1D4ED8",color:"white",padding:"7px 14px",borderRadius:8,fontSize:12,fontWeight:700,textDecoration:"none"}}>Download PDF →</a>
-            </div>
+
             <div style={{background:"#F0FDF4",border:"1px solid #BBF7D0",borderRadius:12,padding:18}}>
               <div style={{fontWeight:700,fontSize:13,color:"#15803D",marginBottom:7}}>📱 Join Our Band Community</div>
               <div style={{fontSize:12,color:"#555",lineHeight:1.7,marginBottom:10}}>Pre-Alumni Association's primary communication happens on Band. Join to stay connected with announcements, events, and members.</div>
@@ -809,7 +794,7 @@ function ForgotPassword({onBack,data,reload}){
             </div>
             <p style="color:#444;line-height:1.7;font-size:14px;">Log in with this temporary password, then go to <strong>My Profile → Security</strong> to set a new password.</p>
             <a href="https://prealumni.org" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
-            <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">If you did not request this, contact an officer immediately.</p>
+            <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">If you did not request this, contact an officer or the portal creator immediately.</p>
           </div>
         </div>
       `
@@ -882,6 +867,7 @@ function AuthPage({mode,onAuth,onSwitch}){
 
 function ProfilePage({user,data,setData,reload,setUser}){
   const [editing,setEditing]=useState(false);
+  const [savingProfile,setSavingProfile]=useState(false);
   const [form,setForm]=useState({name:user.name||"",major:user.major||"",bio:user.bio||"",instagram:user.instagram||"",linkedin:user.linkedin||""});
   const [pwForm,setPwForm]=useState({current:"",next:"",confirm:""});
   const [pwError,setPwError]=useState("");
@@ -891,7 +877,7 @@ function ProfilePage({user,data,setData,reload,setUser}){
   const fileRef=useRef();
   const myLogs=data.logs.filter(l=>l.userId===user.id);
   const volHours=myLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
-  async function saveProfile(){Object.assign(user,form);await dbUpdate("users","id=eq."+user.id,{name:form.name,major:form.major,classification:form.classification,bio:form.bio,instagram:form.instagram,linkedin:form.linkedin});await reload();setEditing(false);setMsg("Profile saved!");setTimeout(()=>setMsg(""),3000);}
+  async function saveProfile(){setSavingProfile(true);Object.assign(user,form);await dbUpdate("users","id=eq."+user.id,{name:form.name,major:form.major,classification:form.classification,bio:form.bio,instagram:form.instagram,linkedin:form.linkedin});await reload();setSavingProfile(false);setEditing(false);setMsg("Profile saved!");setTimeout(()=>setMsg(""),3000);}
   function handlePhoto(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{user.photo=ev.target.result;await dbUpdate("users","id=eq."+user.id,{photo:ev.target.result});await reload();setMsg("Photo updated!");setTimeout(()=>setMsg(""),3000);};r.readAsDataURL(file);}
   async function changePw(e){e.preventDefault();setPwError("");setPwOk("");const hashedCurrent=await hashPassword(pwForm.current);if(hashedCurrent!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}const hashedNew=await hashPassword(pwForm.next);await dbUpdate("users","id=eq."+user.id,{password:hashedNew,must_change_password:false});sendPasswordChangedEmail(user);user.password=hashedNew;user.mustChangePassword=false;const updatedUser={...user,password:hashedNew,mustChangePassword:false};localStorage.setItem("pa_user",JSON.stringify(updatedUser));if(setUser)setUser(updatedUser);setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated! A confirmation email has been sent.");}
   return(
@@ -931,7 +917,7 @@ function ProfilePage({user,data,setData,reload,setUser}){
               <div className="form-group"><label>Classification</label><select value={form.classification||""} onChange={e=>setForm({...form,classification:e.target.value})}><option value="">-- Select --</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate Student</option></select></div></div>
               <div className="form-group"><label>Bio</label><textarea placeholder="Tell your org about yourself..." value={form.bio} onChange={e=>setForm({...form,bio:e.target.value})} style={{minHeight:80}}/></div>
               <div className="form-row"><div className="form-group"><label>Instagram</label><input placeholder="@username" value={form.instagram} onChange={e=>setForm({...form,instagram:e.target.value})}/></div><div className="form-group"><label>LinkedIn</label><input placeholder="linkedin.com/in/..." value={form.linkedin} onChange={e=>setForm({...form,linkedin:e.target.value})}/></div></div>
-              <div style={{display:"flex",gap:9,marginTop:4}}><button className="btn-sm btn-maroon" onClick={saveProfile}>Save</button><button className="btn-sm btn-ghost" onClick={()=>setEditing(false)}>Cancel</button></div>
+              <div style={{display:"flex",gap:9,marginTop:4}}><button className="btn-sm btn-maroon" onClick={saveProfile} disabled={savingProfile}>{savingProfile?<><span className="spinner"/>Saving...</>:"Save Changes"}</button><button className="btn-sm btn-ghost" onClick={()=>setEditing(false)} disabled={savingProfile}>Cancel</button></div>
             </div>
           ):(
             <div>
@@ -943,6 +929,14 @@ function ProfilePage({user,data,setData,reload,setUser}){
               {user.bio&&<div style={{marginBottom:14}}><div style={{fontSize:10,fontWeight:700,color:TEXT_MUTED,textTransform:"uppercase",letterSpacing:".06em",marginBottom:5}}>Bio</div><div style={{fontSize:13,color:"#555",lineHeight:1.75}}>{user.bio}</div></div>}
               {(user.instagram||user.linkedin)&&<div style={{display:"flex",gap:12,marginBottom:18,flexWrap:"wrap"}}>{user.instagram&&<span style={{fontSize:12,color:MAROON,fontWeight:600}}>📸 {user.instagram}</span>}{user.linkedin&&<span style={{fontSize:12,color:MAROON,fontWeight:600}}>💼 LinkedIn</span>}</div>}
               <button className="btn-sm btn-maroon" onClick={()=>setEditing(true)}>Edit Profile</button>
+              <button className="btn-sm btn-danger" style={{marginTop:8}} onClick={async()=>{
+                if(!window.confirm("Are you sure you want to delete your account? This cannot be undone."))return;
+                if(!window.confirm("Last warning — your account and all your check-in logs will be permanently deleted. Volunteer hour totals will remain for org records."))return;
+                await dbDelete("logs","user_id=eq."+user.id+"&type=eq.event");
+                await dbDelete("users","id=eq."+user.id);
+                localStorage.removeItem("pa_user");
+                if(setUser) setUser(null);
+              }}>Delete My Account</button>
             </div>
           ))}
           {tab==="security"&&(
@@ -970,13 +964,20 @@ function ProfilePage({user,data,setData,reload,setUser}){
   );
 }
 
-function CheckIn({user,data,setData,reload}){
+function CheckIn({user,data,setData,reload,autoEventId,clearAutoEvent}){
   const [success,setSuccess]=useState("");
   const [modal,setModal]=useState(null);
   const [proof,setProof]=useState(null);
   const [note,setNote]=useState("");
   const [saving,setSaving]=useState(false);
   const isGuest=user.userType==="guest";
+  useEffect(()=>{
+    if(autoEventId){
+      const ev=data.events.find(e=>e.id===autoEventId);
+      if(ev&&!myLogIds.includes(ev.id)){setModal(ev);}
+      if(clearAutoEvent) clearAutoEvent();
+    }
+  },[autoEventId]);
   const orgEvents=data.events.filter(e=>e.orgId==="org1"&&(!isGuest||e.openToGuests));
   const myLogIds=data.logs.filter(l=>l.userId===user.id).map(l=>l.eventId);
   async function doCheckIn(ev){setSaving(true);try{const log={id:`log_${Date.now()}`,userId:user.id,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note,proofName:proof?.name||null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setModal(null);setNote("");setProof(null);setSuccess(`Checked in to ${ev.name}!`);setTimeout(()=>setSuccess(""),4000);}catch(e){alert("Check-in failed. Please try again.");}finally{setSaving(false);}}
@@ -1007,12 +1008,216 @@ function CheckIn({user,data,setData,reload}){
   );
 }
 
+
+
+function Leaderboard({data}){
+  const [tab,setTab]=useState("hours");
+  const members=data.users.filter(u=>u.orgId==="org1");
+  
+  // Get current month logs only
+  const now=new Date();
+  const monthLogs=data.logs.filter(l=>{
+    const d=new Date(l.createdAt);
+    return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
+  });
+
+  // All time logs
+  const allLogs=data.logs;
+
+  function getRanked(logs){
+    const volBoard=members.map(m=>({
+      ...m,
+      hours:logs.filter(l=>l.userId===m.id&&l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0),
+      events:logs.filter(l=>l.userId===m.id&&l.type==="event").length,
+    }));
+    const byHours=[...volBoard].sort((a,b)=>b.hours-a.hours);
+    const byEvents=[...volBoard].sort((a,b)=>b.events-a.events);
+    return{byHours,byEvents};
+  }
+
+  const monthly=getRanked(monthLogs);
+  const alltime=getRanked(allLogs);
+  const [period,setPeriod]=useState("month");
+  const ranked=period==="month"?monthly:alltime;
+  const list=tab==="hours"?ranked.byHours:ranked.byEvents;
+
+  const medals=["🥇","🥈","🥉"];
+  const monthName=now.toLocaleDateString("en-US",{month:"long",year:"numeric"});
+
+  return(
+    <div>
+      <div className="page-title">Leaderboard</div>
+      <div className="page-sub">Top Pre-Alumni members by participation.</div>
+
+      <div style={{display:"flex",gap:10,marginBottom:20,flexWrap:"wrap"}}>
+        <div className="tabs-row" style={{flex:"none"}}>
+          <button className={"tab-btn"+(period==="month"?" active":"")} onClick={()=>setPeriod("month")}>This Month</button>
+          <button className={"tab-btn"+(period==="all"?" active":"")} onClick={()=>setPeriod("all")}>All Time</button>
+        </div>
+        <div className="tabs-row" style={{flex:"none"}}>
+          <button className={"tab-btn"+(tab==="hours"?" active":"")} onClick={()=>setTab("hours")}>🤝 Volunteer Hours</button>
+          <button className={"tab-btn"+(tab==="events"?" active":"")} onClick={()=>setTab("events")}>✅ Events Attended</button>
+        </div>
+      </div>
+
+      {period==="month"&&<div style={{fontSize:12,color:TEXT_MUTED,marginBottom:16}}>Showing results for <strong>{monthName}</strong></div>}
+
+      {/* Top 3 podium */}
+      {list.slice(0,3).some(m=>tab==="hours"?m.hours>0:m.events>0)&&(
+        <div style={{display:"flex",gap:12,justifyContent:"center",alignItems:"flex-end",marginBottom:28}}>
+          {[list[1],list[0],list[2]].map((m,i)=>{
+            if(!m) return <div key={i} style={{flex:1}}/>;
+            const val=tab==="hours"?m.hours:m.events;
+            const heights=["80px","100px","70px"];
+            const origIdx=i===0?1:i===1?0:2;
+            if(val===0) return <div key={i} style={{flex:1}}/>;
+            return(
+              <div key={m.id} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
+                <AvatarUI user={m} size={origIdx===0?52:44}/>
+                <div style={{fontSize:origIdx===0?15:13,fontWeight:700,textAlign:"center",color:"#1a1a1a"}}>{m.name.split(" ")[0]}</div>
+                <div style={{fontSize:origIdx===0?20:16}}>{medals[origIdx]}</div>
+                <div style={{background:origIdx===0?MAROON:origIdx===1?"#C0C0C0":"#CD7F32",color:"white",borderRadius:"8px 8px 0 0",width:"100%",height:heights[i],display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:2}}>
+                  <div style={{fontSize:origIdx===0?20:16,fontWeight:700}}>{val}</div>
+                  <div style={{fontSize:10,opacity:.85}}>{tab==="hours"?"hrs":"events"}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Full ranked list */}
+      <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,overflow:"hidden"}}>
+        {list.map((m,i)=>{
+          const val=tab==="hours"?m.hours:m.events;
+          const isMe=m.id===data.users[0]?.id;
+          return(
+            <div key={m.id} style={{display:"flex",alignItems:"center",gap:14,padding:"12px 16px",borderBottom:i<list.length-1?`1px solid ${LIGHT_GRAY}`:"none",background:i<3&&val>0?"#FAF8F8":"#fff"}}>
+              <div style={{width:28,textAlign:"center",fontSize:i<3&&val>0?18:14,fontWeight:700,color:i>=3||val===0?TEXT_MUTED:"inherit",flexShrink:0}}>
+                {i<3&&val>0?medals[i]:i+1}
+              </div>
+              <AvatarUI user={m} size={36}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontWeight:600,fontSize:13}}>{m.name}</div>
+                <div style={{fontSize:11,color:TEXT_MUTED}}>{m.major||"Pre-Alumni Association"}</div>
+              </div>
+              <div style={{textAlign:"right",flexShrink:0}}>
+                <div style={{fontWeight:700,fontSize:16,color:val>0?MAROON:TEXT_MUTED}}>{val}</div>
+                <div style={{fontSize:10,color:TEXT_MUTED}}>{tab==="hours"?"hours":"events"}</div>
+              </div>
+            </div>
+          );
+        })}
+        {list.every(m=>tab==="hours"?m.hours===0:m.events===0)&&(
+          <div style={{textAlign:"center",padding:36,color:TEXT_MUTED,fontSize:13}}>
+            <div style={{fontSize:32,marginBottom:8}}>🏆</div>
+            No {period==="month"?"activity this month":"activity yet"}. Be the first on the leaderboard!
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MemberDirectory({data,user}){
+  const [selected,setSelected]=useState(null);
+  const members=data.users.filter(u=>u.orgId==="org1"&&u.role!=="superadmin");
+  const isOfficer=user.role==="superadmin"||user.role==="orgadmin"||user.userType==="officer";
+
+  function MemberCard({m}){
+    const logs=data.logs.filter(l=>l.userId===m.id);
+    const events=logs.filter(l=>l.type==="event").length;
+    const hours=logs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
+    return(
+      <div onClick={()=>setSelected(m)} style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:12,padding:16,cursor:"pointer",transition:"all .2s"}}
+        onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 16px rgba(107,27,42,.1)"}
+        onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
+        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
+          <AvatarUI user={m} size={44}/>
+          <div>
+            <div style={{fontWeight:700,fontSize:14}}>{m.name}</div>
+            <div style={{fontSize:11,color:TEXT_MUTED,marginTop:2}}>{m.major||"Alabama A&M University"}</div>
+            <span className={"badge badge-"+(m.userType||m.role)} style={{marginTop:4,display:"inline-block"}}>{getRoleLabel(m)}</span>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:12,borderTop:`1px solid ${LIGHT_GRAY}`,paddingTop:10}}>
+          <div style={{textAlign:"center",flex:1}}>
+            <div style={{fontWeight:700,fontSize:16,color:MAROON}}>{events}</div>
+            <div style={{fontSize:10,color:TEXT_MUTED}}>Events</div>
+          </div>
+          <div style={{textAlign:"center",flex:1}}>
+            <div style={{fontWeight:700,fontSize:16,color:"#15803D"}}>{hours}</div>
+            <div style={{fontSize:10,color:TEXT_MUTED}}>Vol Hrs</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function ProfileModal({m}){
+    const logs=data.logs.filter(l=>l.userId===m.id);
+    const eventLogs=logs.filter(l=>l.type==="event");
+    const volLogs=logs.filter(l=>l.type==="volunteer");
+    const hours=volLogs.reduce((s,l)=>s+(l.hours||0),0);
+    return(
+      <Modal title="" onClose={()=>setSelected(null)}>
+        <div style={{textAlign:"center",marginBottom:20}}>
+          <AvatarUI user={m} size={72}/>
+          <div style={{fontFamily:"'Playfair Display',serif",fontSize:"1.3rem",fontWeight:700,marginTop:10}}>{m.name}</div>
+          <div style={{fontSize:12,color:TEXT_MUTED,marginTop:3}}>{m.major||"Alabama A&M University"}{m.classification?` · ${m.classification}`:""}</div>
+          <span className={"badge badge-"+(m.userType||m.role)} style={{marginTop:6,display:"inline-block"}}>{getRoleLabel(m)}</span>
+        </div>
+        {m.bio&&<div style={{background:"#FAF8F8",borderRadius:9,padding:"12px 14px",fontSize:13,color:"#555",lineHeight:1.7,marginBottom:16,textAlign:"center"}}>{m.bio}</div>}
+        <div style={{display:"flex",gap:12,marginBottom:16}}>
+          <div className="stat-card" style={{flex:1,textAlign:"center"}}><div className="stat-num">{eventLogs.length}</div><div className="stat-label">Events Attended</div></div>
+          <div className="stat-card" style={{flex:1,textAlign:"center"}}><div className="stat-num">{hours}</div><div className="stat-label">Volunteer Hours</div></div>
+          <div className="stat-card" style={{flex:1,textAlign:"center"}}><div className="stat-num">{logs.length}</div><div className="stat-label">Total Logs</div></div>
+        </div>
+        {(m.instagram||m.linkedin)&&(
+          <div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:16,flexWrap:"wrap"}}>
+            {m.instagram&&<span style={{fontSize:12,color:MAROON,fontWeight:600}}>📸 {m.instagram}</span>}
+            {m.linkedin&&<span style={{fontSize:12,color:MAROON,fontWeight:600}}>💼 LinkedIn</span>}
+          </div>
+        )}
+        {isOfficer&&(
+          <div style={{borderTop:`1px solid ${LIGHT_GRAY}`,paddingTop:14,marginTop:4}}>
+            <div style={{fontWeight:700,fontSize:12,color:TEXT_MUTED,marginBottom:10,textTransform:"uppercase",letterSpacing:".06em"}}>Officer View — Recent Activity</div>
+            {logs.length===0?<div style={{fontSize:12,color:TEXT_MUTED,textAlign:"center"}}>No logs yet.</div>
+            :[...logs].reverse().slice(0,4).map(log=>{
+              const ev=data.events.find(e=>e.id===log.eventId);
+              return(
+                <div key={log.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:12,padding:"6px 0",borderBottom:`1px solid ${LIGHT_GRAY}`}}>
+                  <div><div style={{fontWeight:500}}>{ev?.name||log.eventName||"Volunteer Activity"}</div><div style={{color:TEXT_MUTED,fontSize:11}}>{new Date(log.createdAt).toLocaleDateString()}</div></div>
+                  <span className={"badge badge-"+log.type}>{log.type}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Modal>
+    );
+  }
+
+  return(
+    <div>
+      <div className="page-title">Member Directory</div>
+      <div className="page-sub">Tap any member to view their profile and participation.</div>
+      {members.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,padding:36,fontSize:13}}>No members yet.</div>
+      :<div className="card-grid">
+        {members.map(m=><MemberCard key={m.id} m={m}/>)}
+      </div>}
+      {selected&&<ProfileModal m={selected}/>}
+    </div>
+  );
+}
+
 function VolunteerLog({user,data,setData,reload}){
   const [form,setForm]=useState({eventName:"",date:"",hours:"",description:"",proof:null});
   const [success,setSuccess]=useState("");
+  const [savingLog,setSavingLog]=useState(false);
   const myLogs=data.logs.filter(l=>l.userId===user.id&&l.type==="volunteer"&&!l.eventId);
   const totalHours=myLogs.reduce((s,l)=>s+(l.hours||0),0);
-  async function handleSubmit(e){e.preventDefault();if(!form.eventName||!form.date||!form.hours)return;const log={id:`log_${Date.now()}`,userId:user.id,eventId:null,orgId:"org1",type:"volunteer",hours:Number(form.hours),note:form.description,eventName:form.eventName,date:form.date,proofName:form.proof?.name||null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setForm({eventName:"",date:"",hours:"",description:"",proof:null});setSuccess("Volunteer hours logged!");setTimeout(()=>setSuccess(""),4000);}
+  async function handleSubmit(e){e.preventDefault();if(!form.eventName||!form.date||!form.hours||savingLog)return;setSavingLog(true);const log={id:`log_${Date.now()}`,userId:user.id,eventId:null,orgId:"org1",type:"volunteer",hours:Number(form.hours),note:form.description,eventName:form.eventName,date:form.date,proofName:form.proof?.name||null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setForm({eventName:"",date:"",hours:"",description:"",proof:null});setSavingLog(false);setSuccess("Volunteer hours logged successfully!");setTimeout(()=>setSuccess(""),5000);}
   return(
     <div>
       <div className="page-title">Log Volunteer Hours</div>
@@ -1039,7 +1244,7 @@ function VolunteerLog({user,data,setData,reload}){
                 <input id="vol-proof" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={e=>setForm({...form,proof:e.target.files[0]})}/>
               </div>
             </div>
-            <button type="submit" className="btn-full">Log Hours</button>
+            <button type="submit" className="btn-full" disabled={savingLog}>{savingLog?<><span className="spinner"/>Logging...</>:"Log Hours"}</button>
           </form>
         </div>
         <div>
@@ -1056,6 +1261,9 @@ function VolunteerLog({user,data,setData,reload}){
                 <div style={{flexShrink:0,background:"#F0FDF4",color:"#15803D",fontWeight:700,fontSize:13,padding:"3px 10px",borderRadius:20}}>{log.hours} hrs</div>
               </div>
               {log.proofName&&<div style={{fontSize:11,color:MAROON,marginTop:6,fontWeight:600}}>📎 {log.proofName}</div>}
+              <div style={{marginTop:8,display:"flex",justifyContent:"flex-end"}}>
+                <button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 8px"}} onClick={async()=>{if(!window.confirm("Delete this volunteer log entry?"))return;await dbDelete("logs","id=eq."+log.id);await reload();}}>Delete</button>
+              </div>
             </div>
           ))}
         </div>
@@ -1170,7 +1378,7 @@ function Members({user,data,setData,reload}){
       <div className="page-sub">Manage Pre-Alumni Association members and officers.</div>
       <div className="table-wrap">
         <table><thead><tr><th>Member</th><th>Role</th><th>Logs</th><th></th></tr></thead>
-        <tbody>{members.map(m=>(<tr key={m.id}><td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={m} size={30}/><div><div style={{fontWeight:500,fontSize:13}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.email}</div></div></div></td><td><span className={"badge badge-"+(m.userType||m.role)}>{getRoleLabel(m)}</span></td><td>{data.logs.filter(l=>l.userId===m.id).length}</td><td>{m.id!==user.id&&<button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={async()=>{if(!window.confirm("Remove "+m.name+" from Pre-Alumni Association?"))return;await dbDelete("users","id=eq."+m.id);await reload();}}>Remove</button>}</td></tr>))}</tbody>
+        <tbody>{members.map(m=>(<tr key={m.id}><td><div style={{display:"flex",alignItems:"center",gap:9}}><AvatarUI user={m} size={30}/><div><div style={{fontWeight:500,fontSize:13}}>{m.name}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{m.email}</div></div></div></td><td><span className={"badge badge-"+(m.userType||m.role)}>{getRoleLabel(m)}</span></td><td>{data.logs.filter(l=>l.userId===m.id).length}</td><td>{m.id!==user.id&&<button className="btn-sm btn-danger" style={{fontSize:11,padding:"3px 7px"}} onClick={async()=>{if(!window.confirm("Remove "+m.name+"? Their event check-ins will be removed but volunteer hour totals remain for org records."))return;await dbDelete("logs","user_id=eq."+m.id+"&type=eq.event");await dbDelete("users","id=eq."+m.id);await reload();}}>Remove</button>}</td></tr>))}</tbody>
         </table>
       </div>
       {show&&(<Modal title="Add Member" onClose={()=>setShow(false)}>
@@ -1610,20 +1818,7 @@ function Analytics({data}){
         <div className="stat-card"><div className="stat-num">{totalVolHours}</div><div className="stat-label">Volunteer Hours</div></div>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:20,marginBottom:24}}>
-        <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:22}}>
-          <div style={{fontWeight:700,fontSize:14,marginBottom:16}}>📅 Activity by Month</div>
-          <div style={{display:"flex",alignItems:"flex-end",gap:8,height:120}}>
-            {months.map(m=>(
-              <div key={m.key} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
-                <div style={{fontSize:11,fontWeight:600,color:MAROON}}>{m.count||""}</div>
-                <div style={{width:"100%",background:MAROON,borderRadius:"4px 4px 0 0",height:`${Math.max((m.count/maxMonthCount)*100,4)}%`,minHeight:4,transition:"height .3s"}}/>
-                <div style={{fontSize:10,color:TEXT_MUTED,textAlign:"center"}}>{m.key}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
+      <div style={{marginBottom:24}}>
         <div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:14,padding:22}}>
           <div style={{fontWeight:700,fontSize:14,marginBottom:16}}>📋 Recent Event Attendance</div>
           {eventStats.length===0?<div style={{color:TEXT_MUTED,fontSize:13}}>No events yet.</div>
@@ -1665,9 +1860,17 @@ function Analytics({data}){
   );
 }
 
-function Dashboard({user,data,setData,reload,setUser}){
+function Dashboard({user,data,setData,reload,setUser,qrEventId,clearQrEventId}){
   const [section,setSection]=useState("overview");
+  const [qrAutoEvent,setQrAutoEvent]=useState(null);
   const [drawerOpen,setDrawerOpen]=useState(false);
+  useEffect(()=>{
+    if(qrEventId){
+      setQrAutoEvent(qrEventId);
+      setSection("checkin");
+      if(clearQrEventId) clearQrEventId();
+    }
+  },[qrEventId]);
   const isOfficer=user.role==="superadmin"||user.role==="orgadmin"||user.userType==="officer";
   const myLogs=data.logs.filter(l=>l.userId===user.id);
   const volHours=myLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
@@ -1676,6 +1879,8 @@ function Dashboard({user,data,setData,reload,setUser}){
     {key:"checkin",icon:"✅",label:"Check In"},
     {key:"vol-log",icon:"🤝",label:"Log Volunteer Hours"},
     {key:"my-logs",icon:"📋",label:"My Logs"},
+    {key:"directory",icon:"👥",label:"Member Directory"},
+    {key:"leaderboard",icon:"🏆",label:"Leaderboard"},
     {key:"profile",icon:"👤",label:"My Profile"},
     ...(isOfficer?[
       {key:"attendance",icon:"📊",label:"Attendance Records",sec:"Officer"},
@@ -1701,9 +1906,11 @@ function Dashboard({user,data,setData,reload,setUser}){
       </nav>
       <main className="dash-main">
         {section==="overview"&&<Overview user={user} data={data} myLogs={myLogs} volHours={volHours} setSection={setSection}/>}
-        {section==="checkin"&&<CheckIn user={user} data={data} setData={setData} reload={reload}/>}
+        {section==="checkin"&&<CheckIn user={user} data={data} setData={setData} reload={reload} autoEventId={qrAutoEvent} clearAutoEvent={()=>setQrAutoEvent(null)}/>}
         {section==="vol-log"&&<VolunteerLog user={user} data={data} setData={setData} reload={reload}/>}
         {section==="my-logs"&&<MyLogs data={data} myLogs={myLogs}/>}
+        {section==="directory"&&<MemberDirectory data={data} user={user}/>}
+        {section==="leaderboard"&&<Leaderboard data={data}/>}
         {section==="profile"&&<ProfilePage user={user} data={data} setData={setData} reload={reload} setUser={setUser}/>}
         {section==="attendance"&&isOfficer&&<AttendanceRecords data={data} setData={setData} reload={reload}/>}
         {section==="analytics"&&isOfficer&&<Analytics data={data}/>}
@@ -1728,6 +1935,7 @@ export default function App(){
   const [loading,setLoading]=useState(true);
   const [dbError,setDbError]=useState("");
   const [verifyMsg,setVerifyMsg]=useState("");
+  const [qrEventId,setQrEventId]=useState(null);
 
   async function reload(){
     try{
@@ -1770,6 +1978,7 @@ export default function App(){
       const qrId=sessionStorage.getItem("qr_checkin");
       if(qrId){
         sessionStorage.removeItem("qr_checkin");
+        setQrEventId(qrId);
         setPage("dashboard");
       }
     }
@@ -1868,12 +2077,13 @@ export default function App(){
             <div style={{fontSize:48,marginBottom:16}}>📧</div>
             <div className="form-title">Check your email!</div>
             <div className="form-sub" style={{marginBottom:20}}>We sent a verification link to your email address. Click the link to activate your account then come back to sign in.</div>
+            <div style={{background:"#FEF9C3",border:"1px solid #FDE68A",borderRadius:9,padding:"10px 14px",fontSize:12,color:"#92400E",marginBottom:16}}>📬 Don't see it? Check your <strong>spam or junk folder</strong> — it may have landed there.</div>
             <button className="btn-full" onClick={()=>setAuthMode("login")}>Go to Sign In</button>
           </div>
         </div>
       )}
       {page==="auth"&&authMode!=="forgot"&&<AuthPage mode={authMode||"login"} onAuth={handleAuth} onSwitch={setAuthMode}/>}
-      {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData} reload={reload} setUser={setUser}/>}
+      {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData} reload={reload} setUser={setUser} qrEventId={qrEventId} clearQrEventId={()=>setQrEventId(null)}/>}
       {page==="dashboard"&&!user&&<AuthPage mode="login" onAuth={handleAuth} onSwitch={m=>{setAuthMode(m);setPage("auth");}}/>}
     </>
   );
