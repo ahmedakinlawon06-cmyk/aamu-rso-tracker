@@ -1163,7 +1163,7 @@ function Members({user,data,setData,reload}){
   const [form,setForm]=useState({name:"",email:"",role:"student",major:""});
   const [error,setError]=useState("");
   const members=data.users.filter(u=>u.orgId==="org1");
-  async function addMember(e){e.preventDefault();setError("");if(data.users.find(u=>u.email===form.email)){setError("A user with that email already exists.");return;}const hashedPw=await hashPassword("changeme123");const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,role:form.role==="orgadmin"?"orgadmin":"student",userType:form.role,orgId:"org1",password:hashedPw,mustChangePassword:true,major:form.major,classification:"",bio:"",photo:null,instagram:"",linkedin:""};try{await dbInsert("users",userToRow(nu));await reload();setShow(false);setForm({name:"",email:"",role:"student",major:""});}catch(e){setError("Failed to add member.");}}
+  async function addMember(e){e.preventDefault();setError("");if(data.users.find(u=>u.email===form.email)){setError("A user with that email already exists.");return;}const hashedPw=await hashPassword("changeme123");const nu={id:`u_${Date.now()}`,name:form.name,email:form.email,role:form.role==="orgadmin"?"orgadmin":"student",userType:form.role,orgId:"org1",password:hashedPw,mustChangePassword:true,verified:true,verifyToken:null,major:form.major,classification:"",bio:"",photo:null,instagram:"",linkedin:""};try{await dbInsert("users",userToRow(nu));await reload();setShow(false);setForm({name:"",email:"",role:"student",major:""});}catch(e){setError("Failed to add member.");}}
   return(
     <div>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:7,flexWrap:"wrap",gap:9}}><div className="page-title">Members</div><button className="btn-sm btn-maroon" onClick={()=>setShow(true)}>+ Add Member</button></div>
@@ -1382,7 +1382,7 @@ function BulkImport({data,user,reload}){
     const errs=[];
     for(const m of preview){
       if(data.users.find(u=>u.email===m.email)){errs.push(`${m.email} already exists`);continue;}
-      const hashedPw=await hashPassword("changeme123");const nu={id:`u_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,name:m.name,email:m.email,password:hashedPw,mustChangePassword:true,role:"student",userType:m.role||"student",orgId:"org1",major:m.major,classification:m.classification,bio:"",photo:null,instagram:"",linkedin:""};
+      const hashedPw=await hashPassword("changeme123");const nu={id:`u_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,name:m.name,email:m.email,password:hashedPw,mustChangePassword:true,verified:true,verifyToken:null,role:"student",userType:m.role||"student",orgId:"org1",major:m.major,classification:m.classification,bio:"",photo:null,instagram:"",linkedin:""};
       try{await dbInsert("users",userToRow(nu));}catch(e){errs.push(`Failed to add ${m.email}`);}
     }
     await reload();
@@ -1799,7 +1799,7 @@ export default function App(){
       const hashed=await hashPassword(form.password);
       const found=data.users.find(u=>u.email===form.email&&u.password===hashed);
       if(!found){setError("Incorrect email or password.");return;}
-      if(found.role!=="superadmin"&&!found.verified&&!found.mustChangePassword){
+      if(found.role!=="superadmin"&&!found.verified){
         setError("Please verify your email first. Check your inbox for the verification link.");return;
       }
       setUser(found);localStorage.setItem("pa_user",JSON.stringify(found));setPage("dashboard");
