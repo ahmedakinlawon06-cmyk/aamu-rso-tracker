@@ -67,9 +67,12 @@ const RESEND_KEY="re_fiD3XzdL_KbPbAmfA7RaAyCXeuTmp6Gxv";
 
 async function sendEmail({to, subject, html}){
   try{
-    await fetch("https://api.resend.com/emails",{
+    const res=await fetch("https://api.resend.com/emails",{
       method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+RESEND_KEY},
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer "+RESEND_KEY,
+      },
       body:JSON.stringify({
         from:"Pre-Alumni Association <noreply@prealumni.org>",
         to:[to],
@@ -77,7 +80,11 @@ async function sendEmail({to, subject, html}){
         html
       })
     });
-  }catch(e){console.log("Email error:",e);}
+    const data=await res.json();
+    if(!res.ok){console.error("Resend error:",res.status,data);}
+    else{console.log("Email sent successfully:",data);}
+    return data;
+  }catch(e){console.error("Email fetch error:",e);}
 }
 
 async function sendWelcomeEmail(user){
