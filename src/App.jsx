@@ -453,7 +453,7 @@ function HomePage({setPage,user,onLogin}){
         <div className="hero-overlay"/>
         <div className="hero-content">
           <div className="hero-badge"><img src={IMG_LOGO} alt="" style={{width:18,height:18,borderRadius:4,objectFit:"cover"}}/>Alabama A&M University · Est. 1875</div>
-          <h1>Your Membership.<br/><span>Tracked & Documented.</span></h1>
+          <h1>Built for Bulldogs.<br/><span>Made for Pre-Alumni.</span></h1>
           <p>The official attendance and volunteer hour portal for AAMU Pre-Alumni Association members.</p>
           <div className="hero-btns">
             {user?<button className="btn-primary" onClick={()=>setPage("dashboard")}>Go to Dashboard →</button>
@@ -1225,6 +1225,10 @@ function Overview({user,data,myLogs,volHours,setSection}){
       <div className="page-sub">Pre-Alumni Association · {new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</div>
       {user.userType==="guest"&&<div className="info-banner" style={{background:"#F9FAFB",border:"1px solid #E5E7EB",color:"#374151"}}>👤 You are a Guest — you can check in to open events and log volunteer hours. Contact an officer to become a full member.</div>}
       {isOfficer&&<div className="info-banner" style={{background:"#FAF0F2",border:"1px solid #E0D8D8",color:MAROON}}>📋 You are an Officer — you can manage events, members, and records, and track your own attendance and hours.</div>}
+      {!user.photo&&!user.bio&&page==="dashboard"&&<div style={{background:"#EFF6FF",border:"1px solid #BFDBFE",borderRadius:12,padding:"12px 16px",marginBottom:18,display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap",fontSize:13}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:18}}>👤</span><span style={{color:"#1D4ED8"}}>Complete your profile — add a photo and bio so your officers know who you are!</span></div>
+        <button className="btn-sm" style={{background:"#1D4ED8",color:"white",border:"none"}} onClick={()=>setSection("profile")}>Complete Profile →</button>
+      </div>}
       <div className="stats-row">
         <div className="stat-card"><div className="stat-num">{myLogs.filter(l=>l.type==="event").length}</div><div className="stat-label">Events Attended</div></div>
         <div className="stat-card"><div className="stat-num">{volHours}</div><div className="stat-label">Volunteer Hours</div></div>
@@ -1234,7 +1238,11 @@ function Overview({user,data,myLogs,volHours,setSection}){
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:20}}>
         <div>
           <div style={{fontWeight:700,fontSize:14,marginBottom:11}}>Upcoming Events</div>
-          {upcoming.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,fontSize:13,padding:22}}>No upcoming events yet.</div>
+          {upcoming.length===0?<div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:12,padding:28,textAlign:"center"}}>
+              <div style={{fontSize:32,marginBottom:8}}>📅</div>
+              <div style={{fontWeight:600,fontSize:14,marginBottom:5}}>No upcoming events yet</div>
+              <div style={{fontSize:12,color:TEXT_MUTED}}>Check back soon — officers will post events here.</div>
+            </div>
           :upcoming.map(ev=>(
             <div className="checkin-card" key={ev.id}>
               <div><div style={{fontWeight:600,fontSize:13}}>{ev.name}</div><div style={{fontSize:11,color:TEXT_MUTED,marginTop:2}}>{new Date(ev.date+"T12:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})} · <span className={"badge badge-"+ev.type}>{ev.type}</span></div></div>
@@ -1244,7 +1252,11 @@ function Overview({user,data,myLogs,volHours,setSection}){
         </div>
         <div>
           <div style={{fontWeight:700,fontSize:14,marginBottom:11}}>Recent Activity</div>
-          {myLogs.length===0?<div className="card" style={{textAlign:"center",color:TEXT_MUTED,fontSize:13,padding:22}}>No activity yet. Start logging!</div>
+          {myLogs.length===0?<div style={{background:"#fff",border:`1px solid ${BORDER}`,borderRadius:12,padding:28,textAlign:"center"}}>
+              <div style={{fontSize:32,marginBottom:8}}>🌟</div>
+              <div style={{fontWeight:600,fontSize:14,marginBottom:5}}>No activity yet</div>
+              <div style={{fontSize:12,color:TEXT_MUTED}}>Check in to your first event or log volunteer hours to get started!</div>
+            </div>
           :[...myLogs].reverse().slice(0,4).map(log=>{const ev=data.events.find(e=>e.id===log.eventId);return(<div key={log.id} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:13}}><div style={{width:32,height:32,borderRadius:8,background:"#FAF0F2",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,flexShrink:0}}>{log.type==="volunteer"?"🤝":"✅"}</div><div><div style={{fontSize:12,fontWeight:600}}>{ev?.name||log.eventName||"Volunteer log"}</div><div style={{fontSize:11,color:TEXT_MUTED}}>{new Date(log.createdAt).toLocaleDateString()}{log.hours?` · ${log.hours} hrs`:""}</div></div></div>);})}
         </div>
       </div>
@@ -1781,6 +1793,7 @@ export default function App(){
 
 
 
+  const [showWelcome,setShowWelcome]=useState(false);
   async function handleAuth(mode,form,setError){
     if(mode==="login"){
       const hashed=await hashPassword(form.password);
@@ -1820,6 +1833,27 @@ export default function App(){
       <style>{css}</style>
       <Navbar page={page} setPage={setPage} user={user} onLogout={()=>{setUser(null);localStorage.removeItem("pa_user");setPage("home");}} onLogin={m=>{setAuthMode(m);setPage("auth");}}/>
 
+      {showWelcome&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+          <div style={{background:"#fff",borderRadius:20,padding:32,maxWidth:480,width:"100%",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,.3)"}}>
+            <div style={{fontSize:48,marginBottom:12}}>🎉</div>
+            <div style={{fontFamily:"'Playfair Display',serif",fontSize:"1.6rem",fontWeight:800,color:MAROON,marginBottom:8}}>Welcome to Pre-Alumni!</div>
+            <div style={{fontSize:14,color:"#555",lineHeight:1.8,marginBottom:24}}>Your account is all set. Here's how to get started:</div>
+            <div style={{display:"flex",flexDirection:"column",gap:12,marginBottom:28,textAlign:"left"}}>
+              {[{icon:"👤",title:"Complete your profile",desc:"Add a photo, bio, and your major"},
+                {icon:"✅",title:"Check in to events",desc:"Log your attendance when events are posted"},
+                {icon:"🤝",title:"Log volunteer hours",desc:"Track your service hours anytime"},
+              ].map(s=>(
+                <div key={s.title} style={{display:"flex",gap:14,alignItems:"flex-start",background:"#FAF8F8",borderRadius:10,padding:"12px 16px"}}>
+                  <div style={{fontSize:22,flexShrink:0}}>{s.icon}</div>
+                  <div><div style={{fontWeight:700,fontSize:13,marginBottom:2}}>{s.title}</div><div style={{fontSize:12,color:TEXT_MUTED}}>{s.desc}</div></div>
+                </div>
+              ))}
+            </div>
+            <button className="btn-full" style={{marginTop:0}} onClick={()=>setShowWelcome(false)}>Let's Go! →</button>
+          </div>
+        </div>
+      )}
       {user?.mustChangePassword&&page==="dashboard"&&<div style={{background:"#FEF9C3",borderBottom:"1px solid #FDE68A",color:"#92400E",padding:"10px 20px",fontSize:13,textAlign:"center"}}>⚠️ Your account was set up by an officer. Please <strong>change your password</strong> in My Profile → Security before continuing.</div>}
       {verifyMsg==="success"&&<div style={{background:"#F0FDF4",borderBottom:"1px solid #BBF7D0",color:"#166534",padding:"10px 20px",fontSize:13,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>✅ Email verified! You can now sign in. <button onClick={()=>setVerifyMsg("")} style={{background:"none",border:"none",color:"#166534",cursor:"pointer",fontSize:16}}>✕</button></div>}
       {verifyMsg==="invalid"&&<div style={{background:"#FEF2F2",borderBottom:"1px solid #FECACA",color:"#991B1B",padding:"10px 20px",fontSize:13,textAlign:"center"}}>❌ Invalid or expired verification link.</div>}
