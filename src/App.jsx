@@ -1225,7 +1225,7 @@ function Overview({user,data,myLogs,volHours,setSection}){
       <div className="page-sub">Pre-Alumni Association · {new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</div>
       {user.userType==="guest"&&<div className="info-banner" style={{background:"#F9FAFB",border:"1px solid #E5E7EB",color:"#374151"}}>👤 You are a Guest — you can check in to open events and log volunteer hours. Contact an officer to become a full member.</div>}
       {isOfficer&&<div className="info-banner" style={{background:"#FAF0F2",border:"1px solid #E0D8D8",color:MAROON}}>📋 You are an Officer — you can manage events, members, and records, and track your own attendance and hours.</div>}
-      {!user.photo&&!user.bio&&page==="dashboard"&&<div style={{background:"#EFF6FF",border:"1px solid #BFDBFE",borderRadius:12,padding:"12px 16px",marginBottom:18,display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap",fontSize:13}}>
+      {!user.photo&&!user.bio&&<div style={{background:"#EFF6FF",border:"1px solid #BFDBFE",borderRadius:12,padding:"12px 16px",marginBottom:18,display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap",fontSize:13}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}><span style={{fontSize:18}}>👤</span><span style={{color:"#1D4ED8"}}>Complete your profile — add a photo and bio so your officers know who you are!</span></div>
         <button className="btn-sm" style={{background:"#1D4ED8",color:"white",border:"none"}} onClick={()=>setSection("profile")}>Complete Profile →</button>
       </div>}
