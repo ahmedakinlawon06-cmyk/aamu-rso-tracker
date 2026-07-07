@@ -71,7 +71,7 @@ async function sendEmail({to, subject, html}){
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":"Bearer "+RESEND_KEY},
       body:JSON.stringify({
-        from:"Pre-Alumni Association <onboarding@resend.dev>",
+        from:"Pre-Alumni Association <noreply@prealumni.org>",
         to:[to],
         subject,
         html
@@ -99,7 +99,7 @@ async function sendWelcomeEmail(user){
             <p style="margin:4px 0 0;font-size:13px;color:#555;">👤 Role: ${user.userType==="officer"?"Officer / E-Board":user.userType==="guest"?"Guest":"Member"}</p>
           </div>
           <p style="color:#444;line-height:1.7;font-size:14px;">You can now log in to track your attendance, log volunteer hours, and manage your profile.</p>
-          <a href="https://aamu-rso-tracker.netlify.app" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
+          <a href="https://prealumni.org" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
           <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">Pre-Alumni Association · Alabama A&M University · Huntsville, AL</p>
         </div>
       </div>
@@ -108,7 +108,7 @@ async function sendWelcomeEmail(user){
 }
 
 async function sendVerificationEmail(user, token){
-  const verifyUrl=`https://aamu-rso-tracker.netlify.app?verify=${token}`;
+  const verifyUrl=`https://prealumni.org?verify=${token}`;
   await sendEmail({
     to: user.email,
     subject: "Verify your Pre-Alumni Portal account",
@@ -149,7 +149,7 @@ async function sendPasswordChangedEmail(user){
             <p style="margin:0;font-size:13px;color:#92400E;">⚠️ If you did not make this change, please contact an officer immediately.</p>
           </div>
           <p style="color:#444;line-height:1.7;font-size:14px;">If this was you, no further action is needed.</p>
-          <a href="https://aamu-rso-tracker.netlify.app" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
+          <a href="https://prealumni.org" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
           <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">Pre-Alumni Association · Alabama A&M University · Huntsville, AL</p>
         </div>
       </div>
@@ -782,7 +782,7 @@ function ForgotPassword({onBack,data,reload}){
               <div style="font-size:24px;font-weight:700;color:#6B1B2A;letter-spacing:.1em;">${temp}</div>
             </div>
             <p style="color:#444;line-height:1.7;font-size:14px;">Log in with this temporary password, then go to <strong>My Profile → Security</strong> to set a new password.</p>
-            <a href="https://aamu-rso-tracker.netlify.app" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
+            <a href="https://prealumni.org" style="display:inline-block;background:#6B1B2A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin-top:8px;">Go to Portal →</a>
             <p style="color:#8A7070;font-size:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F3F0F0;">If you did not request this, contact an officer immediately.</p>
           </div>
         </div>
@@ -953,7 +953,6 @@ function CheckIn({user,data,setData,reload}){
   const isGuest=user.userType==="guest";
   const orgEvents=data.events.filter(e=>e.orgId==="org1"&&(!isGuest||e.openToGuests));
   const myLogIds=data.logs.filter(l=>l.userId===user.id).map(l=>l.eventId);
-  setLoading(true);
   async function doCheckIn(ev){setSaving(true);try{const log={id:`log_${Date.now()}`,userId:user.id,eventId:ev.id,orgId:"org1",type:ev.type,hours:ev.hours||0,note,proofName:proof?.name||null,createdAt:new Date().toISOString()};await dbInsert("logs",logToRow(log));await reload();setModal(null);setNote("");setProof(null);setSuccess(`Checked in to ${ev.name}!`);setTimeout(()=>setSuccess(""),4000);}catch(e){alert("Check-in failed. Please try again.");}finally{setSaving(false);}}
   return(
     <div>
