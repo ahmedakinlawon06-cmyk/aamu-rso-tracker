@@ -1716,7 +1716,9 @@ export default function App(){
           setVerifyMsg("success");
           setPage("auth");setAuthMode("login");
         } else {
-          setVerifyMsg("invalid");
+          // Check if already verified (token already used)
+          const alreadyVerified=fresh.users.find(u=>u.email&&u.verified&&!u.verifyToken);
+          if(!alreadyVerified) setVerifyMsg("invalid");
         }
       }
       if(checkinId) sessionStorage.setItem("qr_checkin",checkinId);
