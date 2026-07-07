@@ -880,7 +880,7 @@ function AuthPage({mode,onAuth,onSwitch}){
   );
 }
 
-function ProfilePage({user,data,setData,reload}){
+function ProfilePage({user,data,setData,reload,setUser}){
   const [editing,setEditing]=useState(false);
   const [form,setForm]=useState({name:user.name||"",major:user.major||"",bio:user.bio||"",instagram:user.instagram||"",linkedin:user.linkedin||""});
   const [pwForm,setPwForm]=useState({current:"",next:"",confirm:""});
@@ -893,7 +893,7 @@ function ProfilePage({user,data,setData,reload}){
   const volHours=myLogs.filter(l=>l.type==="volunteer").reduce((s,l)=>s+(l.hours||0),0);
   async function saveProfile(){Object.assign(user,form);await dbUpdate("users","id=eq."+user.id,{name:form.name,major:form.major,classification:form.classification,bio:form.bio,instagram:form.instagram,linkedin:form.linkedin});await reload();setEditing(false);setMsg("Profile saved!");setTimeout(()=>setMsg(""),3000);}
   function handlePhoto(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async ev=>{user.photo=ev.target.result;await dbUpdate("users","id=eq."+user.id,{photo:ev.target.result});await reload();setMsg("Photo updated!");setTimeout(()=>setMsg(""),3000);};r.readAsDataURL(file);}
-  async function changePw(e){e.preventDefault();setPwError("");setPwOk("");const hashedCurrent=await hashPassword(pwForm.current);if(hashedCurrent!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}const hashedNew=await hashPassword(pwForm.next);await dbUpdate("users","id=eq."+user.id,{password:hashedNew,must_change_password:false});sendPasswordChangedEmail(user);user.password=hashedNew;user.mustChangePassword=false;localStorage.setItem("pa_user",JSON.stringify(user));setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated! A confirmation email has been sent.");}
+  async function changePw(e){e.preventDefault();setPwError("");setPwOk("");const hashedCurrent=await hashPassword(pwForm.current);if(hashedCurrent!==user.password){setPwError("Current password is incorrect.");return;}if(pwForm.next.length<6){setPwError("New password must be at least 6 characters.");return;}if(pwForm.next!==pwForm.confirm){setPwError("Passwords do not match.");return;}const hashedNew=await hashPassword(pwForm.next);await dbUpdate("users","id=eq."+user.id,{password:hashedNew,must_change_password:false});sendPasswordChangedEmail(user);user.password=hashedNew;user.mustChangePassword=false;const updatedUser={...user,password:hashedNew,mustChangePassword:false};localStorage.setItem("pa_user",JSON.stringify(updatedUser));if(setUser)setUser(updatedUser);setPwForm({current:"",next:"",confirm:""});setPwOk("Password updated! A confirmation email has been sent.");}
   return(
     <div style={{maxWidth:720,margin:"0 auto"}}>
       <div className="page-title">My Profile</div>
@@ -1665,7 +1665,7 @@ function Analytics({data}){
   );
 }
 
-function Dashboard({user,data,setData,reload}){
+function Dashboard({user,data,setData,reload,setUser}){
   const [section,setSection]=useState("overview");
   const [drawerOpen,setDrawerOpen]=useState(false);
   const isOfficer=user.role==="superadmin"||user.role==="orgadmin"||user.userType==="officer";
@@ -1704,7 +1704,7 @@ function Dashboard({user,data,setData,reload}){
         {section==="checkin"&&<CheckIn user={user} data={data} setData={setData} reload={reload}/>}
         {section==="vol-log"&&<VolunteerLog user={user} data={data} setData={setData} reload={reload}/>}
         {section==="my-logs"&&<MyLogs data={data} myLogs={myLogs}/>}
-        {section==="profile"&&<ProfilePage user={user} data={data} setData={setData} reload={reload}/>}
+        {section==="profile"&&<ProfilePage user={user} data={data} setData={setData} reload={reload} setUser={setUser}/>}
         {section==="attendance"&&isOfficer&&<AttendanceRecords data={data} setData={setData} reload={reload}/>}
         {section==="analytics"&&isOfficer&&<Analytics data={data}/>}
         {section==="qr"&&isOfficer&&<QRCheckin data={data} setData={setData} reload={reload}/>}
@@ -1873,7 +1873,7 @@ export default function App(){
         </div>
       )}
       {page==="auth"&&authMode!=="forgot"&&<AuthPage mode={authMode||"login"} onAuth={handleAuth} onSwitch={setAuthMode}/>}
-      {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData} reload={reload}/>}
+      {page==="dashboard"&&user&&<Dashboard user={user} data={data} setData={setData} reload={reload} setUser={setUser}/>}
       {page==="dashboard"&&!user&&<AuthPage mode="login" onAuth={handleAuth} onSwitch={m=>{setAuthMode(m);setPage("auth");}}/>}
     </>
   );
